@@ -174,9 +174,9 @@
                         </td>
 
                         <td th:each="day : ${scheduleDays}"
-                            class="schedule-cell"
+                            class="schedule-cell assignment-cell"
                             th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}"
-                            th:attr="data-employee-id=${employee.id}, data-date=${day.date}, data-current-month=${day.currentMonth}">
+                            th:attr="data-employee-id=${employee.id}, data-date=${day.date}, data-current-month=${day.currentMonth}, data-assignment-layer='NORMAL'">
 
                             <button type="button" class="schedule-cell-display">
                                 -
@@ -250,11 +250,45 @@
                         th:attr="data-row-employee-id=${employee.id}">
 
                         <td th:each="day : ${scheduleDays}"
-                            class="standby-placeholder-cell"
-                            th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}">
-                            <button type="button" class="standby-cell-display">
+                            class="standby-placeholder-cell assignment-cell"
+                            th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}"
+                            th:attr="data-employee-id=${employee.id}, data-date=${day.date}, data-current-month=${day.currentMonth}, data-assignment-layer='STANDBY'">
+
+                            <button type="button" class="schedule-cell-display standby-cell-display">
                                 -
                             </button>
+
+                            <div class="shift-picker">
+                                <button type="button"
+                                        class="shift-picker-option clear-option"
+                                        data-clear="true">
+                                    Üres
+                                </button>
+
+                                <button type="button"
+                                        class="shift-picker-option"
+                                        th:each="shiftType : ${shiftTypes}"
+                                        th:attr="
+                                            data-shift-id=${shiftType.id},
+                                            data-code=${shiftType.code},
+                                            data-hours=${shiftType.hours},
+                                            data-night=${shiftType.night},
+                                            data-standby=${shiftType.standby},
+                                            data-home-office=${shiftType.homeOffice},
+                                            data-description=${shiftType.description}
+                                        "
+                                        th:text="${
+                                            #strings.equals(shiftType.code, 'SZ')
+                                                ? 'SZ - Szabadság'
+                                                : (
+                                                    #strings.equals(shiftType.code, '-')
+                                                        ? '- - Nem szeretne dolgozni'
+                                                        : shiftType.code + ' - ' + shiftType.hours + ' óra'
+                                                )
+                                        }">
+                                    A - 12 óra
+                                </button>
+                            </div>
                         </td>
                     </tr>
 

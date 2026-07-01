@@ -142,17 +142,43 @@ public class CalendarController {
             return "SHIFT_TYPE_NOT_FOUND";
         }
 
+        String requestedLayer = normalizeAssignmentLayer(request.getAssignmentLayer());
+
+        if (shiftType.isStandby() && !Assignment.LAYER_STANDBY.equals(requestedLayer)) {
+            return "STANDBY_ONLY_ALLOWED_IN_STANDBY_ROW";
+        }
+
+        if (!shiftType.isStandby() && !Assignment.LAYER_NORMAL.equals(requestedLayer)) {
+            return "NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW";
+        }
+
         Assignment assignment = assignmentRepository
-                .findByEmployeeAndAssignmentDate(employee, request.getDate())
+                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
+                        employee,
+                        request.getDate(),
+                        requestedLayer
+                )
                 .orElse(null);
 
         if (assignment == null) {
-            assignmentRepository.save(new Assignment(employee, request.getDate(), shiftType));
+            assignmentRepository.save(new Assignment(
+                    employee,
+                    request.getDate(),
+                    requestedLayer,
+                    shiftType
+            ));
+
             return "CREATED";
         }
 
         assignmentRepository.delete(assignment);
-        assignmentRepository.save(new Assignment(employee, request.getDate(), shiftType));
+
+        assignmentRepository.save(new Assignment(
+                employee,
+                request.getDate(),
+                requestedLayer,
+                shiftType
+        ));
 
         return "UPDATED";
     }
@@ -167,7 +193,8 @@ public class CalendarController {
     @ResponseBody
     public String deleteAssignment(
             @RequestParam Long employeeId,
-            @RequestParam String date
+            @RequestParam String date,
+            @RequestParam(required = false) String assignmentLayer
     ) {
         Employee employee = employeeRepository.findById(employeeId).orElse(null);
 
@@ -175,8 +202,14 @@ public class CalendarController {
             return "EMPLOYEE_NOT_FOUND";
         }
 
+        String normalizedLayer = normalizeAssignmentLayer(assignmentLayer);
+
         Assignment assignment = assignmentRepository
-                .findByEmployeeAndAssignmentDate(employee, date)
+                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
+                        employee,
+                        date,
+                        normalizedLayer
+                )
                 .orElse(null);
 
         if (assignment == null) {
@@ -554,6 +587,14 @@ public class CalendarController {
             unavailableShift.setDescription("Nem szeretne dolgozni");
             shiftTypeRepository.save(unavailableShift);
         }
+    }
+
+    private String normalizeAssignmentLayer(String assignmentLayer) {
+        if (Assignment.LAYER_STANDBY.equalsIgnoreCase(assignmentLayer)) {
+            return Assignment.LAYER_STANDBY;
+        }
+
+        return Assignment.LAYER_NORMAL;
     }
 
     private List<ScheduleDay> createScheduleDays(YearMonth currentYearMonth) {

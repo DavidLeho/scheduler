@@ -1,7 +1,7 @@
 /* ---------- Schedule table assignment handling ---------- */
 
 function closeAllPickers() {
-    document.querySelectorAll(".schedule-cell.open").forEach(cell => {
+    document.querySelectorAll(".assignment-cell.open").forEach(cell => {
         cell.classList.remove("open");
     });
 }
@@ -13,7 +13,12 @@ document.addEventListener("click", event => {
     if (displayButton) {
         event.stopPropagation();
 
-        const cell = displayButton.closest(".schedule-cell");
+        const cell = displayButton.closest(".assignment-cell");
+
+        if (!cell) {
+            return;
+        }
+
         const wasOpen = cell.classList.contains("open");
 
         closeAllPickers();
@@ -28,7 +33,11 @@ document.addEventListener("click", event => {
     if (pickerOption) {
         event.stopPropagation();
 
-        const cell = pickerOption.closest(".schedule-cell");
+        const cell = pickerOption.closest(".assignment-cell");
+
+        if (!cell) {
+            return;
+        }
 
         if (pickerOption.dataset.clear === "true") {
             deleteAssignmentFromCell(cell);
@@ -47,6 +56,7 @@ function saveAssignmentToCell(cell, option) {
     const assignment = {
         employeeId: Number(cell.dataset.employeeId),
         date: cell.dataset.date,
+        assignmentLayer: cell.dataset.assignmentLayer,
         shiftTypeId: Number(option.dataset.shiftId)
     };
 
@@ -61,16 +71,17 @@ function saveAssignmentToCell(cell, option) {
                 applyShiftToCell(cell, {
                     shiftTypeId: Number(option.dataset.shiftId),
                     shiftCode: option.dataset.code,
+                    assignmentLayer: cell.dataset.assignmentLayer,
                     hours: Number(option.dataset.hours),
                     night: option.dataset.night === "true",
                     standby: option.dataset.standby === "true",
                     homeOffice: option.dataset.homeOffice === "true",
                     shiftDescription: option.dataset.description || ""
                 });
-            } else if (result === "EMPLOYEE_NOT_FOUND") {
-                alert("Nem találom ezt a dolgozót az adatbázisban.");
-            } else if (result === "SHIFT_TYPE_NOT_FOUND") {
-                alert("Nem találom ezt a műszakot az adatbázisban.");
+            } else if (result === "STANDBY_ONLY_ALLOWED_IN_STANDBY_ROW") {
+                alert("Készenlétet csak az alsó készenléti sorba lehet tenni.");
+            } else if (result === "NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW") {
+                alert("Ezt a műszakot csak a felső normál sorba lehet tenni.");
             } else {
                 alert("Nem sikerült menteni a beosztást.");
             }
@@ -81,7 +92,8 @@ function saveAssignmentToCell(cell, option) {
 function deleteAssignmentFromCell(cell) {
     const params = new URLSearchParams({
         employeeId: cell.dataset.employeeId,
-        date: cell.dataset.date
+        date: cell.dataset.date,
+        assignmentLayer: cell.dataset.assignmentLayer
     });
 
     fetch(`/assignments?${params.toString()}`, {
@@ -124,7 +136,7 @@ function applyShiftToCell(cell, assignment) {
     cell.dataset.standby = assignment.standby;
     cell.dataset.homeOffice = assignment.homeOffice;
 
-    updateRowSummary(cell.closest("tr"));
+    updateEmployeeSummary(cell.dataset.employeeId);
 }
 
 function clearCell(cell) {
@@ -151,7 +163,7 @@ function clearCell(cell) {
     delete cell.dataset.standby;
     delete cell.dataset.homeOffice;
 
-    updateRowSummary(cell.closest("tr"));
+    updateEmployeeSummary(cell.dataset.employeeId);
 }
 
 function formatCellText(assignment) {
@@ -211,8 +223,8 @@ function buildShiftTitle(assignment) {
 
     parts.push(formatCellText(assignment));
 
-    parts.push(assignment.night ? "éjszakai" : "nappali");
     parts.push(assignment.standby ? "készenlét" : "normál");
+    parts.push(assignment.night ? "éjszakai" : "nappali");
     parts.push(assignment.homeOffice ? "HO" : "iroda");
 
     if (assignment.shiftDescription) {
@@ -236,8 +248,12 @@ function formatHours(hours) {
     return String(number).replace(".", ",");
 }
 
-function updateRowSummary(row) {
-    if (!row) {
+function updateEmployeeSummary(employeeId) {
+    const mainRow = document.querySelector(
+        `.employee-main-row[data-row-employee-id="${employeeId}"]`
+    );
+
+    if (!mainRow) {
         return;
     }
 
@@ -248,8 +264,11 @@ function updateRowSummary(row) {
     let homeOfficeHours = 0;
     let vacationUsedHours = 0;
 
-    const vacationBaseHours = Number(row.dataset.vacationHours || 0);
-    const cells = row.querySelectorAll(".schedule-cell");
+    const vacationBaseHours = Number(mainRow.dataset.vacationHours || 0);
+
+    const cells = document.querySelectorAll(
+        `.assignment-cell[data-employee-id="${employeeId}"]`
+    );
 
     cells.forEach(cell => {
         if (cell.dataset.currentMonth !== "true") {
@@ -258,6 +277,7 @@ function updateRowSummary(row) {
 
         const shiftCode = (cell.dataset.shiftCode || "").toUpperCase();
         const hours = Number(cell.dataset.hours);
+        const layer = cell.dataset.assignmentLayer;
 
         if (Number.isNaN(hours)) {
             return;
@@ -274,7 +294,7 @@ function updateRowSummary(row) {
 
         shiftCount += 1;
 
-        if (cell.dataset.standby === "true") {
+        if (layer === "STANDBY") {
             standbyHours += hours;
             return;
         }
@@ -292,12 +312,12 @@ function updateRowSummary(row) {
 
     const vacationRemainingHours = vacationBaseHours - vacationUsedHours;
 
-    row.querySelector(".row-total-hours").textContent = formatHours(totalHours);
-    row.querySelector(".row-shift-count").textContent = shiftCount;
-    row.querySelector(".row-night-hours").textContent = formatHours(nightHours);
-    row.querySelector(".row-standby-hours").textContent = formatHours(standbyHours);
+    mainRow.querySelector(".row-total-hours").textContent = formatHours(totalHours);
+    mainRow.querySelector(".row-shift-count").textContent = shiftCount;
+    mainRow.querySelector(".row-night-hours").textContent = formatHours(nightHours);
+    mainRow.querySelector(".row-standby-hours").textContent = formatHours(standbyHours);
 
-    const hoPercentCell = row.querySelector(".row-ho-hours");
+    const hoPercentCell = mainRow.querySelector(".row-ho-hours");
     const hoPercent = calculateHomeOfficePercent(homeOfficeHours, totalHours);
 
     hoPercentCell.textContent = hoPercent + "%";
@@ -316,7 +336,7 @@ function updateRowSummary(row) {
         hoPercentCell.classList.add("ho-percent-danger");
     }
 
-    const vacationCell = row.querySelector(".vacation-cell");
+    const vacationCell = mainRow.querySelector(".vacation-cell");
     vacationCell.textContent = formatHours(vacationRemainingHours);
 
     vacationCell.classList.remove("vacation-negative", "vacation-low");
@@ -327,6 +347,7 @@ function updateRowSummary(row) {
         vacationCell.classList.add("vacation-low");
     }
 }
+
 function calculateHomeOfficePercent(homeOfficeHours, totalHours) {
     if (totalHours <= 0) {
         return 0;
@@ -334,8 +355,11 @@ function calculateHomeOfficePercent(homeOfficeHours, totalHours) {
 
     return Math.round((homeOfficeHours / totalHours) * 100);
 }
+
 function updateAllSummaries() {
-    document.querySelectorAll(".schedule-table tbody tr").forEach(updateRowSummary);
+    document.querySelectorAll(".employee-main-row").forEach(row => {
+        updateEmployeeSummary(row.dataset.rowEmployeeId);
+    });
 }
 
 function loadAssignments() {
@@ -343,8 +367,10 @@ function loadAssignments() {
         .then(response => response.json())
         .then(assignments => {
             assignments.forEach(assignment => {
+                const layer = assignment.assignmentLayer || "NORMAL";
+
                 const cell = document.querySelector(
-                    `.schedule-cell[data-employee-id="${assignment.employeeId}"][data-date="${assignment.date}"]`
+                    `.assignment-cell[data-employee-id="${assignment.employeeId}"][data-date="${assignment.date}"][data-assignment-layer="${layer}"]`
                 );
 
                 if (cell) {
@@ -383,10 +409,18 @@ function initializeShiftPickerOptions() {
             "picker-night",
             "picker-standby",
             "picker-vacation",
-            "picker-unavailable"
+            "picker-unavailable",
+            "picker-layer-normal",
+            "picker-layer-standby"
         );
 
         option.classList.add(getPickerClass(assignmentPreview));
+
+        if (assignmentPreview.standby) {
+            option.classList.add("picker-layer-standby");
+        } else {
+            option.classList.add("picker-layer-normal");
+        }
 
         option.title = buildShiftTitle(assignmentPreview);
     });
@@ -412,102 +446,6 @@ function getPickerClass(assignment) {
     }
 
     return "picker-normal";
-}
-
-initializeShiftPickerOptions();
-
-document.querySelectorAll(".schedule-cell").forEach(clearCell);
-
-loadAssignments();
-
-/* ---------- Month picker ---------- */
-
-const monthPicker = document.querySelector(".month-picker");
-
-if (monthPicker) {
-    const monthPickerButton = document.getElementById("monthPickerButton");
-    const pickerPreviousYear = document.getElementById("pickerPreviousYear");
-    const pickerNextYear = document.getElementById("pickerNextYear");
-    const pickerYear = document.getElementById("pickerYear");
-    const monthButtons = document.querySelectorAll(".month-picker-grid button");
-
-    const currentYear = Number(monthPicker.dataset.currentYear);
-    const currentMonth = Number(monthPicker.dataset.currentMonth);
-
-    let selectedYear = currentYear;
-
-    updateSelectedMonth();
-
-    monthPickerButton.addEventListener("click", event => {
-        event.stopPropagation();
-        monthPicker.classList.toggle("open");
-    });
-
-    pickerPreviousYear.addEventListener("click", event => {
-        event.stopPropagation();
-        selectedYear--;
-        pickerYear.textContent = selectedYear;
-        updateSelectedMonth();
-    });
-
-    pickerNextYear.addEventListener("click", event => {
-        event.stopPropagation();
-        selectedYear++;
-        pickerYear.textContent = selectedYear;
-        updateSelectedMonth();
-    });
-
-    monthButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const selectedMonth = button.dataset.month;
-            window.location.href = `/?year=${selectedYear}&month=${selectedMonth}`;
-        });
-    });
-
-    document.addEventListener("click", event => {
-        if (!monthPicker.contains(event.target)) {
-            monthPicker.classList.remove("open");
-        }
-    });
-
-    function updateSelectedMonth() {
-        monthButtons.forEach(button => {
-            const buttonMonth = Number(button.dataset.month);
-
-            if (selectedYear === currentYear && buttonMonth === currentMonth) {
-                button.classList.add("selected-month");
-            } else {
-                button.classList.remove("selected-month");
-            }
-        });
-
-        /* ---------- Row highlight by employee name ---------- */
-
-        document.addEventListener("click", event => {
-            const employeeNameCell = event.target.closest(".employee-name-cell");
-
-            if (!employeeNameCell) {
-                return;
-            }
-
-            const row = employeeNameCell.closest("tr");
-            const employeeId = row.dataset.rowEmployeeId;
-            const alreadyHighlighted = row.classList.contains("highlighted-row");
-
-            document.querySelectorAll(".schedule-table tbody tr.highlighted-row").forEach(highlightedRow => {
-                highlightedRow.classList.remove("highlighted-row");
-            });
-
-            if (!alreadyHighlighted) {
-                document
-                    .querySelectorAll(`.schedule-table tbody tr[data-row-employee-id="${employeeId}"]`)
-                    .forEach(employeeRow => {
-                        employeeRow.classList.add("highlighted-row");
-                    });
-            }
-        });
-
-    }
 }
 
 /* ---------- Hide / restore summary columns ---------- */
@@ -597,4 +535,98 @@ document.addEventListener("click", event => {
     }
 });
 
+/* ---------- Row highlight by employee name ---------- */
+
+document.addEventListener("click", event => {
+    const employeeNameCell = event.target.closest(".employee-name-cell");
+
+    if (!employeeNameCell) {
+        return;
+    }
+
+    const row = employeeNameCell.closest("tr");
+    const employeeId = row.dataset.rowEmployeeId;
+    const alreadyHighlighted = row.classList.contains("highlighted-row");
+
+    document.querySelectorAll(".schedule-table tbody tr.highlighted-row").forEach(highlightedRow => {
+        highlightedRow.classList.remove("highlighted-row");
+    });
+
+    if (!alreadyHighlighted) {
+        document
+            .querySelectorAll(`.schedule-table tbody tr[data-row-employee-id="${employeeId}"]`)
+            .forEach(employeeRow => {
+                employeeRow.classList.add("highlighted-row");
+            });
+    }
+});
+
+initializeShiftPickerOptions();
 applySummaryColumnVisibility();
+
+document.querySelectorAll(".assignment-cell").forEach(clearCell);
+
+loadAssignments();
+
+/* ---------- Month picker ---------- */
+
+const monthPicker = document.querySelector(".month-picker");
+
+if (monthPicker) {
+    const monthPickerButton = document.getElementById("monthPickerButton");
+    const pickerPreviousYear = document.getElementById("pickerPreviousYear");
+    const pickerNextYear = document.getElementById("pickerNextYear");
+    const pickerYear = document.getElementById("pickerYear");
+    const monthButtons = document.querySelectorAll(".month-picker-grid button");
+
+    const currentYear = Number(monthPicker.dataset.currentYear);
+    const currentMonth = Number(monthPicker.dataset.currentMonth);
+
+    let selectedYear = currentYear;
+
+    updateSelectedMonth();
+
+    monthPickerButton.addEventListener("click", event => {
+        event.stopPropagation();
+        monthPicker.classList.toggle("open");
+    });
+
+    pickerPreviousYear.addEventListener("click", event => {
+        event.stopPropagation();
+        selectedYear--;
+        pickerYear.textContent = selectedYear;
+        updateSelectedMonth();
+    });
+
+    pickerNextYear.addEventListener("click", event => {
+        event.stopPropagation();
+        selectedYear++;
+        pickerYear.textContent = selectedYear;
+        updateSelectedMonth();
+    });
+
+    monthButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const selectedMonth = button.dataset.month;
+            window.location.href = `/?year=${selectedYear}&month=${selectedMonth}`;
+        });
+    });
+
+    document.addEventListener("click", event => {
+        if (!monthPicker.contains(event.target)) {
+            monthPicker.classList.remove("open");
+        }
+    });
+
+    function updateSelectedMonth() {
+        monthButtons.forEach(button => {
+            const buttonMonth = Number(button.dataset.month);
+
+            if (selectedYear === currentYear && buttonMonth === currentMonth) {
+                button.classList.add("selected-month");
+            } else {
+                button.classList.remove("selected-month");
+            }
+        });
+    }
+}

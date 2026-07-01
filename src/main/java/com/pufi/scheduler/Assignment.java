@@ -10,6 +10,9 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Assignment {
 
+    public static final String LAYER_NORMAL = "NORMAL";
+    public static final String LAYER_STANDBY = "STANDBY";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +23,8 @@ public class Assignment {
 
     private String assignmentDate;
 
+    private String assignmentLayer;
+
     @ManyToOne
     @JoinColumn(name = "shift_type_id")
     private ShiftType shiftType;
@@ -27,9 +32,10 @@ public class Assignment {
     public Assignment() {
     }
 
-    public Assignment(Employee employee, String assignmentDate, ShiftType shiftType) {
+    public Assignment(Employee employee, String assignmentDate, String assignmentLayer, ShiftType shiftType) {
         this.employee = employee;
         this.assignmentDate = assignmentDate;
+        this.assignmentLayer = assignmentLayer;
         this.shiftType = shiftType;
     }
 
@@ -55,6 +61,14 @@ public class Assignment {
 
     public String getDate() {
         return assignmentDate;
+    }
+
+    public String getAssignmentLayer() {
+        if (assignmentLayer == null || assignmentLayer.isBlank()) {
+            return LAYER_NORMAL;
+        }
+
+        return assignmentLayer;
     }
 
     public Long getShiftTypeId() {

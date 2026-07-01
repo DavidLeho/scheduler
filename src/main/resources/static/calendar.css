@@ -811,3 +811,19 @@ td.today-column {
         inset 0 0 0 2px rgba(255, 230, 120, 0.95),
         inset 0 0 14px rgba(255, 204, 64, 0.25);
 }
+
+/* ---------- Layer based picker filtering ---------- */
+
+.assignment-cell[data-assignment-layer="NORMAL"] .picker-layer-standby {
+    display: none;
+}
+
+.assignment-cell[data-assignment-layer="STANDBY"] .picker-layer-normal {
+    display: none;
+}
+
+.assignment-cell.open .shift-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

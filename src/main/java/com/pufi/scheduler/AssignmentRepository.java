@@ -7,14 +7,10 @@ import java.util.Optional;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
-    boolean existsByEmployeeAndAssignmentDate(
+    Optional<Assignment> findByEmployeeAndAssignmentDateAndAssignmentLayer(
             Employee employee,
-            String assignmentDate
-    );
-
-    Optional<Assignment> findByEmployeeAndAssignmentDate(
-            Employee employee,
-            String assignmentDate
+            String assignmentDate,
+            String assignmentLayer
     );
 
     List<Assignment> findByEmployee(Employee employee);
