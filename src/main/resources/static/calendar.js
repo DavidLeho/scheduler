@@ -209,11 +209,7 @@ function buildShiftTitle(assignment) {
 
     const parts = [];
 
-    if (assignment.shiftCode) {
-        parts.push(assignment.shiftCode);
-    }
-
-    parts.push(`${formatHours(assignment.hours)} óra`);
+    parts.push(formatCellText(assignment));
 
     parts.push(assignment.night ? "éjszakai" : "nappali");
     parts.push(assignment.standby ? "készenlét" : "normál");
@@ -246,6 +242,7 @@ function updateRowSummary(row) {
     }
 
     let totalHours = 0;
+    let shiftCount = 0;
     let nightHours = 0;
     let standbyHours = 0;
     let homeOfficeHours = 0;
@@ -275,14 +272,17 @@ function updateRowSummary(row) {
             return;
         }
 
+        shiftCount += 1;
+
+        if (cell.dataset.standby === "true") {
+            standbyHours += hours;
+            return;
+        }
+
         totalHours += hours;
 
         if (cell.dataset.night === "true") {
             nightHours += hours;
-        }
-
-        if (cell.dataset.standby === "true") {
-            standbyHours += hours;
         }
 
         if (cell.dataset.homeOffice === "true") {
@@ -293,9 +293,28 @@ function updateRowSummary(row) {
     const vacationRemainingHours = vacationBaseHours - vacationUsedHours;
 
     row.querySelector(".row-total-hours").textContent = formatHours(totalHours);
+    row.querySelector(".row-shift-count").textContent = shiftCount;
     row.querySelector(".row-night-hours").textContent = formatHours(nightHours);
     row.querySelector(".row-standby-hours").textContent = formatHours(standbyHours);
-    row.querySelector(".row-ho-hours").textContent = formatHours(homeOfficeHours);
+
+    const hoPercentCell = row.querySelector(".row-ho-hours");
+    const hoPercent = calculateHomeOfficePercent(homeOfficeHours, totalHours);
+
+    hoPercentCell.textContent = hoPercent + "%";
+
+    hoPercentCell.classList.remove(
+        "ho-percent-ok",
+        "ho-percent-warning",
+        "ho-percent-danger"
+    );
+
+    if (hoPercent <= 40) {
+        hoPercentCell.classList.add("ho-percent-ok");
+    } else if (hoPercent <= 50) {
+        hoPercentCell.classList.add("ho-percent-warning");
+    } else {
+        hoPercentCell.classList.add("ho-percent-danger");
+    }
 
     const vacationCell = row.querySelector(".vacation-cell");
     vacationCell.textContent = formatHours(vacationRemainingHours);
@@ -308,7 +327,13 @@ function updateRowSummary(row) {
         vacationCell.classList.add("vacation-low");
     }
 }
+function calculateHomeOfficePercent(homeOfficeHours, totalHours) {
+    if (totalHours <= 0) {
+        return 0;
+    }
 
+    return Math.round((homeOfficeHours / totalHours) * 100);
+}
 function updateAllSummaries() {
     document.querySelectorAll(".schedule-table tbody tr").forEach(updateRowSummary);
 }
@@ -331,6 +356,65 @@ function loadAssignments() {
         })
         .catch(error => console.error("Hiba a beosztások betöltésénél:", error));
 }
+
+/* ---------- Shift picker option display ---------- */
+
+function initializeShiftPickerOptions() {
+    document.querySelectorAll(".shift-picker-option").forEach(option => {
+        if (option.dataset.clear === "true") {
+            option.textContent = "Üres";
+            option.classList.add("picker-clear");
+            return;
+        }
+
+        const assignmentPreview = {
+            shiftCode: option.dataset.code,
+            hours: Number(option.dataset.hours),
+            night: option.dataset.night === "true",
+            standby: option.dataset.standby === "true",
+            homeOffice: option.dataset.homeOffice === "true",
+            shiftDescription: option.dataset.description || ""
+        };
+
+        option.textContent = formatCellText(assignmentPreview);
+
+        option.classList.remove(
+            "picker-normal",
+            "picker-night",
+            "picker-standby",
+            "picker-vacation",
+            "picker-unavailable"
+        );
+
+        option.classList.add(getPickerClass(assignmentPreview));
+
+        option.title = buildShiftTitle(assignmentPreview);
+    });
+}
+
+function getPickerClass(assignment) {
+    const shiftCode = (assignment.shiftCode || "").toUpperCase();
+
+    if (shiftCode === "SZ") {
+        return "picker-vacation";
+    }
+
+    if (shiftCode === "-") {
+        return "picker-unavailable";
+    }
+
+    if (assignment.standby) {
+        return "picker-standby";
+    }
+
+    if (assignment.night) {
+        return "picker-night";
+    }
+
+    return "picker-normal";
+}
+
+initializeShiftPickerOptions();
 
 document.querySelectorAll(".schedule-cell").forEach(clearCell);
 
@@ -396,5 +480,27 @@ if (monthPicker) {
                 button.classList.remove("selected-month");
             }
         });
+
+        /* ---------- Row highlight by employee name ---------- */
+
+        document.addEventListener("click", event => {
+            const employeeNameCell = event.target.closest(".employee-name-cell");
+
+            if (!employeeNameCell) {
+                return;
+            }
+
+            const row = employeeNameCell.closest("tr");
+            const alreadyHighlighted = row.classList.contains("highlighted-row");
+
+            document.querySelectorAll(".schedule-table tbody tr.highlighted-row").forEach(highlightedRow => {
+                highlightedRow.classList.remove("highlighted-row");
+            });
+
+            if (!alreadyHighlighted) {
+                row.classList.add("highlighted-row");
+            }
+        });
+
     }
 }

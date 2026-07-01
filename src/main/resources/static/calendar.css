@@ -344,7 +344,7 @@ td.today-column {
 
 /* Normál nappali: tompa teal / petrol */
 .schedule-cell-display.shift-normal {
-    background: #2f6f73;
+    background: #b88a2a;;
 }
 
 /* Éjszakai: mély lila */
@@ -470,6 +470,10 @@ td.today-column {
     color: #cbefff;
 }
 
+.row-shift-count {
+    color: #fff1b8;
+}
+
 /* ---------- Scrollbars ---------- */
 
 .schedule-table-wrapper::-webkit-scrollbar,
@@ -492,4 +496,122 @@ td.today-column {
 .schedule-table-wrapper::-webkit-scrollbar-thumb:hover,
 .shift-picker::-webkit-scrollbar-thumb:hover {
     background: #777;
+}
+
+/* ---------- Colored picker options ---------- */
+
+.shift-picker-option.picker-normal {
+    background: #b88a2a;
+    border-color: #4f9b9f;
+}
+
+.shift-picker-option.picker-night {
+    background: #5b3a8e;
+    border-color: #8060b3;
+}
+
+.shift-picker-option.picker-standby {
+    background: #2f67a2;
+    border-color: #5d8fc8;
+}
+
+.shift-picker-option.picker-vacation,
+.shift-picker-option.picker-unavailable {
+    background: #5c5c5c;
+    border-color: #858585;
+}
+
+.shift-picker-option.picker-clear {
+    background: #3a2020;
+    border-color: #6b3333;
+}
+
+.shift-picker-option.picker-normal:hover,
+.shift-picker-option.picker-night:hover,
+.shift-picker-option.picker-standby:hover,
+.shift-picker-option.picker-vacation:hover,
+.shift-picker-option.picker-unavailable:hover {
+    filter: brightness(1.18);
+}
+
+.shift-picker-option.picker-clear:hover {
+    background: #613030;
+    border-color: #a34a4a;
+}
+
+/* ---------- HO percentage colors ---------- */
+
+.summary-cell.row-ho-hours.ho-percent-ok {
+    background: #245a2b;
+    color: #ffffff;
+}
+
+.summary-cell.row-ho-hours.ho-percent-warning {
+    background: #b86f22;
+    color: #ffffff;
+}
+
+.summary-cell.row-ho-hours.ho-percent-danger {
+    background: #9f2d2d;
+    color: #ffffff;
+}
+
+/* ---------- Highlight selected employee row ---------- */
+
+.schedule-table tbody tr.highlighted-row td {
+    background-image: linear-gradient(
+        rgba(255, 204, 64, 0.28),
+        rgba(255, 204, 64, 0.28)
+    );
+}
+
+.schedule-table tbody tr.highlighted-row .sticky-column {
+    background-image: linear-gradient(
+        rgba(255, 204, 64, 0.38),
+        rgba(255, 204, 64, 0.38)
+    );
+}
+
+.schedule-table tbody tr.highlighted-row .schedule-cell-display {
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 230, 120, 0.95),
+        inset 0 0 14px rgba(255, 204, 64, 0.35);
+}
+
+/* A jobb oldali összesítő cellákon is legyen egyértelmű */
+.schedule-table tbody tr.highlighted-row .summary-cell {
+    background-image: linear-gradient(
+        rgba(255, 204, 64, 0.34),
+        rgba(255, 204, 64, 0.34)
+    );
+    box-shadow: inset 0 0 0 2px rgba(255, 230, 120, 0.9);
+}
+
+/* A HO százalék színe maradjon felismerhető, csak kapjon erős kijelölő keretet */
+.schedule-table tbody tr.highlighted-row .row-ho-hours {
+    background-image: none;
+    box-shadow:
+        inset 4px 0 0 rgba(255, 230, 120, 1),
+        inset 0 0 0 2px rgba(255, 230, 120, 0.95),
+        0 0 10px rgba(255, 230, 120, 0.45);
+}
+
+.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-ok {
+    background: #245a2b;
+}
+
+.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-warning {
+    background: #b86f22;
+}
+
+.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-danger {
+    background: #9f2d2d;
+}
+
+.employee-name-cell {
+    cursor: pointer;
+}
+
+.employee-name-cell:hover {
+    text-decoration: underline;
 }
