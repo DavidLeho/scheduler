@@ -1,0 +1,11 @@
+﻿target/
+.idea/
+*.iml
+
+data/
+*.db
+*.mv.db
+*.trace.db
+
+.DS_Store
+Thumbs.db

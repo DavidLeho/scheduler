@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Munkabeosztás</title>
+    <link rel="stylesheet" href="/base.css">
+    <link rel="stylesheet" href="/calendar.css">
+</head>
+<body>
+
+<main class="schedule-page">
+
+    <header class="schedule-header">
+        <div class="schedule-top-actions">
+            <a class="month-button"
+               th:href="@{/manage(year=${year}, month=${month})}">
+                Dolgozók kezelése
+            </a>
+        </div>
+
+        <div class="schedule-month-row">
+            <a class="month-button"
+               th:href="@{/(year=${previousYear}, month=${previousMonth})}">
+                ← Előző hónap
+            </a>
+
+            <div class="month-picker"
+                 th:attr="data-current-year=${year}, data-current-month=${month}">
+                <button type="button"
+                        class="month-title-button"
+                        id="monthPickerButton"
+                        th:text="${year + ' ' + monthName + ' ▼'}">
+                    2026 Június ▼
+                </button>
+
+                <div class="month-picker-dropdown" id="monthPickerDropdown">
+                    <div class="month-picker-year-row">
+                        <button type="button" id="pickerPreviousYear">←</button>
+                        <span id="pickerYear" th:text="${year}">2026</span>
+                        <button type="button" id="pickerNextYear">→</button>
+                    </div>
+
+                    <div class="month-picker-grid">
+                        <button type="button" data-month="1">Január</button>
+                        <button type="button" data-month="2">Február</button>
+                        <button type="button" data-month="3">Március</button>
+                        <button type="button" data-month="4">Április</button>
+                        <button type="button" data-month="5">Május</button>
+                        <button type="button" data-month="6">Június</button>
+                        <button type="button" data-month="7">Július</button>
+                        <button type="button" data-month="8">Augusztus</button>
+                        <button type="button" data-month="9">Szeptember</button>
+                        <button type="button" data-month="10">Október</button>
+                        <button type="button" data-month="11">November</button>
+                        <button type="button" data-month="12">December</button>
+                    </div>
+                </div>
+            </div>
+
+            <a class="month-button"
+               th:href="@{/(year=${nextYear}, month=${nextMonth})}">
+                Következő hónap →
+            </a>
+        </div>
+    </header>
+
+    <section class="schedule-table-panel">
+        <div class="schedule-table-wrapper">
+            <table class="schedule-table">
+                <thead>
+                <tr>
+                    <th class="sticky-column employee-name-column" rowspan="2">Név</th>
+                    <th class="sticky-column employee-skills-column" rowspan="2">Skillek</th>
+                    <th class="sticky-column vacation-column" rowspan="2">Szabi</th>
+
+                    <th th:each="day : ${scheduleDays}"
+                        class="day-header"
+                        th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}">
+                        <span th:text="${day.dayNameShort}">h</span>
+                    </th>
+
+                    <th class="summary-header" rowspan="2">Össz</th>
+                    <th class="summary-header" rowspan="2">Éj</th>
+                    <th class="summary-header" rowspan="2">Kész</th>
+                    <th class="summary-header" rowspan="2">HO</th>
+                </tr>
+
+                <tr>
+                    <th th:each="day : ${scheduleDays}"
+                        class="day-number-header"
+                        th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}">
+                        <span th:text="${day.dayNumber}">1</span>
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="employee : ${employees}"
+                    th:attr="data-vacation-hours=${employee.vacationHours}">
+                    <td class="sticky-column employee-name-column employee-name-cell"
+                        th:text="${employee.name}">
+                        Béla
+                    </td>
+
+                    <td class="sticky-column employee-skills-column employee-skills-cell"
+                        th:text="${employee.skillsDisplayText}">
+                        A/B
+                    </td>
+
+                    <td class="sticky-column vacation-column vacation-cell"
+                        th:text="${employee.vacationHours}">
+                        144
+                    </td>
+
+                    <td th:each="day : ${scheduleDays}"
+                        class="schedule-cell"
+                        th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}"
+                        th:attr="data-employee-id=${employee.id}, data-date=${day.date}, data-current-month=${day.currentMonth}">
+
+                        <button type="button" class="schedule-cell-display">
+                            -
+                        </button>
+
+                        <div class="shift-picker">
+                            <button type="button"
+                                    class="shift-picker-option clear-option"
+                                    data-clear="true">
+                                Üres
+                            </button>
+
+                            <button type="button"
+                                    class="shift-picker-option"
+                                    th:each="shiftType : ${shiftTypes}"
+                                    th:attr="
+                                        data-shift-id=${shiftType.id},
+                                        data-code=${shiftType.code},
+                                        data-hours=${shiftType.hours},
+                                        data-night=${shiftType.night},
+                                        data-standby=${shiftType.standby},
+                                        data-home-office=${shiftType.homeOffice},
+                                        data-description=${shiftType.description}
+                                    "
+                                    th:text="${shiftType.code == 'SZ' ? 'SZ - Szabadság' : shiftType.code + ' - ' + shiftType.hours + ' óra'}">
+                                A - 12 óra
+                            </button>
+                        </div>
+                    </td>
+
+                    <td class="summary-cell row-total-hours">0</td>
+                    <td class="summary-cell row-night-hours">0</td>
+                    <td class="summary-cell row-standby-hours">0</td>
+                    <td class="summary-cell row-ho-hours">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<script src="/calendar.js"></script>
+</body>
+</html>

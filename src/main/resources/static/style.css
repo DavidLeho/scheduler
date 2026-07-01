@@ -1,0 +1,884 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #1f1f1f;
+    color: white;
+    overflow: hidden;
+}
+
+/* ---------- Header ---------- */
+
+header {
+    background: #222;
+    color: white;
+    padding: 16px 24px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* ---------- Main layout ---------- */
+
+.layout {
+    height: 100vh;
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    overflow: hidden;
+}
+
+/* ---------- Left employee panel ---------- */
+
+.employees-panel {
+    width: 260px;
+    flex-shrink: 0;
+
+    background: #111;
+    border-radius: 8px;
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.employees-panel h2 {
+    margin-top: 0;
+}
+
+/* ---------- Forms ---------- */
+
+.skill-form,
+.employee-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.skill-form label,
+.employee-form label {
+    font-weight: bold;
+}
+
+.skill-form input[type="text"],
+.employee-form input[type="text"] {
+    width: 100%;
+    padding: 7px;
+    margin-top: 4px;
+
+    background: #333;
+    color: white;
+    border: 1px solid #777;
+    border-radius: 3px;
+}
+
+.skill-form button,
+.employee-form button {
+    width: 100%;
+    padding: 8px 10px;
+
+    border: none;
+    border-radius: 6px;
+    background: #555;
+    color: white;
+
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.skill-form button:hover,
+.employee-form button:hover {
+    background: #333;
+}
+
+hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #444;
+    margin: 12px 0;
+}
+
+/* ---------- Skill list ---------- */
+
+.skill-list {
+    max-height: 92px;
+    overflow-y: auto;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    padding-right: 6px;
+    margin-top: 10px;
+}
+
+.skill-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    background: #182235;
+    border: 1px solid #6f8fc9;
+    color: white;
+
+    border-radius: 6px;
+    padding: 5px 7px;
+    font-size: 13px;
+}
+
+.skill-item form {
+    margin: 0;
+}
+
+/* ---------- Skill checkboxes ---------- */
+
+.skill-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ---------- Employee list ---------- */
+
+.employee-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.employee-card {
+    background: #182235;
+    border: 1px solid #6f8fc9;
+    border-radius: 6px;
+
+    padding: 10px;
+    margin-bottom: 10px;
+
+    cursor: grab;
+    user-select: none;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    color: white;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.employee-card:active {
+    cursor: grabbing;
+}
+
+.employee-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+}
+
+.employee-card-top form {
+    margin: 0;
+}
+
+.employee-card-name {
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 1.25;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.employee-card-skills {
+    font-size: 13px;
+    line-height: 1.25;
+    opacity: 0.85;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* ---------- Calendar panel ---------- */
+
+.calendar-panel {
+    flex: 1;
+    min-width: 0;
+
+    background: #111;
+    border-radius: 8px;
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.calendar-header {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin-bottom: 14px;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    text-align: center;
+    flex: 1;
+}
+
+.month-button {
+    display: inline-block;
+    padding: 9px 14px;
+
+    border-radius: 6px;
+    background: #333;
+    color: white;
+
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.month-button:hover {
+    background: #555;
+}
+
+/* ---------- Calendar grid ---------- */
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.day-names {
+    flex-shrink: 0;
+}
+
+.day-names div {
+    background: #333;
+    color: white;
+
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+
+    border: 1px solid #666;
+}
+
+.calendar-panel > .calendar-grid:not(.day-names) {
+    flex: 1;
+    min-height: 0;
+
+    grid-auto-rows: minmax(0, 1fr);
+}
+
+.day {
+    min-height: 0;
+    overflow: hidden;
+
+    border: 1px solid #666;
+    padding: 6px;
+    background: #111;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.day.empty {
+    background: #2b2b2b;
+}
+
+.day-number {
+    flex-shrink: 0;
+
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+/* ---------- Shift boxes ---------- */
+
+.shift-box {
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    border: 1px dashed #666;
+    border-radius: 6px;
+
+    padding: 5px;
+    margin-top: 5px;
+
+    background: #1d1d1d;
+    overflow: hidden;
+}
+
+.shift-box.drag-over {
+    background: #203d24;
+    outline: 2px dashed #4caf50;
+}
+
+.shift-title {
+    flex-shrink: 0;
+
+    font-size: 12px;
+    color: #ccc;
+    margin-bottom: 4px;
+}
+
+.assigned-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 3px;
+}
+
+/* ---------- Assigned employees ---------- */
+
+.assigned-employee {
+    background: #063b10;
+    border: 1px solid #1d9c3b;
+    border-radius: 5px;
+
+    padding: 4px 6px;
+    margin-top: 5px;
+
+    font-size: 12px;
+    line-height: 1.15;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+
+    color: white;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* ---------- Delete buttons ---------- */
+
+.delete-assignment-button,
+.small-delete-button {
+    border: none;
+    background: #cc3333;
+    color: white;
+
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+
+    cursor: pointer;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.delete-assignment-button:hover,
+.small-delete-button:hover {
+    background: #991f1f;
+}
+
+/* ---------- Scrollbars ---------- */
+
+.skill-list::-webkit-scrollbar,
+.employee-list::-webkit-scrollbar,
+.assigned-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.skill-list::-webkit-scrollbar-track,
+.employee-list::-webkit-scrollbar-track,
+.assigned-list::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 8px;
+}
+
+.skill-list::-webkit-scrollbar-thumb,
+.employee-list::-webkit-scrollbar-thumb,
+.assigned-list::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 8px;
+}
+
+.skill-list::-webkit-scrollbar-thumb:hover,
+.employee-list::-webkit-scrollbar-thumb:hover,
+.assigned-list::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* ---------- STABLE CALENDAR LAYOUT FIX ---------- */
+
+body {
+    overflow: hidden;
+}
+
+.calendar-panel {
+    overflow: auto;
+}
+
+.calendar-panel > .calendar-grid:not(.day-names) {
+    flex: none;
+    min-height: auto;
+    grid-auto-rows: 190px;
+}
+
+.day {
+    height: 190px;
+    min-height: 190px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.day-number {
+    flex-shrink: 0;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.shift-box {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 5px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.shift-title {
+    flex-shrink: 0;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.assigned-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 3px;
+}
+
+.assigned-employee {
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 4px 6px;
+}
+
+/* ---------- FINAL DAY CELL LAYOUT FIX ---------- */
+
+.calendar-panel {
+    overflow: auto;
+}
+
+.calendar-panel > .calendar-grid:not(.day-names) {
+    flex: none;
+    min-height: auto;
+    grid-auto-rows: 220px;
+}
+
+.day {
+    height: 220px;
+    min-height: 220px;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+    gap: 5px;
+
+    padding: 6px;
+}
+
+.day.empty {
+    display: block;
+}
+
+.day-number {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.1;
+}
+
+.shift-box {
+    min-height: 0;
+    height: auto;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.shift-title {
+    flex-shrink: 0;
+    margin-bottom: 4px;
+}
+
+.assigned-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 3px;
+}
+
+.assigned-employee {
+    flex-shrink: 0;
+}
+
+/* ---------- REAL FIX: day-content controls the internal layout ---------- */
+
+.calendar-panel {
+    overflow: auto;
+}
+
+.calendar-panel > .calendar-grid:not(.day-names) {
+    flex: none;
+    min-height: auto;
+    grid-auto-rows: 230px;
+}
+
+.day {
+    height: 230px;
+    min-height: 230px;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.day-content {
+    height: 100%;
+    min-height: 0;
+
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+    gap: 5px;
+}
+
+.day-number {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.1;
+}
+
+.shift-box {
+    min-height: 0;
+    height: auto;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.shift-title {
+    flex-shrink: 0;
+    margin-bottom: 4px;
+}
+
+.assigned-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 3px;
+}
+
+.assigned-employee {
+    flex-shrink: 0;
+}
+
+/* ---------- Compact employee panel on calendar page ---------- */
+
+.compact-employees-panel {
+    padding: 12px;
+}
+
+.manage-link {
+    display: block;
+    padding: 9px 10px;
+    margin-bottom: 12px;
+
+    border-radius: 6px;
+    background: #333;
+    color: white;
+
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.manage-link:hover {
+    background: #555;
+}
+
+.calendar-employee-list {
+    flex: 1;
+    min-height: 0;
+}
+
+/* ---------- Manage page ---------- */
+
+.manage-page {
+    height: 100vh;
+    padding: 24px;
+    overflow: hidden;
+
+    background: #1f1f1f;
+    color: white;
+}
+
+.manage-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.manage-header h1 {
+    margin: 0;
+}
+
+.manage-grid {
+    height: calc(100vh - 96px);
+
+    display: grid;
+    grid-template-columns: 280px 320px 1fr;
+    gap: 24px;
+
+    overflow: hidden;
+}
+
+.manage-card {
+    background: #111;
+    border-radius: 8px;
+    padding: 16px;
+
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.manage-card h2 {
+    margin-top: 0;
+}
+
+.manage-skill-list {
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+}
+
+.employees-manage-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.manage-employee-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* ---------- Manage page scroll fixes ---------- */
+
+.manage-page {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.manage-grid {
+    height: calc(100vh - 96px);
+    min-height: 0;
+    overflow: hidden;
+}
+
+.manage-card {
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Skillek oszlop */
+.manage-card:first-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.manage-card:first-child .skill-form {
+    flex-shrink: 0;
+}
+
+.manage-skill-list {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+/* Új dolgozó oszlop */
+.manage-card:nth-child(2) {
+    overflow-y: auto;
+}
+
+/* Dolgozók oszlop */
+.employees-manage-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.employees-manage-card h2 {
+    flex-shrink: 0;
+}
+
+.manage-employee-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+/* ---------- MANAGE PAGE CLEAN LAYOUT ---------- */
+
+.manage-page {
+    height: 100vh;
+    padding: 24px;
+    overflow: hidden;
+    background: #1f1f1f;
+    color: white;
+}
+
+.manage-header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.manage-header h1 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.manage-grid {
+    height: calc(100vh - 96px);
+    min-height: 0;
+
+    display: grid;
+    grid-template-columns: 280px 320px minmax(0, 1fr);
+    gap: 24px;
+
+    overflow: hidden;
+}
+
+.manage-card {
+    min-height: 0;
+    overflow: hidden;
+
+    background: #111;
+    border-radius: 8px;
+    padding: 16px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.manage-card h2 {
+    margin-top: 0;
+    flex-shrink: 0;
+}
+
+.manage-skills-card,
+.manage-employees-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.manage-skills-card .skill-form {
+    flex-shrink: 0;
+}
+
+.manage-scroll-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+}
+
+.manage-skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 6px;
+}
+
+.manage-new-employee-card {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.manage-employee-list {
+    display: block;
+}
+
+.manage-scroll-list::-webkit-scrollbar,
+.manage-new-employee-card::-webkit-scrollbar {
+    width: 8px;
+}
+
+.manage-scroll-list::-webkit-scrollbar-track,
+.manage-new-employee-card::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 8px;
+}
+
+.manage-scroll-list::-webkit-scrollbar-thumb,
+.manage-new-employee-card::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 8px;
+}
+
+.manage-scroll-list::-webkit-scrollbar-thumb:hover,
+.manage-new-employee-card::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}

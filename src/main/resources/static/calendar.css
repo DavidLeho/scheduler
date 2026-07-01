@@ -1,0 +1,490 @@
+/* ---------- Schedule page ---------- */
+
+.schedule-page {
+    height: 100vh;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    background: #1f1f1f;
+    color: white;
+}
+
+/* ---------- Header ---------- */
+
+.schedule-header {
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+.schedule-top-actions {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.schedule-month-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.schedule-header .month-button {
+    flex-shrink: 0;
+}
+
+.schedule-header .month-button {
+    flex-shrink: 0;
+}
+
+.month-picker {
+    position: relative;
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+}
+
+.month-title-button {
+    border: none;
+    background: transparent;
+    color: white;
+
+    font-size: 26px;
+    font-weight: bold;
+
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 8px;
+}
+
+.month-title-button:hover {
+    background: #333;
+}
+
+.month-picker-dropdown {
+    display: none;
+
+    position: absolute;
+    top: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 360px;
+    z-index: 1000;
+
+    background: #111;
+    border: 1px solid #555;
+    border-radius: 10px;
+
+    padding: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.month-picker.open .month-picker-dropdown {
+    display: block;
+}
+
+.month-picker-year-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+.month-picker-year-row span {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.month-picker-year-row button {
+    width: 42px;
+    height: 34px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #333;
+    color: white;
+
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.month-picker-year-row button:hover {
+    background: #555;
+}
+
+.month-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.month-picker-grid button {
+    border: 1px solid #555;
+    border-radius: 6px;
+
+    background: #222;
+    color: white;
+
+    padding: 9px 6px;
+
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.month-picker-grid button:hover {
+    background: #444;
+}
+
+.month-picker-grid button.selected-month {
+    background: #1d4f2a;
+    border-color: #35b85a;
+}
+
+/* ---------- Table ---------- */
+
+.schedule-table-panel {
+    flex: 1;
+    min-height: 0;
+
+    background: #111;
+    border-radius: 8px;
+    padding: 12px;
+
+    overflow: hidden;
+}
+
+.schedule-table-wrapper {
+    height: 100%;
+    overflow: auto;
+
+    border: 1px solid #555;
+}
+
+.schedule-table {
+    border-collapse: separate;
+    border-spacing: 0;
+
+    min-width: max-content;
+    width: max-content;
+
+    font-size: 13px;
+}
+
+.schedule-table th,
+.schedule-table td {
+    border-right: 1px solid #555;
+    border-bottom: 1px solid #555;
+}
+
+.schedule-table th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    background: #333;
+    color: white;
+
+    height: 32px;
+    min-width: 44px;
+
+    text-align: center;
+    font-weight: bold;
+}
+
+.schedule-table thead tr:nth-child(2) th {
+    top: 32px;
+    z-index: 20;
+}
+
+.schedule-table td {
+    height: 36px;
+    min-width: 44px;
+
+    background: #171717;
+    text-align: center;
+}
+
+/* ---------- Sticky left columns ---------- */
+
+.sticky-column {
+    position: sticky;
+    z-index: 40;
+
+    background: #151515;
+}
+
+.employee-name-column {
+    left: 0;
+    min-width: 190px;
+    width: 190px;
+}
+
+.employee-skills-column {
+    left: 190px;
+    min-width: 90px;
+    width: 90px;
+}
+
+.vacation-column {
+    left: 280px;
+    min-width: 70px;
+    width: 70px;
+}
+
+.vacation-cell.vacation-low {
+    color: #ffdca8;
+}
+
+.vacation-cell.vacation-negative {
+    color: #ff8f8f;
+}
+
+th.sticky-column {
+    z-index: 60;
+    background: #333;
+}
+
+.employee-name-cell,
+.employee-skills-cell,
+.vacation-cell {
+    text-align: left;
+    padding: 0 8px;
+
+    font-weight: bold;
+}
+
+.employee-skills-cell,
+.vacation-cell {
+    text-align: center;
+}
+
+/* ---------- Day styling ---------- */
+
+.day-header,
+.day-number-header {
+    min-width: 44px;
+    width: 44px;
+}
+
+.other-month {
+    opacity: 0.6;
+}
+
+th.other-month {
+    background: #2b2b2b;
+}
+
+td.other-month {
+    background: #202020;
+}
+
+th.weekend {
+    background: #4a352b;
+}
+
+td.weekend {
+    background: #211a18;
+}
+
+th.today-column {
+    outline: 2px solid #8fb7d9;
+    outline-offset: -2px;
+}
+
+td.today-column {
+    box-shadow: inset 0 0 0 2px #8fb7d9;
+}
+
+/* ---------- Schedule cells ---------- */
+
+.schedule-cell {
+    position: relative;
+    padding: 0;
+}
+
+.schedule-cell-display {
+    width: 100%;
+    height: 100%;
+
+    border: none;
+    background: transparent;
+    color: white;
+
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.schedule-cell-display:hover {
+    outline: 2px solid #8fb7d9;
+    outline-offset: -2px;
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.08)
+    );
+}
+
+.schedule-cell-display.empty-cell {
+    color: #555;
+}
+
+/* Shift color priority:
+   standby strongest, then night, otherwise normal.
+   HO is shown as text next to the hour, e.g. 8HO. */
+
+/* Normál nappali: tompa teal / petrol */
+.schedule-cell-display.shift-normal {
+    background: #2f6f73;
+}
+
+/* Éjszakai: mély lila */
+.schedule-cell-display.shift-night {
+    background: #5b3a8e;
+}
+
+/* Készenlét: tiszta kék */
+.schedule-cell-display.shift-standby {
+    background: #2f67a2;
+}
+
+/* Szabadság */
+.schedule-cell-display.shift-vacation {
+    background: #5c5c5c;
+    color: #ffffff;
+}
+
+/* ---------- Picker ---------- */
+
+.shift-picker {
+    display: none;
+
+    position: absolute;
+    top: 32px;
+    left: 0;
+
+    min-width: 170px;
+    max-height: 260px;
+    overflow-y: auto;
+
+    z-index: 2000;
+
+    background: #151515;
+    border: 1px solid #5f6f85;
+    border-radius: 10px;
+
+    padding: 7px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75);
+}
+
+.schedule-cell.open .shift-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.shift-picker-option {
+    text-align: left;
+
+    border: 1px solid #444;
+    border-radius: 6px;
+
+    background: #262626;
+    color: white;
+
+    padding: 8px 10px;
+
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.shift-picker-option:hover {
+    background: #334050;
+    border-color: #7892b3;
+}
+
+.clear-option {
+    background: #3a2020;
+    border-color: #6b3333;
+}
+
+.clear-option:hover {
+    background: #613030;
+    border-color: #a34a4a;
+}
+/* ---------- Scrollbars ---------- */
+
+.schedule-table-wrapper::-webkit-scrollbar,
+.shift-picker::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.schedule-table-wrapper::-webkit-scrollbar-track,
+.shift-picker::-webkit-scrollbar-track {
+    background: #111;
+}
+
+.schedule-table-wrapper::-webkit-scrollbar-thumb,
+.shift-picker::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 8px;
+}
+
+.schedule-table-wrapper::-webkit-scrollbar-thumb:hover,
+.shift-picker::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* ---------- Summary columns ---------- */
+
+.summary-header,
+.summary-cell {
+    min-width: 58px;
+    width: 58px;
+
+    text-align: center;
+    font-weight: bold;
+}
+
+.summary-header {
+    background: #20252d;
+    color: #dce8ff;
+
+    border-left: 2px solid #6b7d96;
+}
+
+.summary-cell {
+    background: #141a22;
+    color: #e9f1ff;
+
+    border-left: 2px solid #44556b;
+}
+
+.row-total-hours {
+    color: #dfffe9;
+}
+
+.row-night-hours {
+    color: #e2d4ff;
+}
+
+.row-standby-hours {
+    color: #d9ecff;
+}
+
+.row-ho-hours {
+    color: #cbefff;
+}
