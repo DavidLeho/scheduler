@@ -491,6 +491,7 @@ if (monthPicker) {
             }
 
             const row = employeeNameCell.closest("tr");
+            const employeeId = row.dataset.rowEmployeeId;
             const alreadyHighlighted = row.classList.contains("highlighted-row");
 
             document.querySelectorAll(".schedule-table tbody tr.highlighted-row").forEach(highlightedRow => {
@@ -498,7 +499,11 @@ if (monthPicker) {
             });
 
             if (!alreadyHighlighted) {
-                row.classList.add("highlighted-row");
+                document
+                    .querySelectorAll(`.schedule-table tbody tr[data-row-employee-id="${employeeId}"]`)
+                    .forEach(employeeRow => {
+                        employeeRow.classList.add("highlighted-row");
+                    });
             }
         });
 
