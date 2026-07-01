@@ -504,3 +504,92 @@ if (monthPicker) {
 
     }
 }
+
+/* ---------- Hide / restore summary columns ---------- */
+
+const hiddenSummaryColumnsStorageKey = "scheduler-hidden-summary-columns";
+
+function getHiddenSummaryColumns() {
+    const rawValue = localStorage.getItem(hiddenSummaryColumnsStorageKey);
+
+    if (!rawValue) {
+        return [];
+    }
+
+    try {
+        const parsedValue = JSON.parse(rawValue);
+
+        if (Array.isArray(parsedValue)) {
+            return parsedValue;
+        }
+
+        return [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveHiddenSummaryColumns(hiddenColumns) {
+    localStorage.setItem(hiddenSummaryColumnsStorageKey, JSON.stringify(hiddenColumns));
+}
+
+function hideSummaryColumn(columnName) {
+    const hiddenColumns = getHiddenSummaryColumns();
+
+    if (!hiddenColumns.includes(columnName)) {
+        hiddenColumns.push(columnName);
+    }
+
+    saveHiddenSummaryColumns(hiddenColumns);
+    applySummaryColumnVisibility();
+}
+
+function restoreSummaryColumn(columnName) {
+    const hiddenColumns = getHiddenSummaryColumns()
+        .filter(hiddenColumnName => hiddenColumnName !== columnName);
+
+    saveHiddenSummaryColumns(hiddenColumns);
+    applySummaryColumnVisibility();
+}
+
+function applySummaryColumnVisibility() {
+    const hiddenColumns = getHiddenSummaryColumns();
+    const toolbar = document.querySelector(".summary-column-toolbar");
+
+    document.querySelectorAll("[data-summary-column]").forEach(element => {
+        const columnName = element.dataset.summaryColumn;
+        element.classList.toggle("summary-column-hidden", hiddenColumns.includes(columnName));
+    });
+
+    document.querySelectorAll("[data-summary-restore]").forEach(button => {
+        const columnName = button.dataset.summaryRestore;
+        button.classList.toggle("visible", hiddenColumns.includes(columnName));
+    });
+
+    if (toolbar) {
+        toolbar.classList.toggle("has-hidden-summary-columns", hiddenColumns.length > 0);
+    }
+}
+
+document.addEventListener("click", event => {
+    const hideButton = event.target.closest("[data-summary-hide]");
+
+    if (hideButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        hideSummaryColumn(hideButton.dataset.summaryHide);
+        return;
+    }
+
+    const restoreButton = event.target.closest("[data-summary-restore]");
+
+    if (restoreButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        restoreSummaryColumn(restoreButton.dataset.summaryRestore);
+    }
+});
+
+applySummaryColumnVisibility();

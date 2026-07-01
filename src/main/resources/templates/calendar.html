@@ -65,6 +65,31 @@
     </header>
 
     <section class="schedule-table-panel">
+
+        <div class="summary-column-toolbar">
+            <span class="summary-column-toolbar-label">Elrejtett összesítők:</span>
+
+            <button type="button" class="summary-column-restore-button" data-summary-restore="total">
+                Össz
+            </button>
+
+            <button type="button" class="summary-column-restore-button" data-summary-restore="count">
+                Mű
+            </button>
+
+            <button type="button" class="summary-column-restore-button" data-summary-restore="night">
+                Éj
+            </button>
+
+            <button type="button" class="summary-column-restore-button" data-summary-restore="standby">
+                Kész
+            </button>
+
+            <button type="button" class="summary-column-restore-button" data-summary-restore="ho">
+                HO
+            </button>
+        </div>
+
         <div class="schedule-table-wrapper">
             <table class="schedule-table">
                 <thead>
@@ -79,11 +104,40 @@
                         <span th:text="${day.dayNameShort}">h</span>
                     </th>
 
-                    <th class="summary-header" rowspan="2">Össz</th>
-                    <th class="summary-header" rowspan="2">Db</th>
-                    <th class="summary-header" rowspan="2">Éj</th>
-                    <th class="summary-header" rowspan="2">Kész</th>
-                    <th class="summary-header" rowspan="2">HO</th>
+                    <th class="summary-header summary-total-column" rowspan="2" data-summary-column="total">
+                        <div class="summary-header-content">
+                            <span>Össz</span>
+                            <button type="button" class="summary-column-hide-button" data-summary-hide="total">−</button>
+                        </div>
+                    </th>
+
+                    <th class="summary-header summary-count-column" rowspan="2" data-summary-column="count">
+                        <div class="summary-header-content">
+                            <span>Mű</span>
+                            <button type="button" class="summary-column-hide-button" data-summary-hide="count">−</button>
+                        </div>
+                    </th>
+
+                    <th class="summary-header summary-night-column" rowspan="2" data-summary-column="night">
+                        <div class="summary-header-content">
+                            <span>Éj</span>
+                            <button type="button" class="summary-column-hide-button" data-summary-hide="night">−</button>
+                        </div>
+                    </th>
+
+                    <th class="summary-header summary-standby-column" rowspan="2" data-summary-column="standby">
+                        <div class="summary-header-content">
+                            <span>Kész</span>
+                            <button type="button" class="summary-column-hide-button" data-summary-hide="standby">−</button>
+                        </div>
+                    </th>
+
+                    <th class="summary-header summary-ho-column" rowspan="2" data-summary-column="ho">
+                        <div class="summary-header-content">
+                            <span>HO</span>
+                            <button type="button" class="summary-column-hide-button" data-summary-hide="ho">−</button>
+                        </div>
+                    </th>
                 </tr>
 
                 <tr>
@@ -155,11 +209,11 @@
                         </div>
                     </td>
 
-                    <td class="summary-cell row-total-hours">0</td>
-                    <td class="summary-cell row-shift-count">0</td>
-                    <td class="summary-cell row-night-hours">0</td>
-                    <td class="summary-cell row-standby-hours">0</td>
-                    <td class="summary-cell row-ho-hours">0%</td>
+                    <td class="summary-cell row-total-hours" data-summary-column="total">0</td>
+                    <td class="summary-cell row-shift-count" data-summary-column="count">0</td>
+                    <td class="summary-cell row-night-hours" data-summary-column="night">0</td>
+                    <td class="summary-cell row-standby-hours" data-summary-column="standby">0</td>
+                    <td class="summary-cell row-ho-hours" data-summary-column="ho">0%</td>
                 </tr>
                 </tbody>
             </table>

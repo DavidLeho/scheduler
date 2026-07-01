@@ -154,6 +154,9 @@
     flex: 1;
     min-height: 0;
 
+    display: flex;
+    flex-direction: column;
+
     background: #111;
     border-radius: 8px;
     padding: 12px;
@@ -162,7 +165,9 @@
 }
 
 .schedule-table-wrapper {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
+
     overflow: auto;
 
     border: 1px solid #555;
@@ -205,6 +210,7 @@
 }
 
 .schedule-table td {
+    min-height: 36px;
     height: 36px;
     min-width: 44px;
 
@@ -212,46 +218,66 @@
     text-align: center;
 }
 
+.schedule-table tbody tr {
+    height: 36px;
+}
+
+.schedule-table tbody td.sticky-column {
+    height: auto;
+}
+
 /* ---------- Sticky left columns ---------- */
 
 .sticky-column {
     position: sticky;
-    z-index: 40;
+    z-index: 80;
 
-    background: #151515;
+    background-color: #151515;
+    background-image: none;
 }
 
 .employee-name-column {
     left: 0;
     min-width: 190px;
     width: 190px;
+    max-width: 190px;
 }
 
 .employee-skills-column {
     left: 190px;
-    min-width: 90px;
-    width: 90px;
+    min-width: 120px;
+    width: 120px;
+    max-width: 120px;
 }
 
 .vacation-column {
-    left: 280px;
+    left: 310px;
     min-width: 70px;
     width: 70px;
+    max-width: 70px;
 }
 
 th.sticky-column {
-    z-index: 60;
-    background: #333;
+    z-index: 120;
+
+    background-color: #333;
+    background-image: none;
+
+    box-shadow: 3px 0 0 #666;
 }
 
 .employee-name-cell,
-.employee-skills-cell,
-.vacation-cell {
-    text-align: left;
-    padding: 0 8px;
+ .employee-skills-cell,
+ .vacation-cell {
+     padding: 0 8px;
 
-    font-weight: bold;
-}
+     font-weight: bold;
+
+     white-space: normal;
+     overflow-wrap: anywhere;
+     word-break: normal;
+     line-height: 1.15;
+ }
 
 .employee-skills-cell,
 .vacation-cell {
@@ -566,10 +592,12 @@ td.today-column {
 }
 
 .schedule-table tbody tr.highlighted-row .sticky-column {
-    background-image: linear-gradient(
-        rgba(255, 204, 64, 0.38),
-        rgba(255, 204, 64, 0.38)
-    );
+    background-color: #6b5a22;
+    background-image: none;
+
+    box-shadow:
+        3px 0 0 #ffe678,
+        inset 0 0 0 2px rgba(255, 230, 120, 0.75);
 }
 
 .schedule-table tbody tr.highlighted-row .schedule-cell-display {
@@ -614,4 +642,125 @@ td.today-column {
 
 .employee-name-cell:hover {
     text-decoration: underline;
+}
+
+/* ---------- Hide / restore summary columns ---------- */
+
+.summary-column-toolbar {
+    flex-shrink: 0;
+
+    display: none;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    margin-bottom: 10px;
+    padding: 8px 10px;
+
+    background: #151515;
+    border: 1px solid #333;
+    border-radius: 8px;
+}
+
+.summary-column-toolbar.has-hidden-summary-columns {
+    display: flex;
+}
+
+.summary-column-toolbar-label {
+    color: #aaa;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.summary-column-restore-button {
+    display: none;
+
+    border: 1px solid #6b7d96;
+    border-radius: 6px;
+
+    background: #20252d;
+    color: #dce8ff;
+
+    padding: 5px 9px;
+
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.summary-column-restore-button.visible {
+    display: inline-flex;
+}
+
+.summary-column-restore-button:hover {
+    background: #2f3b4a;
+    border-color: #8fa7c8;
+}
+
+.summary-header-content {
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    padding: 0 4px;
+}
+
+.summary-column-hide-button {
+    width: 18px;
+    height: 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #777;
+    border-radius: 4px;
+
+    background: #222;
+    color: #ddd;
+
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 1;
+    font-size: 13px;
+}
+
+.summary-column-hide-button:hover {
+    background: #4b2222;
+    border-color: #a34a4a;
+    color: white;
+}
+
+.summary-column-hidden {
+    display: none;
+}
+
+/* ---------- Sticky column scroll separation fix ---------- */
+
+.employee-name-column,
+.employee-skills-column,
+.vacation-column {
+    background-clip: padding-box;
+}
+
+.schedule-table tbody td.sticky-column {
+    position: sticky;
+    z-index: 90;
+}
+
+.schedule-table thead th.sticky-column {
+    position: sticky;
+    z-index: 130;
+}
+
+.vacation-column {
+    box-shadow: 4px 0 0 #666;
+}
+
+/* Erős elválasztó csak a Szabi oszlop után, hogy a napok ne folyjanak össze vele */
+.vacation-column {
+    box-shadow: 4px 0 0 #666;
 }
