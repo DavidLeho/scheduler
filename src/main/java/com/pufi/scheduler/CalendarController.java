@@ -50,18 +50,7 @@ public class CalendarController {
             shiftTypeRepository.save(new ShiftType("C", 12, false, true, true, "12 órás készenléti HO műszak"));
         }
 
-        ShiftType vacationShift = shiftTypeRepository.findByCodeIgnoreCase("SZ").orElse(null);
-
-        if (vacationShift == null) {
-            shiftTypeRepository.save(new ShiftType("SZ", 8, false, false, false, "Szabadság"));
-        } else {
-            vacationShift.setHours(8);
-            vacationShift.setNight(false);
-            vacationShift.setStandby(false);
-            vacationShift.setHomeOffice(false);
-            vacationShift.setDescription("Szabadság");
-            shiftTypeRepository.save(vacationShift);
-        }
+        ensureSpecialShiftTypesExist();
 
         if (employeeRepository.count() == 0) {
             employeeRepository.save(new Employee("Anna", List.of("A", "B"), 160));
@@ -537,6 +526,34 @@ public class CalendarController {
         redirectAttributes.addFlashAttribute("successMessage", "Skill törölve: " + skillName);
 
         return redirectToManage(year, month);
+    }
+
+    private void ensureSpecialShiftTypesExist() {
+        ShiftType vacationShift = shiftTypeRepository.findByCodeIgnoreCase("SZ").orElse(null);
+
+        if (vacationShift == null) {
+            shiftTypeRepository.save(new ShiftType("SZ", 8, false, false, false, "Szabadság"));
+        } else {
+            vacationShift.setHours(8);
+            vacationShift.setNight(false);
+            vacationShift.setStandby(false);
+            vacationShift.setHomeOffice(false);
+            vacationShift.setDescription("Szabadság");
+            shiftTypeRepository.save(vacationShift);
+        }
+
+        ShiftType unavailableShift = shiftTypeRepository.findByCodeIgnoreCase("-").orElse(null);
+
+        if (unavailableShift == null) {
+            shiftTypeRepository.save(new ShiftType("-", 0, false, false, false, "Nem szeretne dolgozni"));
+        } else {
+            unavailableShift.setHours(0);
+            unavailableShift.setNight(false);
+            unavailableShift.setStandby(false);
+            unavailableShift.setHomeOffice(false);
+            unavailableShift.setDescription("Nem szeretne dolgozni");
+            shiftTypeRepository.save(unavailableShift);
+        }
     }
 
     private List<ScheduleDay> createScheduleDays(YearMonth currentYearMonth) {

@@ -40,10 +40,6 @@
     flex-shrink: 0;
 }
 
-.schedule-header .month-button {
-    flex-shrink: 0;
-}
-
 .month-picker {
     position: relative;
     flex: 1;
@@ -243,14 +239,6 @@
     width: 70px;
 }
 
-.vacation-cell.vacation-low {
-    color: #ffdca8;
-}
-
-.vacation-cell.vacation-negative {
-    color: #ff8f8f;
-}
-
 th.sticky-column {
     z-index: 60;
     background: #333;
@@ -268,6 +256,14 @@ th.sticky-column {
 .employee-skills-cell,
 .vacation-cell {
     text-align: center;
+}
+
+.vacation-cell.vacation-low {
+    color: #ffdca8;
+}
+
+.vacation-cell.vacation-negative {
+    color: #ff8f8f;
 }
 
 /* ---------- Day styling ---------- */
@@ -290,6 +286,7 @@ td.other-month {
     background: #202020;
 }
 
+/* Hétvége: melegebb barna, de nem túl rikító */
 th.weekend {
     background: #4a352b;
 }
@@ -341,6 +338,7 @@ td.today-column {
 }
 
 /* Shift color priority:
+   vacation/unavailable are grey,
    standby strongest, then night, otherwise normal.
    HO is shown as text next to the hour, e.g. 8HO. */
 
@@ -361,6 +359,12 @@ td.today-column {
 
 /* Szabadság */
 .schedule-cell-display.shift-vacation {
+    background: #5c5c5c;
+    color: #ffffff;
+}
+
+/* Nem szeretne dolgozni */
+.schedule-cell-display.shift-unavailable {
     background: #5c5c5c;
     color: #ffffff;
 }
@@ -424,29 +428,6 @@ td.today-column {
     background: #613030;
     border-color: #a34a4a;
 }
-/* ---------- Scrollbars ---------- */
-
-.schedule-table-wrapper::-webkit-scrollbar,
-.shift-picker::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-.schedule-table-wrapper::-webkit-scrollbar-track,
-.shift-picker::-webkit-scrollbar-track {
-    background: #111;
-}
-
-.schedule-table-wrapper::-webkit-scrollbar-thumb,
-.shift-picker::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 8px;
-}
-
-.schedule-table-wrapper::-webkit-scrollbar-thumb:hover,
-.shift-picker::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
 
 /* ---------- Summary columns ---------- */
 
@@ -487,4 +468,28 @@ td.today-column {
 
 .row-ho-hours {
     color: #cbefff;
+}
+
+/* ---------- Scrollbars ---------- */
+
+.schedule-table-wrapper::-webkit-scrollbar,
+.shift-picker::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.schedule-table-wrapper::-webkit-scrollbar-track,
+.shift-picker::-webkit-scrollbar-track {
+    background: #111;
+}
+
+.schedule-table-wrapper::-webkit-scrollbar-thumb,
+.shift-picker::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 8px;
+}
+
+.schedule-table-wrapper::-webkit-scrollbar-thumb:hover,
+.shift-picker::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }

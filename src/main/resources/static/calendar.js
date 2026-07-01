@@ -109,7 +109,8 @@ function applyShiftToCell(cell, assignment) {
         "shift-ho",
         "shift-night",
         "shift-standby",
-        "shift-vacation"
+        "shift-vacation",
+        "shift-unavailable"
     );
 
     display.classList.add(getShiftClass(assignment));
@@ -137,7 +138,8 @@ function clearCell(cell) {
         "shift-ho",
         "shift-night",
         "shift-standby",
-        "shift-vacation"
+        "shift-vacation",
+        "shift-unavailable"
     );
 
     display.classList.add("empty-cell");
@@ -153,8 +155,14 @@ function clearCell(cell) {
 }
 
 function formatCellText(assignment) {
-    if (assignment.shiftCode && assignment.shiftCode.toUpperCase() === "SZ") {
+    const shiftCode = (assignment.shiftCode || "").toUpperCase();
+
+    if (shiftCode === "SZ") {
         return "SZ";
+    }
+
+    if (shiftCode === "-") {
+        return "-";
     }
 
     const hoursText = formatHours(assignment.hours);
@@ -167,8 +175,14 @@ function formatCellText(assignment) {
 }
 
 function getShiftClass(assignment) {
-    if (assignment.shiftCode && assignment.shiftCode.toUpperCase() === "SZ") {
+    const shiftCode = (assignment.shiftCode || "").toUpperCase();
+
+    if (shiftCode === "SZ") {
         return "shift-vacation";
+    }
+
+    if (shiftCode === "-") {
+        return "shift-unavailable";
     }
 
     if (assignment.standby) {
@@ -183,8 +197,14 @@ function getShiftClass(assignment) {
 }
 
 function buildShiftTitle(assignment) {
-    if (assignment.shiftCode && assignment.shiftCode.toUpperCase() === "SZ") {
+    const shiftCode = (assignment.shiftCode || "").toUpperCase();
+
+    if (shiftCode === "SZ") {
         return "SZ - Szabadság - 8 óra";
+    }
+
+    if (shiftCode === "-") {
+        return "- - Nem szeretne dolgozni";
     }
 
     const parts = [];
@@ -239,16 +259,19 @@ function updateRowSummary(row) {
             return;
         }
 
+        const shiftCode = (cell.dataset.shiftCode || "").toUpperCase();
         const hours = Number(cell.dataset.hours);
 
         if (Number.isNaN(hours)) {
             return;
         }
 
-        const shiftCode = (cell.dataset.shiftCode || "").toUpperCase();
-
         if (shiftCode === "SZ") {
             vacationUsedHours += hours;
+            return;
+        }
+
+        if (shiftCode === "-") {
             return;
         }
 

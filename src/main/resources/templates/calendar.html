@@ -140,7 +140,15 @@
                                         data-home-office=${shiftType.homeOffice},
                                         data-description=${shiftType.description}
                                     "
-                                    th:text="${shiftType.code == 'SZ' ? 'SZ - Szabadság' : shiftType.code + ' - ' + shiftType.hours + ' óra'}">
+                                    th:text="${
+                                        #strings.equals(shiftType.code, 'SZ')
+                                            ? 'SZ - Szabadság'
+                                            : (
+                                                #strings.equals(shiftType.code, '-')
+                                                    ? '- - Nem szeretne dolgozni'
+                                                    : shiftType.code + ' - ' + shiftType.hours + ' óra'
+                                            )
+                                    }">
                                 A - 12 óra
                             </button>
                         </div>
