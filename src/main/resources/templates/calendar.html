@@ -67,7 +67,19 @@
     <section class="schedule-table-panel">
 
         <div class="summary-column-toolbar">
-            <span class="summary-column-toolbar-label">Elrejtett összesítők:</span>
+            <span class="summary-column-toolbar-label">Elrejtett oszlopok:</span>
+
+            <button type="button" class="summary-column-restore-button" data-left-restore="name">
+                Név
+            </button>
+
+            <button type="button" class="summary-column-restore-button" data-left-restore="skills">
+                Skillek
+            </button>
+
+            <button type="button" class="summary-column-restore-button" data-left-restore="vacation">
+                Szabi
+            </button>
 
             <button type="button" class="summary-column-restore-button" data-summary-restore="total">
                 Össz
@@ -94,9 +106,32 @@
             <table class="schedule-table">
                 <thead>
                 <tr>
-                    <th class="sticky-column employee-name-column" rowspan="2">Név</th>
-                    <th class="sticky-column employee-skills-column" rowspan="2">Skillek</th>
-                    <th class="sticky-column vacation-column" rowspan="2">Szabi</th>
+                    <th class="sticky-column employee-name-column"
+                        rowspan="2"
+                        data-left-column="name">
+                        <div class="summary-header-content">
+                            <span>Név</span>
+                            <button type="button" class="summary-column-hide-button" data-left-hide="name">−</button>
+                        </div>
+                    </th>
+
+                    <th class="sticky-column employee-skills-column"
+                        rowspan="2"
+                        data-left-column="skills">
+                        <div class="summary-header-content">
+                            <span>Skillek</span>
+                            <button type="button" class="summary-column-hide-button" data-left-hide="skills">−</button>
+                        </div>
+                    </th>
+
+                    <th class="sticky-column vacation-column"
+                        rowspan="2"
+                        data-left-column="vacation">
+                        <div class="summary-header-content">
+                            <span>Szabi</span>
+                            <button type="button" class="summary-column-hide-button" data-left-hide="vacation">−</button>
+                        </div>
+                    </th>
 
                     <th th:each="day : ${scheduleDays}"
                         class="day-header"
@@ -157,18 +192,21 @@
 
                         <td class="sticky-column employee-name-column employee-name-cell"
                             rowspan="2"
+                            data-left-column="name"
                             th:text="${employee.name}">
                             Béla
                         </td>
 
                         <td class="sticky-column employee-skills-column employee-skills-cell"
                             rowspan="2"
+                            data-left-column="skills"
                             th:text="${employee.skillsDisplayText}">
                             A/B
                         </td>
 
                         <td class="sticky-column vacation-column vacation-cell"
                             rowspan="2"
+                            data-left-column="vacation"
                             th:text="${employee.vacationHours}">
                             144
                         </td>

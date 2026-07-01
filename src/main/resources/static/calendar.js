@@ -564,6 +564,103 @@ document.addEventListener("click", event => {
 initializeShiftPickerOptions();
 applySummaryColumnVisibility();
 
+/* ---------- Hide / restore left sticky columns ---------- */
+
+const hiddenLeftColumnsStorageKey = "scheduler-hidden-left-columns";
+
+function getHiddenLeftColumns() {
+    const rawValue = localStorage.getItem(hiddenLeftColumnsStorageKey);
+
+    if (!rawValue) {
+        return [];
+    }
+
+    try {
+        const parsedValue = JSON.parse(rawValue);
+
+        if (Array.isArray(parsedValue)) {
+            return parsedValue;
+        }
+
+        return [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveHiddenLeftColumns(hiddenColumns) {
+    localStorage.setItem(hiddenLeftColumnsStorageKey, JSON.stringify(hiddenColumns));
+}
+
+function hideLeftColumn(columnName) {
+    const hiddenColumns = getHiddenLeftColumns();
+
+    if (!hiddenColumns.includes(columnName)) {
+        hiddenColumns.push(columnName);
+    }
+
+    saveHiddenLeftColumns(hiddenColumns);
+    applyLeftColumnVisibility();
+}
+
+function restoreLeftColumn(columnName) {
+    const hiddenColumns = getHiddenLeftColumns()
+        .filter(hiddenColumnName => hiddenColumnName !== columnName);
+
+    saveHiddenLeftColumns(hiddenColumns);
+    applyLeftColumnVisibility();
+}
+
+function applyLeftColumnVisibility() {
+    const hiddenColumns = getHiddenLeftColumns();
+    const toolbar = document.querySelector(".summary-column-toolbar");
+    const table = document.querySelector(".schedule-table");
+
+    document.querySelectorAll("[data-left-column]").forEach(element => {
+        const columnName = element.dataset.leftColumn;
+        element.classList.toggle("left-column-hidden", hiddenColumns.includes(columnName));
+    });
+
+    document.querySelectorAll("[data-left-restore]").forEach(button => {
+        const columnName = button.dataset.leftRestore;
+        button.classList.toggle("visible", hiddenColumns.includes(columnName));
+    });
+
+    if (table) {
+        table.classList.toggle("left-name-hidden", hiddenColumns.includes("name"));
+        table.classList.toggle("left-skills-hidden", hiddenColumns.includes("skills"));
+        table.classList.toggle("left-vacation-hidden", hiddenColumns.includes("vacation"));
+    }
+
+    if (toolbar) {
+        const hiddenSummaryColumns = getHiddenSummaryColumns();
+        const hasHiddenColumns = hiddenColumns.length > 0 || hiddenSummaryColumns.length > 0;
+
+        toolbar.classList.toggle("has-hidden-summary-columns", hasHiddenColumns);
+    }
+}
+
+document.addEventListener("click", event => {
+    const hideButton = event.target.closest("[data-left-hide]");
+
+    if (hideButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        hideLeftColumn(hideButton.dataset.leftHide);
+        return;
+    }
+
+    const restoreButton = event.target.closest("[data-left-restore]");
+
+    if (restoreButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        restoreLeftColumn(restoreButton.dataset.leftRestore);
+    }
+});
+
 document.querySelectorAll(".assignment-cell").forEach(clearCell);
 
 loadAssignments();
@@ -630,3 +727,102 @@ if (monthPicker) {
         });
     }
 }
+
+/* ---------- Hide / restore left sticky columns - safe init ---------- */
+
+const schedulerHiddenLeftColumnsKey = "scheduler-hidden-left-columns-v2";
+
+function schedulerGetHiddenLeftColumns() {
+    const rawValue = localStorage.getItem(schedulerHiddenLeftColumnsKey);
+
+    if (!rawValue) {
+        return [];
+    }
+
+    try {
+        const parsedValue = JSON.parse(rawValue);
+
+        if (Array.isArray(parsedValue)) {
+            return parsedValue;
+        }
+
+        return [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function schedulerSaveHiddenLeftColumns(hiddenColumns) {
+    localStorage.setItem(schedulerHiddenLeftColumnsKey, JSON.stringify(hiddenColumns));
+}
+
+function schedulerApplyLeftColumnVisibility() {
+    const hiddenColumns = schedulerGetHiddenLeftColumns();
+    const toolbar = document.querySelector(".summary-column-toolbar");
+    const table = document.querySelector(".schedule-table");
+
+    document.querySelectorAll("[data-left-column]").forEach(element => {
+        const columnName = element.dataset.leftColumn;
+        element.classList.toggle("left-column-hidden", hiddenColumns.includes(columnName));
+    });
+
+    document.querySelectorAll("[data-left-restore]").forEach(button => {
+        const columnName = button.dataset.leftRestore;
+        button.classList.toggle("visible", hiddenColumns.includes(columnName));
+    });
+
+    if (table) {
+        table.classList.toggle("left-name-hidden", hiddenColumns.includes("name"));
+        table.classList.toggle("left-skills-hidden", hiddenColumns.includes("skills"));
+        table.classList.toggle("left-vacation-hidden", hiddenColumns.includes("vacation"));
+    }
+
+    if (toolbar) {
+        const hiddenSummaryColumns = getHiddenSummaryColumns();
+        const hasHiddenColumns = hiddenColumns.length > 0 || hiddenSummaryColumns.length > 0;
+
+        toolbar.classList.toggle("has-hidden-summary-columns", hasHiddenColumns);
+    }
+}
+
+function schedulerHideLeftColumn(columnName) {
+    const hiddenColumns = schedulerGetHiddenLeftColumns();
+
+    if (!hiddenColumns.includes(columnName)) {
+        hiddenColumns.push(columnName);
+    }
+
+    schedulerSaveHiddenLeftColumns(hiddenColumns);
+    schedulerApplyLeftColumnVisibility();
+}
+
+function schedulerRestoreLeftColumn(columnName) {
+    const hiddenColumns = schedulerGetHiddenLeftColumns()
+        .filter(hiddenColumnName => hiddenColumnName !== columnName);
+
+    schedulerSaveHiddenLeftColumns(hiddenColumns);
+    schedulerApplyLeftColumnVisibility();
+}
+
+document.addEventListener("click", event => {
+    const hideButton = event.target.closest("[data-left-hide]");
+
+    if (hideButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        schedulerHideLeftColumn(hideButton.dataset.leftHide);
+        return;
+    }
+
+    const restoreButton = event.target.closest("[data-left-restore]");
+
+    if (restoreButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        schedulerRestoreLeftColumn(restoreButton.dataset.leftRestore);
+    }
+});
+
+schedulerApplyLeftColumnVisibility();

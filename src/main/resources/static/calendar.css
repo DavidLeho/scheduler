@@ -827,3 +827,84 @@ td.today-column {
     flex-direction: column;
     gap: 5px;
 }
+
+/* ---------- Hide / restore left sticky columns ---------- */
+
+.left-column-hidden {
+    display: none;
+}
+
+/* Alap bal oldali sticky oszlopszélességek */
+.employee-name-column {
+    left: 0;
+    min-width: 190px;
+    width: 190px;
+    max-width: 190px;
+}
+
+.employee-skills-column {
+    left: 190px;
+    min-width: 120px;
+    width: 120px;
+    max-width: 120px;
+}
+
+.vacation-column {
+    left: 310px;
+    min-width: 70px;
+    width: 70px;
+    max-width: 70px;
+}
+
+/* Ha a Név rejtett, a Skillek menjen balra */
+.schedule-table.left-name-hidden .employee-skills-column {
+    left: 0;
+}
+
+/* Ha a Név rejtett, a Szabi a Skillek után jöjjön */
+.schedule-table.left-name-hidden .vacation-column {
+    left: 120px;
+}
+
+/* Ha a Skillek rejtett, a Szabi a Név után jöjjön */
+.schedule-table.left-skills-hidden .vacation-column {
+    left: 190px;
+}
+
+/* Ha Név és Skillek is rejtett, Szabi menjen teljesen balra */
+.schedule-table.left-name-hidden.left-skills-hidden .vacation-column {
+    left: 0;
+}
+
+/* Ha a Szabi is rejtett, ne maradjon jobb oldali elválasztó */
+.schedule-table.left-vacation-hidden .vacation-column {
+    box-shadow: none;
+}
+
+/* Ha csak a Szabi maradt látható, legyen továbbra is egyértelmű sticky blokk */
+.schedule-table.left-name-hidden.left-skills-hidden .vacation-column {
+    box-shadow: 4px 0 0 #666;
+}
+
+/* Ha a Név rejtett, de a Skillek látszik, akkor a Skillek legyen a bal blokk vége, ha Szabi is rejtve van */
+.schedule-table.left-name-hidden.left-vacation-hidden .employee-skills-column {
+    box-shadow: 4px 0 0 #666;
+}
+
+/* Ha a Skillek és Szabi rejtett, akkor a Név legyen a bal blokk vége */
+.schedule-table.left-skills-hidden.left-vacation-hidden .employee-name-column {
+    box-shadow: 4px 0 0 #666;
+}
+
+/* Ha minden bal oldali oszlop rejtett, ne legyen sticky árnyék */
+.schedule-table.left-name-hidden.left-skills-hidden.left-vacation-hidden .employee-name-column,
+.schedule-table.left-name-hidden.left-skills-hidden.left-vacation-hidden .employee-skills-column,
+.schedule-table.left-name-hidden.left-skills-hidden.left-vacation-hidden .vacation-column {
+    box-shadow: none;
+}
+
+/* ---------- Force hidden left columns ---------- */
+
+.schedule-table [data-left-column].left-column-hidden {
+    display: none !important;
+}
