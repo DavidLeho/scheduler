@@ -151,6 +151,7 @@ function clearCell(cell) {
         "shift-ho",
         "shift-night",
         "shift-standby",
+        "shift-standby-night",
         "shift-vacation",
         "shift-unavailable"
     );
