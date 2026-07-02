@@ -121,6 +121,7 @@ function applyShiftToCell(cell, assignment) {
         "shift-ho",
         "shift-night",
         "shift-standby",
+        "shift-standby-night",
         "shift-vacation",
         "shift-unavailable"
     );
@@ -195,6 +196,10 @@ function getShiftClass(assignment) {
 
     if (shiftCode === "-") {
         return "shift-unavailable";
+    }
+
+    if (assignment.standby && assignment.night) {
+        return "shift-standby-night";
     }
 
     if (assignment.standby) {
@@ -408,6 +413,7 @@ function initializeShiftPickerOptions() {
             "picker-normal",
             "picker-night",
             "picker-standby",
+            "picker-standby-night",
             "picker-vacation",
             "picker-unavailable",
             "picker-layer-normal",
@@ -435,6 +441,10 @@ function getPickerClass(assignment) {
 
     if (shiftCode === "-") {
         return "picker-unavailable";
+    }
+
+    if (assignment.standby && assignment.night) {
+        return "picker-standby-night";
     }
 
     if (assignment.standby) {

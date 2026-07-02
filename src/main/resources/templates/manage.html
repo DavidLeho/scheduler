@@ -76,7 +76,7 @@
     </form>
 
     <div class="shift-type-badge-list">
-      <div class="shift-type-badge" th:each="shiftType : ${shiftTypes}">
+      <div class="shift-type-badge" th:each="shiftType : ${manageableShiftTypes}">
         <span th:text="${shiftType.code}">A</span>
 
         <form action="/shift-types/delete"
@@ -96,7 +96,7 @@
 
       <div class="shift-type-details-list">
         <form class="shift-type-details-row"
-              th:each="shiftType : ${shiftTypes}"
+              th:each="shiftType : ${manageableShiftTypes}"
               action="/shift-types/update"
               method="post">
 

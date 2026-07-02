@@ -379,8 +379,9 @@ td.today-column {
 }
 
 /* Készenlét: tiszta kék */
-.schedule-cell-display.shift-standby {
+.shift-picker-option.picker-standby {
     background: #2f67a2;
+    border-color: #4f8aca;
 }
 
 /* Szabadság */
@@ -907,4 +908,30 @@ td.today-column {
 
 .schedule-table [data-left-column].left-column-hidden {
     display: none !important;
+}
+
+/* Nappali készenlét - világoskék */
+.schedule-cell-display.shift-standby {
+    background: #3f8fd2;
+    color: white;
+}
+
+/* Éjszakai készenlét - sötétkék */
+.schedule-cell-display.shift-standby-night {
+    background: #163f78;
+    color: white;
+}
+
+/* Picker: nappali készenlét */
+.shift-picker-option.picker-standby {
+    background: #3f8fd2;
+    border-color: #67abe6;
+    color: white;
+}
+
+/* Picker: éjszakai készenlét */
+.shift-picker-option.picker-standby-night {
+    background: #163f78;
+    border-color: #2f67a2;
+    color: white;
 }

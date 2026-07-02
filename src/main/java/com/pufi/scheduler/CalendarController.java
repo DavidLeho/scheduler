@@ -123,6 +123,7 @@ public class CalendarController {
         model.addAttribute("skills", getSkillNames());
         model.addAttribute("skillObjects", skillRepository.findAll());
         model.addAttribute("shiftTypes", shiftTypeRepository.findAll());
+        model.addAttribute("manageableShiftTypes", getManageableShiftTypes());
 
         return "manage";
     }
@@ -404,6 +405,14 @@ public class CalendarController {
             return redirectToManage(year, month);
         }
 
+        if (isSpecialShiftType(shiftType.getCode())) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Ez egy rendszer műszak, nem módosítható: " + shiftType.getCode()
+            );
+            return redirectToManage(year, month);
+        }
+
         String cleanedCode = code.trim().toUpperCase();
 
         if (cleanedCode.isEmpty()) {
@@ -456,6 +465,14 @@ public class CalendarController {
         }
 
         String code = shiftType.getCode();
+
+        if (isSpecialShiftType(code)) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Ez egy rendszer műszak, nem törölhető: " + code
+            );
+            return redirectToManage(year, month);
+        }
 
         boolean usedInAssignments = assignmentRepository.findAll()
                 .stream()
@@ -617,6 +634,23 @@ public class CalendarController {
 
     private String redirectToManage(Integer year, Integer month) {
         return "redirect:/manage?year=" + year + "&month=" + month;
+    }
+
+    private List<ShiftType> getManageableShiftTypes() {
+        return shiftTypeRepository.findAll()
+                .stream()
+                .filter(shiftType -> !isSpecialShiftType(shiftType.getCode()))
+                .toList();
+    }
+
+    private boolean isSpecialShiftType(String code) {
+        if (code == null) {
+            return false;
+        }
+
+        String normalizedCode = code.trim().toUpperCase();
+
+        return normalizedCode.equals("SZ") || normalizedCode.equals("-");
     }
 
     private List<String> getSkillNames() {
