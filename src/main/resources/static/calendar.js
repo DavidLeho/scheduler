@@ -291,6 +291,7 @@ function updateEmployeeSummary(employeeId) {
 
         if (shiftCode === "SZ") {
             vacationUsedHours += hours;
+            totalHours += hours;
             return;
         }
 
