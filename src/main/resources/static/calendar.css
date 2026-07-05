@@ -935,3 +935,122 @@ td.today-column {
     border-color: #2f67a2;
     color: white;
 }
+
+/* ---------- Holiday columns ---------- */
+
+.day-header {
+    position: relative;
+}
+
+.day-header-button {
+    width: 100%;
+    height: 100%;
+
+    border: none;
+    background: transparent;
+    color: inherit;
+
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+.day-header-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.day-holiday-dropdown {
+    display: none;
+
+    position: absolute;
+    z-index: 500;
+    top: 100%;
+    left: 0;
+
+    min-width: 150px;
+
+    padding: 6px;
+
+    background: #151515;
+    border: 1px solid #555;
+    border-radius: 6px;
+
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.day-header.holiday-dropdown-open .day-holiday-dropdown {
+    display: block;
+}
+
+.day-holiday-toggle-button {
+    width: 100%;
+
+    padding: 7px 9px;
+
+    border: 1px solid #793535;
+    border-radius: 5px;
+
+    background: #331717;
+    color: #ffd0d0;
+
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.day-holiday-toggle-button:hover {
+    background: #4a1d1d;
+    color: white;
+}
+
+.day-header.holiday-column,
+.day-number-header.holiday-column {
+    background: #4a1717;
+    color: #ff9a9a;
+
+    box-shadow: inset 0 0 0 2px rgba(255, 90, 90, 0.65);
+}
+
+
+.schedule-cell.holiday-column,
+.standby-placeholder-cell.holiday-column {
+    background: #251313;
+}
+
+.schedule-cell.holiday-column .schedule-cell-display.empty-cell,
+.standby-placeholder-cell.holiday-column .schedule-cell-display.empty-cell {
+    color: #ff8a8a;
+}
+
+.day-header.today-column.holiday-column,
+.day-number-header.today-column.holiday-column {
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 90, 90, 0.95),
+        inset 0 0 12px rgba(255, 90, 90, 0.35);
+}
+
+/* ---------- Holiday dropdown layering fix ---------- */
+
+.schedule-table thead {
+    position: relative;
+    z-index: 300;
+}
+
+.day-header {
+    position: relative;
+    overflow: visible;
+    z-index: 310;
+}
+
+.day-number-header {
+    position: relative;
+    z-index: 250;
+}
+
+.day-header.holiday-dropdown-open {
+    z-index: 600;
+}
+
+.day-header.holiday-dropdown-open .day-holiday-dropdown {
+    z-index: 700;
+}

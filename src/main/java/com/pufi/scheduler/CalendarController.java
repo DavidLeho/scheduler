@@ -9,13 +9,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 
 @Controller
 public class CalendarController {
@@ -24,17 +28,20 @@ public class CalendarController {
     private final AssignmentRepository assignmentRepository;
     private final SkillRepository skillRepository;
     private final ShiftTypeRepository shiftTypeRepository;
+    private final SpecialDayRepository specialDayRepository;
 
     public CalendarController(
             EmployeeRepository employeeRepository,
             AssignmentRepository assignmentRepository,
             SkillRepository skillRepository,
-            ShiftTypeRepository shiftTypeRepository
+            ShiftTypeRepository shiftTypeRepository,
+            SpecialDayRepository specialDayRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.assignmentRepository = assignmentRepository;
         this.skillRepository = skillRepository;
         this.shiftTypeRepository = shiftTypeRepository;
+        this.specialDayRepository = specialDayRepository;
 
         if (skillRepository.count() == 0) {
             skillRepository.save(new Skill("A", "entry fragger"));
@@ -218,6 +225,33 @@ public class CalendarController {
         }
 
         assignmentRepository.delete(assignment);
+
+        return "OK";
+    }
+
+    @PostMapping("/special-days/toggle-holiday")
+    @ResponseBody
+    public String toggleHoliday(@RequestBody SpecialDayRequest request) {
+        LocalDate date = LocalDate.parse(request.getDate());
+        String dateText = date.toString();
+
+        SpecialDay specialDay = specialDayRepository
+                .findBySpecialDate(dateText)
+                .orElse(new SpecialDay(dateText, "", SpecialDay.TYPE_NORMAL));
+
+        if (specialDay.isHoliday()) {
+            specialDay.setDayType(SpecialDay.TYPE_NORMAL);
+            specialDay.setName("");
+        } else {
+            String holidayName = HolidayDefaults
+                    .getFixedHolidayName(date)
+                    .orElse("Egyedi piros betűs nap");
+
+            specialDay.setDayType(SpecialDay.TYPE_HOLIDAY);
+            specialDay.setName(holidayName);
+        }
+
+        specialDayRepository.save(specialDay);
 
         return "OK";
     }
@@ -615,21 +649,69 @@ public class CalendarController {
     }
 
     private List<ScheduleDay> createScheduleDays(YearMonth currentYearMonth) {
-        List<ScheduleDay> days = new ArrayList<>();
+        List<LocalDate> dates = new ArrayList<>();
 
         LocalDate firstDayOfMonth = currentYearMonth.atDay(1);
 
         for (int i = 2; i >= 1; i--) {
-            LocalDate date = firstDayOfMonth.minusDays(i);
-            days.add(new ScheduleDay(date, false));
+            dates.add(firstDayOfMonth.minusDays(i));
         }
 
         for (int day = 1; day <= currentYearMonth.lengthOfMonth(); day++) {
-            LocalDate date = currentYearMonth.atDay(day);
-            days.add(new ScheduleDay(date, true));
+            dates.add(currentYearMonth.atDay(day));
         }
 
-        return days;
+        ensureFixedSpecialDaysExist(dates);
+
+        List<String> dateTexts = dates
+                .stream()
+                .map(LocalDate::toString)
+                .toList();
+
+        Map<String, SpecialDay> specialDayMap = new HashMap<>();
+
+        for (SpecialDay specialDay : specialDayRepository.findBySpecialDateIn(dateTexts)) {
+            specialDayMap.put(specialDay.getSpecialDate(), specialDay);
+        }
+
+        List<ScheduleDay> scheduleDays = new ArrayList<>();
+
+        for (LocalDate date : dates) {
+            boolean currentMonth = YearMonth.from(date).equals(currentYearMonth);
+            SpecialDay specialDay = specialDayMap.get(date.toString());
+
+            scheduleDays.add(new ScheduleDay(date, currentMonth, specialDay));
+        }
+
+        return scheduleDays;
+    }
+
+    private void ensureFixedSpecialDaysExist(List<LocalDate> dates) {
+        Set<Integer> years = new HashSet<>();
+
+        for (LocalDate date : dates) {
+            years.add(date.getYear());
+        }
+
+        for (Integer year : years) {
+            Map<LocalDate, String> fixedHolidays = HolidayDefaults.getFixedHolidaysForYear(year);
+
+            for (Map.Entry<LocalDate, String> holiday : fixedHolidays.entrySet()) {
+                String dateText = holiday.getKey().toString();
+
+                boolean alreadyExists = specialDayRepository
+                        .findBySpecialDate(dateText)
+                        .isPresent();
+
+                if (!alreadyExists) {
+                    specialDayRepository.save(new SpecialDay(
+                            dateText,
+                            holiday.getValue(),
+                            SpecialDay.TYPE_HOLIDAY
+                    ));
+                }
+            }
+        }
     }
 
     private String redirectToManage(Integer year, Integer month) {

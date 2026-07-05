@@ -135,39 +135,64 @@
 
                     <th th:each="day : ${scheduleDays}"
                         class="day-header"
-                        th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}">
-                        <span th:text="${day.dayNameShort}">h</span>
+                        th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '') + (day.holiday ? ' holiday-column' : '')}"
+                        th:title="${day.holiday ? day.holidayName : ''}">
+
+                        <button type="button"
+                                class="day-header-button"
+                                th:attr="data-date=${day.date}">
+                            <span th:text="${day.dayNameShort}">h</span>
+                        </button>
+
+                        <div class="day-holiday-dropdown">
+                            <button type="button"
+                                    class="day-holiday-toggle-button"
+                                    th:attr="data-date=${day.date}"
+                                    th:text="${day.holiday ? 'Piros betű levétele' : 'Piros betűs nap'}">
+                                Piros betűs nap
+                            </button>
+                        </div>
                     </th>
 
-                    <th class="summary-header summary-total-column" rowspan="2" data-summary-column="total">
+                    <th class="summary-header summary-total-column"
+                        rowspan="2"
+                        data-summary-column="total">
                         <div class="summary-header-content">
                             <span>Össz</span>
                             <button type="button" class="summary-column-hide-button" data-summary-hide="total">−</button>
                         </div>
                     </th>
 
-                    <th class="summary-header summary-count-column" rowspan="2" data-summary-column="count">
+                    <th class="summary-header summary-count-column"
+                        rowspan="2"
+                        data-summary-column="count">
                         <div class="summary-header-content">
                             <span>Mű</span>
                             <button type="button" class="summary-column-hide-button" data-summary-hide="count">−</button>
                         </div>
                     </th>
 
-                    <th class="summary-header summary-night-column" rowspan="2" data-summary-column="night">
+                    <th class="summary-header summary-night-column"
+                        rowspan="2"
+                        data-summary-column="night">
                         <div class="summary-header-content">
                             <span>Éj</span>
                             <button type="button" class="summary-column-hide-button" data-summary-hide="night">−</button>
                         </div>
                     </th>
 
-                    <th class="summary-header summary-standby-column" rowspan="2" data-summary-column="standby">
+                    <th class="summary-header summary-standby-column"
+                        rowspan="2"
+                        data-summary-column="standby">
                         <div class="summary-header-content">
                             <span>Kész</span>
                             <button type="button" class="summary-column-hide-button" data-summary-hide="standby">−</button>
                         </div>
                     </th>
 
-                    <th class="summary-header summary-ho-column" rowspan="2" data-summary-column="ho">
+                    <th class="summary-header summary-ho-column"
+                        rowspan="2"
+                        data-summary-column="ho">
                         <div class="summary-header-content">
                             <span>HO</span>
                             <button type="button" class="summary-column-hide-button" data-summary-hide="ho">−</button>
@@ -178,7 +203,8 @@
                 <tr>
                     <th th:each="day : ${scheduleDays}"
                         class="day-number-header"
-                        th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}">
+                        th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '') + (day.holiday ? ' holiday-column' : '')}"
+                        th:title="${day.holiday ? day.holidayName : ''}">
                         <span th:text="${day.dayNumber}">1</span>
                     </th>
                 </tr>
@@ -213,7 +239,7 @@
 
                         <td th:each="day : ${scheduleDays}"
                             class="schedule-cell assignment-cell"
-                            th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}"
+                            th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '') + (day.holiday ? ' holiday-column' : '')}"
                             th:attr="data-employee-id=${employee.id}, data-date=${day.date}, data-current-month=${day.currentMonth}, data-assignment-layer='NORMAL'">
 
                             <button type="button" class="schedule-cell-display">
@@ -289,7 +315,7 @@
 
                         <td th:each="day : ${scheduleDays}"
                             class="standby-placeholder-cell assignment-cell"
-                            th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '')}"
+                            th:classappend="${(!day.currentMonth ? ' other-month' : '') + (day.weekend ? ' weekend' : '') + (day.today ? ' today-column' : '') + (day.holiday ? ' holiday-column' : '')}"
                             th:attr="data-employee-id=${employee.id}, data-date=${day.date}, data-current-month=${day.currentMonth}, data-assignment-layer='STANDBY'">
 
                             <button type="button" class="schedule-cell-display standby-cell-display">

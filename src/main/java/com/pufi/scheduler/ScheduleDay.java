@@ -12,8 +12,14 @@ public class ScheduleDay {
     private boolean currentMonth;
     private boolean weekend;
     private boolean today;
+    private boolean holiday;
+    private String holidayName;
 
     public ScheduleDay(LocalDate date, boolean currentMonth) {
+        this(date, currentMonth, null);
+    }
+
+    public ScheduleDay(LocalDate date, boolean currentMonth, SpecialDay specialDay) {
         this.date = date;
         this.dayNumber = date.getDayOfMonth();
         this.dayNameShort = date.getDayOfWeek()
@@ -21,6 +27,14 @@ public class ScheduleDay {
         this.currentMonth = currentMonth;
         this.weekend = date.getDayOfWeek().getValue() >= 6;
         this.today = date.equals(LocalDate.now());
+
+        if (specialDay != null && specialDay.isHoliday()) {
+            this.holiday = true;
+            this.holidayName = specialDay.getName();
+        } else {
+            this.holiday = false;
+            this.holidayName = "";
+        }
     }
 
     public LocalDate getDate() {
@@ -45,5 +59,13 @@ public class ScheduleDay {
 
     public boolean isToday() {
         return today;
+    }
+
+    public boolean isHoliday() {
+        return holiday;
+    }
+
+    public String getHolidayName() {
+        return holidayName;
     }
 }

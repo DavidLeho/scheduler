@@ -837,3 +837,59 @@ document.addEventListener("click", event => {
 });
 
 schedulerApplyLeftColumnVisibility();
+
+/* ---------- Holiday dropdown handling ---------- */
+
+function closeAllHolidayDropdowns() {
+    document.querySelectorAll(".day-header.holiday-dropdown-open").forEach(header => {
+        header.classList.remove("holiday-dropdown-open");
+    });
+}
+
+document.addEventListener("click", event => {
+    const dayHeaderButton = event.target.closest(".day-header-button");
+
+    if (dayHeaderButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const header = dayHeaderButton.closest(".day-header");
+        const wasOpen = header.classList.contains("holiday-dropdown-open");
+
+        closeAllHolidayDropdowns();
+
+        if (!wasOpen) {
+            header.classList.add("holiday-dropdown-open");
+        }
+
+        return;
+    }
+
+    const holidayToggleButton = event.target.closest(".day-holiday-toggle-button");
+
+    if (holidayToggleButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        fetch("/special-days/toggle-holiday", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                date: holidayToggleButton.dataset.date
+            })
+        })
+            .then(response => response.text())
+            .then(result => {
+                if (result === "OK") {
+                    window.location.reload();
+                } else {
+                    alert("Nem sikerült módosítani a piros betűs napot.");
+                }
+            })
+            .catch(error => console.error("Hiba a piros betűs nap módosításánál:", error));
+
+        return;
+    }
+
+    closeAllHolidayDropdowns();
+});
