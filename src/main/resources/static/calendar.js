@@ -298,12 +298,12 @@ function updateEmployeeSummary(employeeId) {
             return;
         }
 
-        shiftCount += 1;
-
         if (layer === "STANDBY") {
             standbyHours += hours;
             return;
         }
+
+        shiftCount += 1;
 
         totalHours += hours;
 
