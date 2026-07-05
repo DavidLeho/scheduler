@@ -19,6 +19,11 @@ document.addEventListener("click", event => {
             return;
         }
 
+        if (cell.dataset.currentMonth !== "true") {
+            closeAllPickers();
+            return;
+        }
+
         const wasOpen = cell.classList.contains("open");
 
         closeAllPickers();
