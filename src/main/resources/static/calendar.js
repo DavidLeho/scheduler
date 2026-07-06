@@ -87,6 +87,10 @@ function saveAssignmentToCell(cell, option) {
                 alert("Készenlétet csak az alsó készenléti sorba lehet tenni.");
             } else if (result === "NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW") {
                 alert("Ezt a műszakot csak a felső normál sorba lehet tenni.");
+            } else if (result === "PREVIOUS_DAY_24H_REST_REQUIRED") {
+                alert("24 órás műszak után a következő napra csak üres mező vagy szürke '-' kerülhet.");
+            } else if (result === "NEXT_DAY_MUST_BE_EMPTY_AFTER_24H") {
+                alert("24 órás műszak után a következő napnak üresnek kell lennie. Előbb töröld a következő napi beosztást.");
             } else {
                 alert("Nem sikerült menteni a beosztást.");
             }

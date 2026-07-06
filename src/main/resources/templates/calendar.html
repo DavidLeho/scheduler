@@ -11,56 +11,60 @@
 <main class="schedule-page">
 
     <header class="schedule-header">
-        <div class="schedule-top-actions">
-            <a class="month-button"
-               th:href="@{/manage(year=${year}, month=${month})}">
-                Dolgozók kezelése
-            </a>
-        </div>
-
-        <div class="schedule-month-row">
-            <a class="month-button"
-               th:href="@{/(year=${previousYear}, month=${previousMonth})}">
-                ← Előző hónap
-            </a>
-
-            <div class="month-picker"
-                 th:attr="data-current-year=${year}, data-current-month=${month}">
-                <button type="button"
-                        class="month-title-button"
-                        id="monthPickerButton"
-                        th:text="${year + ' ' + monthName + ' ▼'}">
-                    2026 Június ▼
-                </button>
-
-                <div class="month-picker-dropdown" id="monthPickerDropdown">
-                    <div class="month-picker-year-row">
-                        <button type="button" id="pickerPreviousYear">←</button>
-                        <span id="pickerYear" th:text="${year}">2026</span>
-                        <button type="button" id="pickerNextYear">→</button>
-                    </div>
-
-                    <div class="month-picker-grid">
-                        <button type="button" data-month="1">Január</button>
-                        <button type="button" data-month="2">Február</button>
-                        <button type="button" data-month="3">Március</button>
-                        <button type="button" data-month="4">Április</button>
-                        <button type="button" data-month="5">Május</button>
-                        <button type="button" data-month="6">Június</button>
-                        <button type="button" data-month="7">Július</button>
-                        <button type="button" data-month="8">Augusztus</button>
-                        <button type="button" data-month="9">Szeptember</button>
-                        <button type="button" data-month="10">Október</button>
-                        <button type="button" data-month="11">November</button>
-                        <button type="button" data-month="12">December</button>
-                    </div>
-                </div>
+        <div class="schedule-header-row">
+            <div class="schedule-header-left">
+                <a class="month-button"
+                   th:href="@{/manage(year=${year}, month=${month})}">
+                    Dolgozók kezelése
+                </a>
             </div>
 
-            <a class="month-button"
-               th:href="@{/(year=${nextYear}, month=${nextMonth})}">
-                Következő hónap →
-            </a>
+            <div class="schedule-header-center">
+                <a class="month-button compact-month-button"
+                   th:href="@{/(year=${previousYear}, month=${previousMonth})}">
+                    ← Előző hónap
+                </a>
+
+                <div class="month-picker"
+                     th:attr="data-current-year=${year}, data-current-month=${month}">
+                    <button type="button"
+                            class="month-title-button"
+                            id="monthPickerButton"
+                            th:text="${year + ' ' + monthName + ' ▼'}">
+                        2026 Július ▼
+                    </button>
+
+                    <div class="month-picker-dropdown" id="monthPickerDropdown">
+                        <div class="month-picker-year-row">
+                            <button type="button" id="pickerPreviousYear">←</button>
+                            <span id="pickerYear" th:text="${year}">2026</span>
+                            <button type="button" id="pickerNextYear">→</button>
+                        </div>
+
+                        <div class="month-picker-grid">
+                            <button type="button" data-month="1">Január</button>
+                            <button type="button" data-month="2">Február</button>
+                            <button type="button" data-month="3">Március</button>
+                            <button type="button" data-month="4">Április</button>
+                            <button type="button" data-month="5">Május</button>
+                            <button type="button" data-month="6">Június</button>
+                            <button type="button" data-month="7">Július</button>
+                            <button type="button" data-month="8">Augusztus</button>
+                            <button type="button" data-month="9">Szeptember</button>
+                            <button type="button" data-month="10">Október</button>
+                            <button type="button" data-month="11">November</button>
+                            <button type="button" data-month="12">December</button>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="month-button compact-month-button"
+                   th:href="@{/(year=${nextYear}, month=${nextMonth})}">
+                    Következő hónap →
+                </a>
+            </div>
+
+            <div class="schedule-header-right"></div>
         </div>
     </header>
 

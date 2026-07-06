@@ -160,6 +160,17 @@ public class CalendarController {
             return "NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW";
         }
 
+        String twentyFourHourRuleResult = validateTwentyFourHourRule(
+                employee,
+                request.getDate(),
+                requestedLayer,
+                shiftType
+        );
+
+        if (!"OK".equals(twentyFourHourRuleResult)) {
+            return twentyFourHourRuleResult;
+        }
+
         Assignment assignment = assignmentRepository
                 .findByEmployeeAndAssignmentDateAndAssignmentLayer(
                         employee,
@@ -741,4 +752,132 @@ public class CalendarController {
                 .map(Skill::getName)
                 .toList();
     }
+
+    private String validateTwentyFourHourRule(
+            Employee employee,
+            String assignmentDate,
+            String requestedLayer,
+            ShiftType selectedShiftType
+    ) {
+        LocalDate date = LocalDate.parse(assignmentDate);
+
+        if (previousDayHasTwentyFourHourShift(employee, date)) {
+            if (Assignment.LAYER_NORMAL.equals(requestedLayer) && isUnavailableShift(selectedShiftType)) {
+                return "OK";
+            }
+
+            return "PREVIOUS_DAY_24H_REST_REQUIRED";
+        }
+
+        if (Assignment.LAYER_NORMAL.equals(requestedLayer) && isTwentyFourHourNormalShift(selectedShiftType)) {
+            if (nextDayHasForbiddenAssignmentAfterTwentyFourHourShift(employee, date)) {
+                return "NEXT_DAY_MUST_BE_EMPTY_AFTER_24H";
+            }
+        }
+
+        return "OK";
+    }
+
+    private boolean previousDayHasTwentyFourHourShift(Employee employee, LocalDate date) {
+        LocalDate previousDate = date.minusDays(1);
+
+        Assignment previousAssignment = assignmentRepository
+                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
+                        employee,
+                        previousDate.toString(),
+                        Assignment.LAYER_NORMAL
+                )
+                .orElse(null);
+
+        if (previousAssignment == null) {
+            return false;
+        }
+
+        return isTwentyFourHourAssignment(previousAssignment);
+    }
+
+    private boolean nextDayHasForbiddenAssignmentAfterTwentyFourHourShift(Employee employee, LocalDate date) {
+        LocalDate nextDate = date.plusDays(1);
+
+        Assignment nextNormalAssignment = assignmentRepository
+                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
+                        employee,
+                        nextDate.toString(),
+                        Assignment.LAYER_NORMAL
+                )
+                .orElse(null);
+
+        if (nextNormalAssignment != null && !isUnavailableAssignment(nextNormalAssignment)) {
+            return true;
+        }
+
+        Assignment nextStandbyAssignment = assignmentRepository
+                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
+                        employee,
+                        nextDate.toString(),
+                        Assignment.LAYER_STANDBY
+                )
+                .orElse(null);
+
+        return nextStandbyAssignment != null;
+    }
+
+    private boolean isTwentyFourHourAssignment(Assignment assignment) {
+        if (assignment == null) {
+            return false;
+        }
+
+        if (assignment.isStandby()) {
+            return false;
+        }
+
+        if (isSpecialShiftCode(assignment.getShiftCode())) {
+            return false;
+        }
+
+        return Double.compare(assignment.getHours(), 24) == 0;
+    }
+
+    private boolean isTwentyFourHourNormalShift(ShiftType shiftType) {
+        if (shiftType == null) {
+            return false;
+        }
+
+        if (shiftType.isStandby()) {
+            return false;
+        }
+
+        if (isSpecialShiftCode(shiftType.getCode())) {
+            return false;
+        }
+
+        return Double.compare(shiftType.getHours(), 24) == 0;
+    }
+
+    private boolean isUnavailableAssignment(Assignment assignment) {
+        if (assignment == null) {
+            return false;
+        }
+
+        return "-".equals(assignment.getShiftCode());
+    }
+
+    private boolean isUnavailableShift(ShiftType shiftType) {
+        if (shiftType == null) {
+            return false;
+        }
+
+        return "-".equals(shiftType.getCode());
+    }
+
+    private boolean isSpecialShiftCode(String code) {
+        if (code == null) {
+            return false;
+        }
+
+        String normalizedCode = code.trim().toUpperCase();
+
+        return normalizedCode.equals("SZ") || normalizedCode.equals("-");
+    }
+
 }
