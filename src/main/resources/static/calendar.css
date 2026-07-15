@@ -1623,3 +1623,96 @@ body.theme-colorful *::-webkit-scrollbar-thumb:hover {
 body.theme-colorful *::-webkit-scrollbar-corner {
     background: #071326;
 }
+
+/* ---------- Colorful theme: szebb kijelölt dolgozó sor ---------- */
+
+body.theme-colorful .schedule-table tbody tr.highlighted-row .sticky-column {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.24), rgba(125, 56, 255, 0.24)),
+        #10284a !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        inset 4px 0 0 rgba(89, 232, 255, 0.95),
+        inset 0 0 0 1px rgba(89, 232, 255, 0.45),
+        0 0 14px rgba(0, 194, 255, 0.16) !important;
+}
+
+body.theme-colorful .schedule-table tbody tr.highlighted-row .schedule-cell,
+body.theme-colorful .schedule-table tbody tr.highlighted-row .standby-placeholder-cell {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.13), rgba(125, 56, 255, 0.12)),
+        #0a1e38 !important;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(89, 232, 255, 0.28),
+        inset 0 0 12px rgba(0, 194, 255, 0.05);
+}
+
+/* A kijelölt sorban az assignment cellák saját színei maradjanak erősebbek */
+body.theme-colorful .schedule-table tbody tr.highlighted-row .schedule-cell-display:not(.empty-cell) {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+        0 0 10px rgba(89, 232, 255, 0.12);
+}
+
+/* Kijelölt sor jobb oldali összesítői is illeszkedjenek a színes témához */
+body.theme-colorful .schedule-table tbody tr.highlighted-row td.summary-cell:not(.row-ho-hours) {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.15), rgba(125, 56, 255, 0.14)),
+        #101c36 !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(89, 232, 255, 0.25),
+        inset 0 0 12px rgba(0, 194, 255, 0.06);
+}
+
+/* ---------- Colorful theme: HO fejléc ne legyen zöld ---------- */
+
+body.theme-colorful .schedule-table th.summary-ho-column {
+    background:
+        linear-gradient(135deg, rgba(32, 43, 88, 0.95), rgba(18, 22, 48, 0.96)),
+        #161b2f !important;
+
+    color: #ffffff !important;
+    border-color: rgba(89, 232, 255, 0.28) !important;
+
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03) !important;
+}
+
+/* HO értékek továbbra is állapot szerint színesek maradnak */
+body.theme-colorful .schedule-table tbody tr.highlighted-row td.row-ho-hours.ho-percent-ok,
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-ok,
+body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-ok {
+    background:
+        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
+        #1f6a35 !important;
+
+    color: #ffffff !important;
+    border-color: rgba(89, 255, 150, 0.35) !important;
+}
+
+body.theme-colorful .schedule-table tbody tr.highlighted-row td.row-ho-hours.ho-percent-warning,
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-warning,
+body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-warning {
+    background:
+        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
+        #b86f22 !important;
+
+    color: #ffffff !important;
+    border-color: rgba(255, 186, 92, 0.42) !important;
+}
+
+body.theme-colorful .schedule-table tbody tr.highlighted-row td.row-ho-hours.ho-percent-danger,
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-danger,
+body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-danger {
+    background:
+        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
+        #b92f3b !important;
+
+    color: #ffffff !important;
+    border-color: rgba(255, 105, 120, 0.45) !important;
+}
