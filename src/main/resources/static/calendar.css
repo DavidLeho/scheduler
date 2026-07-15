@@ -1716,3 +1716,352 @@ body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-danger {
     color: #ffffff !important;
     border-color: rgba(255, 105, 120, 0.45) !important;
 }
+
+/* ---------- Colorful theme: hover háttér kikapcsolása, csak cellakontúr maradjon ---------- */
+
+/* Ne színezze át hoverre az egész sort */
+body.theme-colorful .schedule-table tbody tr:hover td,
+body.theme-colorful .schedule-table tbody tr:hover .schedule-cell,
+body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell,
+body.theme-colorful .schedule-table tbody tr:hover td.summary-cell:not(.row-ho-hours) {
+    background-color: inherit;
+}
+
+/* Jobb oldali összesítők hoverre NE váltsanak más háttérre */
+body.theme-colorful .schedule-table tbody tr:hover td:nth-last-child(-n+5):not(.row-ho-hours) {
+    background:
+        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
+        #111319 !important;
+
+    color: #f3f8ff !important;
+}
+
+/* Normál naptárcellák hoverre maradjanak az alap színes témás hátterükön */
+body.theme-colorful .schedule-table tbody tr:hover .schedule-cell:not(.weekend):not(.other-month):not(.holiday-column),
+body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column) {
+    background:
+        linear-gradient(135deg, rgba(9, 24, 48, 0.98), rgba(7, 15, 31, 0.98)),
+        #071224 !important;
+}
+
+/* Hétvégi cellák hoverre is maradjanak hétvégi színűek */
+body.theme-colorful .schedule-table tbody tr:hover .schedule-cell.weekend,
+body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell.weekend {
+    background:
+        linear-gradient(135deg, rgba(42, 17, 38, 0.96), rgba(20, 15, 30, 0.98)),
+        #16111f !important;
+}
+
+/* Másik havi cellák hoverre is maradjanak másik havi színűek */
+body.theme-colorful .schedule-table tbody tr:hover .schedule-cell.other-month,
+body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell.other-month {
+    background:
+        linear-gradient(135deg, rgba(9, 39, 54, 0.75), rgba(8, 20, 35, 0.95)),
+        #081827 !important;
+}
+
+/* A HO százalék továbbra is maradjon állapotszínű hover esetén is */
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-ok {
+    background:
+        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
+        #1f6a35 !important;
+}
+
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-warning {
+    background:
+        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
+        #b86f22 !important;
+}
+
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-danger {
+    background:
+        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
+        #b92f3b !important;
+}
+
+/* ---------- Colorful theme: két soros dolgozóblokk egységes színezése ---------- */
+
+/* Felső sor: normál műszak sor */
+body.theme-colorful .employee-main-row .schedule-cell {
+    background:
+        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
+        #071224 !important;
+}
+
+/* Alsó sor: készenlét sor - picit más árnyalat */
+body.theme-colorful .employee-standby-row .standby-placeholder-cell {
+    background:
+        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
+        #050f21 !important;
+}
+
+/* Felső sor hétvége */
+body.theme-colorful .employee-main-row .schedule-cell.weekend {
+    background:
+        linear-gradient(135deg, rgba(45, 18, 44, 0.98), rgba(24, 14, 32, 0.98)),
+        #171020 !important;
+}
+
+/* Alsó sor hétvége - sötétebb/mélyebb */
+body.theme-colorful .employee-standby-row .standby-placeholder-cell.weekend {
+    background:
+        linear-gradient(135deg, rgba(34, 12, 34, 0.98), rgba(17, 9, 26, 0.98)),
+        #100918 !important;
+}
+
+/* Felső sor előző/következő havi nap */
+body.theme-colorful .employee-main-row .schedule-cell.other-month {
+    background:
+        linear-gradient(135deg, rgba(9, 39, 54, 0.78), rgba(8, 20, 35, 0.96)),
+        #081827 !important;
+}
+
+/* Alsó sor előző/következő havi nap */
+body.theme-colorful .employee-standby-row .standby-placeholder-cell.other-month {
+    background:
+        linear-gradient(135deg, rgba(5, 28, 43, 0.78), rgba(5, 14, 28, 0.96)),
+        #061421 !important;
+}
+
+/* Ünnepnap felső sor */
+body.theme-colorful .employee-main-row .schedule-cell.holiday-column {
+    background:
+        linear-gradient(135deg, rgba(52, 17, 28, 0.96), rgba(26, 10, 22, 0.98)),
+        #1c0c16 !important;
+}
+
+/* Ünnepnap alsó sor */
+body.theme-colorful .employee-standby-row .standby-placeholder-cell.holiday-column {
+    background:
+        linear-gradient(135deg, rgba(38, 12, 22, 0.96), rgba(19, 7, 16, 0.98)),
+        #140710 !important;
+}
+
+/* Hovernél se mossa össze a két sort */
+body.theme-colorful .schedule-table tbody tr:hover.employee-main-row .schedule-cell:not(.weekend):not(.other-month):not(.holiday-column) {
+    background:
+        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
+        #071224 !important;
+}
+
+body.theme-colorful .schedule-table tbody tr:hover.employee-standby-row .standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column) {
+    background:
+        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
+        #050f21 !important;
+}
+
+/* Assignment cellák színe maradjon érintetlen */
+body.theme-colorful .schedule-cell-display:not(.empty-cell) {
+    background-color: inherit;
+}
+
+/* A cella fölötti kék kontúr maradjon szép */
+body.theme-colorful .schedule-cell-display.empty-cell:hover,
+body.theme-colorful .standby-cell-display.empty-cell:hover {
+    box-shadow:
+        inset 0 0 0 2px rgba(160, 220, 255, 0.95),
+        0 0 10px rgba(89, 232, 255, 0.18);
+}
+
+/* ---------- Colorful theme: teljes row-hover háttér tiltása ---------- */
+
+/* Hoverre ne változzon a felső normál sor háttérszíne */
+body.theme-colorful .schedule-table tbody tr.employee-main-row:not(.highlighted-row):hover .schedule-cell:not(.weekend):not(.other-month):not(.holiday-column) {
+    background:
+        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
+        #071224 !important;
+
+    box-shadow: none !important;
+}
+
+/* Hoverre ne változzon az alsó készenléti sor háttérszíne */
+body.theme-colorful .schedule-table tbody tr.employee-standby-row:not(.highlighted-row):hover .standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column) {
+    background:
+        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
+        #050f21 !important;
+
+    box-shadow: none !important;
+}
+
+/* Hoverre a hétvégi felső sor maradjon ugyanaz */
+body.theme-colorful .schedule-table tbody tr.employee-main-row:not(.highlighted-row):hover .schedule-cell.weekend {
+    background:
+        linear-gradient(135deg, rgba(45, 18, 44, 0.98), rgba(24, 14, 32, 0.98)),
+        #171020 !important;
+
+    box-shadow: none !important;
+}
+
+/* Hoverre a hétvégi alsó sor maradjon ugyanaz */
+body.theme-colorful .schedule-table tbody tr.employee-standby-row:not(.highlighted-row):hover .standby-placeholder-cell.weekend {
+    background:
+        linear-gradient(135deg, rgba(34, 12, 34, 0.98), rgba(17, 9, 26, 0.98)),
+        #100918 !important;
+
+    box-shadow: none !important;
+}
+
+/* Hoverre az előző/következő havi cellák se kapjanak extra kijelölést */
+body.theme-colorful .schedule-table tbody tr.employee-main-row:not(.highlighted-row):hover .schedule-cell.other-month {
+    background:
+        linear-gradient(135deg, rgba(9, 39, 54, 0.78), rgba(8, 20, 35, 0.96)),
+        #081827 !important;
+
+    box-shadow: none !important;
+}
+
+body.theme-colorful .schedule-table tbody tr.employee-standby-row:not(.highlighted-row):hover .standby-placeholder-cell.other-month {
+    background:
+        linear-gradient(135deg, rgba(5, 28, 43, 0.78), rgba(5, 14, 28, 0.96)),
+        #061421 !important;
+
+    box-shadow: none !important;
+}
+
+/* Jobb oldali összesítők hoverre ne színeződjenek át */
+body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.summary-cell:not(.row-ho-hours) {
+    background:
+        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
+        #111319 !important;
+
+    box-shadow: none !important;
+}
+
+/* HO cellák hoverre is maradjanak a saját állapot-színükön */
+body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.row-ho-hours.ho-percent-ok {
+    background:
+        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
+        #1f6a35 !important;
+}
+
+body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.row-ho-hours.ho-percent-warning {
+    background:
+        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
+        #b86f22 !important;
+}
+
+body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.row-ho-hours.ho-percent-danger {
+    background:
+        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
+        #b92f3b !important;
+}
+
+/* A konkrét egér alatti üres cella kontúrja viszont maradjon */
+body.theme-colorful .schedule-cell-display.empty-cell:hover,
+body.theme-colorful .standby-cell-display.empty-cell:hover {
+    box-shadow:
+        inset 0 0 0 2px rgba(160, 220, 255, 0.95),
+        0 0 10px rgba(89, 232, 255, 0.20) !important;
+
+    filter: none !important;
+}
+
+/* ---------- Colorful theme: végleges hover fix ---------- */
+
+/* Semmilyen sor-hover ne színezzen át cellahátteret színes nézetben */
+body.theme-colorful .schedule-table tbody tr:hover td.schedule-cell,
+body.theme-colorful .schedule-table tbody tr:hover td.standby-placeholder-cell,
+body.theme-colorful .schedule-table tbody tr:hover td.summary-cell {
+    filter: none !important;
+}
+
+/* Normál felső sor alapállapot hover alatt is */
+body.theme-colorful .schedule-table tbody tr.employee-main-row:hover td.schedule-cell:not(.weekend):not(.other-month):not(.holiday-column):not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
+        #071224 !important;
+
+    box-shadow: none !important;
+}
+
+/* Készenléti alsó sor alapállapot hover alatt is */
+body.theme-colorful .schedule-table tbody tr.employee-standby-row:hover td.standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column):not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
+        #050f21 !important;
+
+    box-shadow: none !important;
+}
+
+/* Hétvége felső sor hover alatt is */
+body.theme-colorful .schedule-table tbody tr.employee-main-row:hover td.schedule-cell.weekend:not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(45, 18, 44, 0.98), rgba(24, 14, 32, 0.98)),
+        #171020 !important;
+
+    box-shadow: none !important;
+}
+
+/* Hétvége alsó sor hover alatt is */
+body.theme-colorful .schedule-table tbody tr.employee-standby-row:hover td.standby-placeholder-cell.weekend:not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(34, 12, 34, 0.98), rgba(17, 9, 26, 0.98)),
+        #100918 !important;
+
+    box-shadow: none !important;
+}
+
+/* Aktuális nap felső sor: fix, hover nem módosítja */
+body.theme-colorful .employee-main-row td.schedule-cell.today-column,
+body.theme-colorful .employee-main-row:hover td.schedule-cell.today-column {
+    background:
+        linear-gradient(135deg, rgba(8, 37, 68, 0.98), rgba(5, 20, 42, 0.98)),
+        #082344 !important;
+
+    box-shadow:
+        inset 2px 0 0 rgba(160, 220, 255, 0.65),
+        inset -2px 0 0 rgba(160, 220, 255, 0.65) !important;
+}
+
+/* Aktuális nap alsó sor: fix, hover nem módosítja */
+body.theme-colorful .employee-standby-row td.standby-placeholder-cell.today-column,
+body.theme-colorful .employee-standby-row:hover td.standby-placeholder-cell.today-column {
+    background:
+        linear-gradient(135deg, rgba(5, 28, 55, 0.98), rgba(3, 14, 32, 0.98)),
+        #061a35 !important;
+
+    box-shadow:
+        inset 2px 0 0 rgba(160, 220, 255, 0.65),
+        inset -2px 0 0 rgba(160, 220, 255, 0.65) !important;
+}
+
+/* Jobb oldali összesítő cellák hover alatt is maradjanak fixek */
+body.theme-colorful .schedule-table tbody tr:hover td.summary-cell:not(.row-ho-hours) {
+    background:
+        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
+        #111319 !important;
+
+    box-shadow: none !important;
+}
+
+/* HO értékcellák maradjanak saját állapotszínűek hover alatt is */
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-ok,
+body.theme-colorful td.row-ho-hours.ho-percent-ok {
+    background:
+        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
+        #1f6a35 !important;
+}
+
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-warning,
+body.theme-colorful td.row-ho-hours.ho-percent-warning {
+    background:
+        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
+        #b86f22 !important;
+}
+
+body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-danger,
+body.theme-colorful td.row-ho-hours.ho-percent-danger {
+    background:
+        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
+        #b92f3b !important;
+}
+
+/* Az egér alatti KONKRÉT üres cella kapjon csak kontúrt */
+body.theme-colorful td.assignment-cell .schedule-cell-display.empty-cell:hover {
+    box-shadow:
+        inset 0 0 0 2px rgba(160, 220, 255, 0.95),
+        0 0 10px rgba(89, 232, 255, 0.20) !important;
+
+    background: transparent !important;
+    filter: none !important;
+}
