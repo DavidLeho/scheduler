@@ -31,7 +31,7 @@
 }
 
 .manage-grid {
-    height: calc(100vh - 70px);
+    height: calc(100vh - 86px);
     min-height: 0;
 
     display: grid;
@@ -265,10 +265,11 @@
     margin-top: 6px;
 }
 
-/* ---------- Shifts card ---------- */
+/* ---------- Beosztások / shifts ---------- */
 
 .manage-shifts-card,
-.manage-skills-card {
+.manage-skills-card,
+.manage-employees-card {
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -293,7 +294,173 @@
     overflow: hidden;
 }
 
-.shift-type-details-list,
+.shift-compact-list {
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-right: 8px;
+}
+
+.shift-details-card {
+    flex-shrink: 0;
+
+    border: 1px solid #3d5f96;
+    border-radius: 8px;
+
+    background: #14243d;
+
+    overflow: hidden;
+}
+
+.shift-details-card[open] {
+    background: #182b49;
+    border-color: #5e8ed8;
+
+    box-shadow:
+        0 0 0 1px rgba(100, 150, 220, 0.15),
+        0 6px 14px rgba(0, 0, 0, 0.24);
+}
+
+.shift-summary-row {
+    min-height: 42px;
+
+    display: grid;
+    grid-template-columns: 48px 82px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+
+    padding: 7px 8px;
+
+    cursor: pointer;
+    list-style: none;
+}
+
+.shift-summary-row::-webkit-details-marker {
+    display: none;
+}
+
+.shift-summary-row::marker {
+    display: none;
+    content: "";
+}
+
+.shift-summary-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.shift-summary-code {
+    font-weight: bold;
+    color: white;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shift-summary-hours {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+
+    color: #ffd56d;
+    font-weight: bold;
+}
+
+.shift-summary-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 0;
+}
+
+.shift-tag {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 20px;
+    padding: 2px 6px;
+
+    border: 1px solid #4778bd;
+    border-radius: 999px;
+
+    background: #17345a;
+    color: #cfe8ff;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.shift-tag.muted {
+    border-color: #555;
+    background: #252525;
+    color: #cfcfcf;
+}
+
+.shift-summary-edit-icon {
+    width: 28px;
+    height: 28px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    justify-self: end;
+
+    border: 1px solid #5879aa;
+    border-radius: 8px;
+
+    background: #203a61;
+
+    font-size: 15px;
+
+    transition:
+        transform 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease;
+}
+
+.shift-details-card[open] .shift-summary-edit-icon {
+    background: #315a94;
+    border-color: #8ebcff;
+    transform: rotate(18deg);
+}
+
+.shift-edit-panel {
+    padding: 12px 12px 14px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+
+    background: rgba(0, 0, 0, 0.14);
+}
+
+.shift-type-edit-form {
+    gap: 11px;
+}
+
+.shift-edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.shift-delete-form {
+    margin-top: 10px;
+}
+
+/* ---------- Skills card ---------- */
+
+.skill-description-section {
+    flex: 1;
+}
+
 .skill-description-list {
     flex: 1;
     min-height: 0;
@@ -306,29 +473,6 @@
     overflow-x: hidden;
     padding-right: 6px;
 }
-
-.shift-type-details-row {
-    padding-bottom: 14px;
-    border-bottom: 1px solid #303030;
-}
-
-.shift-inline-row {
-    display: grid;
-    grid-template-columns: 42px 64px auto;
-    align-items: center;
-    gap: 6px;
-}
-
-.shift-code-input,
-.shift-hours-input {
-    text-align: center;
-}
-
-.shift-description-input {
-    width: 100%;
-}
-
-/* ---------- Skills card ---------- */
 
 .skill-description-row {
     display: grid !important;
@@ -355,12 +499,6 @@
 
 /* ---------- Employees compact list ---------- */
 
-.manage-employees-card {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
 .manage-employee-list {
     flex: 1;
     min-height: 0;
@@ -373,9 +511,12 @@
     overflow-x: hidden;
 
     padding-right: 8px;
+    padding-bottom: 12px;
 }
 
 .employee-details-card {
+    flex-shrink: 0;
+
     border: 1px solid #3d5f96;
     border-radius: 8px;
 
@@ -513,39 +654,35 @@
 
 /* ---------- Scrollbars ---------- */
 
-.manage-skill-list::-webkit-scrollbar,
 .manage-employee-list::-webkit-scrollbar,
 .manage-new-employee-card::-webkit-scrollbar,
-.shift-type-details-list::-webkit-scrollbar,
+.shift-compact-list::-webkit-scrollbar,
 .skill-description-list::-webkit-scrollbar,
 .compact-chip-list::-webkit-scrollbar {
     width: 8px;
 }
 
-.manage-skill-list::-webkit-scrollbar-track,
 .manage-employee-list::-webkit-scrollbar-track,
 .manage-new-employee-card::-webkit-scrollbar-track,
-.shift-type-details-list::-webkit-scrollbar-track,
+.shift-compact-list::-webkit-scrollbar-track,
 .skill-description-list::-webkit-scrollbar-track,
 .compact-chip-list::-webkit-scrollbar-track {
     background: #111;
     border-radius: 8px;
 }
 
-.manage-skill-list::-webkit-scrollbar-thumb,
 .manage-employee-list::-webkit-scrollbar-thumb,
 .manage-new-employee-card::-webkit-scrollbar-thumb,
-.shift-type-details-list::-webkit-scrollbar-thumb,
+.shift-compact-list::-webkit-scrollbar-thumb,
 .skill-description-list::-webkit-scrollbar-thumb,
 .compact-chip-list::-webkit-scrollbar-thumb {
     background: #555;
     border-radius: 8px;
 }
 
-.manage-skill-list::-webkit-scrollbar-thumb:hover,
 .manage-employee-list::-webkit-scrollbar-thumb:hover,
 .manage-new-employee-card::-webkit-scrollbar-thumb:hover,
-.shift-type-details-list::-webkit-scrollbar-thumb:hover,
+.shift-compact-list::-webkit-scrollbar-thumb:hover,
 .skill-description-list::-webkit-scrollbar-thumb:hover,
 .compact-chip-list::-webkit-scrollbar-thumb:hover {
     background: #777;
@@ -638,8 +775,50 @@ body.theme-colorful .manage-card button:hover {
     border-color: rgba(255, 255, 255, 0.50);
 }
 
+body.theme-colorful .manage-header .month-button {
+    border: 1px solid rgba(89, 232, 255, 0.42);
+    border-radius: 8px;
+
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.35), rgba(89, 47, 255, 0.28)),
+        #10233e;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 12px rgba(0, 194, 255, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    text-decoration: none;
+}
+
+body.theme-colorful .manage-header .month-button:hover {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.52), rgba(255, 47, 160, 0.32)),
+        #15345e;
+
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+body.theme-colorful .manage-header .month-button:nth-child(2) {
+    background:
+        linear-gradient(135deg, rgba(125, 56, 255, 0.34), rgba(255, 47, 160, 0.26)),
+        #21163e;
+
+    border-color: rgba(255, 98, 194, 0.45);
+}
+
+body.theme-colorful .manage-header .month-button:nth-child(2):hover {
+    background:
+        linear-gradient(135deg, rgba(125, 56, 255, 0.48), rgba(255, 47, 160, 0.38)),
+        #30194e;
+
+    border-color: rgba(255, 160, 220, 0.65);
+}
+
 body.theme-colorful .compact-chip,
-body.theme-colorful .employee-details-card {
+body.theme-colorful .employee-details-card,
+body.theme-colorful .shift-details-card {
     background:
         linear-gradient(135deg, rgba(13, 32, 64, 0.96), rgba(15, 20, 46, 0.98)),
         #0a1930;
@@ -651,7 +830,8 @@ body.theme-colorful .employee-details-card {
         0 0 10px rgba(0, 194, 255, 0.06);
 }
 
-body.theme-colorful .employee-details-card[open] {
+body.theme-colorful .employee-details-card[open],
+body.theme-colorful .shift-details-card[open] {
     border-color: rgba(89, 232, 255, 0.58);
 
     background:
@@ -663,12 +843,14 @@ body.theme-colorful .employee-details-card[open] {
         inset 0 0 0 1px rgba(255, 255, 255, 0.035);
 }
 
-body.theme-colorful .employee-summary-row:hover {
+body.theme-colorful .employee-summary-row:hover,
+body.theme-colorful .shift-summary-row:hover {
     background:
         linear-gradient(90deg, rgba(0, 194, 255, 0.10), rgba(255, 47, 160, 0.06));
 }
 
-body.theme-colorful .employee-summary-edit-icon {
+body.theme-colorful .employee-summary-edit-icon,
+body.theme-colorful .shift-summary-edit-icon {
     background:
         linear-gradient(135deg, rgba(0, 194, 255, 0.20), rgba(125, 56, 255, 0.22)),
         #10233e;
@@ -676,7 +858,8 @@ body.theme-colorful .employee-summary-edit-icon {
     border-color: rgba(89, 232, 255, 0.45);
 }
 
-body.theme-colorful .employee-details-card[open] .employee-summary-edit-icon {
+body.theme-colorful .employee-details-card[open] .employee-summary-edit-icon,
+body.theme-colorful .shift-details-card[open] .shift-summary-edit-icon {
     background:
         linear-gradient(135deg, rgba(0, 194, 255, 0.40), rgba(255, 47, 160, 0.28)),
         #15345e;
@@ -684,20 +867,38 @@ body.theme-colorful .employee-details-card[open] .employee-summary-edit-icon {
     border-color: rgba(255, 255, 255, 0.55);
 }
 
-body.theme-colorful .employee-summary-skills {
+body.theme-colorful .employee-summary-skills,
+body.theme-colorful .shift-summary-tags {
     color: #8ff4ff;
 }
 
-body.theme-colorful .employee-summary-vacation {
+body.theme-colorful .employee-summary-vacation,
+body.theme-colorful .shift-summary-hours {
     color: #ffd35a;
 }
 
-body.theme-colorful .employee-edit-panel {
+body.theme-colorful .employee-edit-panel,
+body.theme-colorful .shift-edit-panel {
     border-top-color: rgba(89, 232, 255, 0.20);
 
     background:
         linear-gradient(135deg, rgba(0, 194, 255, 0.06), rgba(255, 47, 160, 0.04)),
         rgba(0, 0, 0, 0.18);
+}
+
+body.theme-colorful .shift-tag {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.22), rgba(125, 56, 255, 0.18)),
+        #10233e;
+
+    border-color: rgba(89, 232, 255, 0.36);
+    color: #e8fbff;
+}
+
+body.theme-colorful .shift-tag.muted {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(126, 177, 255, 0.24);
+    color: #b8cce0;
 }
 
 body.theme-colorful .danger-button,
@@ -753,86 +954,4 @@ body.theme-colorful *::-webkit-scrollbar-thumb:hover {
 
 body.theme-colorful *::-webkit-scrollbar-corner {
     background: #071326;
-}
-
-/* ---------- Colorful theme: felső manage navigációs gombok ---------- */
-
-body.theme-colorful .manage-header .month-button {
-    border: 1px solid rgba(89, 232, 255, 0.42);
-    border-radius: 8px;
-
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.35), rgba(89, 47, 255, 0.28)),
-        #10233e;
-
-    color: #ffffff;
-
-    box-shadow:
-        0 0 12px rgba(0, 194, 255, 0.22),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-
-    text-decoration: none;
-}
-
-body.theme-colorful .manage-header .month-button:hover {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.52), rgba(255, 47, 160, 0.32)),
-        #15345e;
-
-    border-color: rgba(255, 255, 255, 0.55);
-}
-
-/* Excel export legyen kicsit lilásabb, hogy elkülönüljön */
-body.theme-colorful .manage-header .month-button:nth-child(2) {
-    background:
-        linear-gradient(135deg, rgba(125, 56, 255, 0.34), rgba(255, 47, 160, 0.26)),
-        #21163e;
-
-    border-color: rgba(255, 98, 194, 0.45);
-}
-
-body.theme-colorful .manage-header .month-button:nth-child(2):hover {
-    background:
-        linear-gradient(135deg, rgba(125, 56, 255, 0.48), rgba(255, 47, 160, 0.38)),
-        #30194e;
-
-    border-color: rgba(255, 160, 220, 0.65);
-}
-
-/* ---------- Manage employees list scroll fix ---------- */
-
-.manage-employees-card {
-    min-height: 0;
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-}
-
-.manage-employees-card h2 {
-    flex-shrink: 0;
-}
-
-.manage-employee-list {
-    flex: 1;
-    min-height: 0;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    padding-right: 8px;
-    padding-bottom: 12px;
-}
-
-/* Ha a böngésző alacsonyabb / sok dolgozó van, akkor se nyomja szét az oldalt */
-.manage-grid {
-    min-height: 0;
-    overflow: hidden;
-}
-
-/* A details elemek ne akarják kitolni a teljes oldalt */
-.employee-details-card {
-    flex-shrink: 0;
 }
