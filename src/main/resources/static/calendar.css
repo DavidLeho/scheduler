@@ -1583,12 +1583,43 @@ body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-da
         0 0 12px rgba(255, 55, 90, 0.14);
 }
 
-/* A HO fejléc maradjon külön zöldes */
-body.theme-colorful .schedule-table th.summary-ho-column {
-    background:
-        linear-gradient(135deg, rgba(20, 96, 55, 0.96), rgba(13, 62, 37, 0.98)),
-        #164d2e !important;
 
-    color: #ffffff !important;
-    border-color: rgba(89, 255, 150, 0.35) !important;
+
+/* ---------- Colorful theme: egységes csúszkák manage oldalon ---------- */
+
+body.theme-colorful * {
+    scrollbar-width: thin;
+    scrollbar-color: #00c2ff #071326;
+}
+
+/* Chrome / Edge / Safari */
+body.theme-colorful *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-track {
+    background: #071326;
+    border-radius: 999px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
+
+    border-radius: 999px;
+    border: 2px solid #071326;
+
+    box-shadow:
+        0 0 8px rgba(0, 194, 255, 0.35),
+        0 0 10px rgba(255, 47, 160, 0.20);
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb:hover {
+    background:
+        linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
+}
+
+body.theme-colorful *::-webkit-scrollbar-corner {
+    background: #071326;
 }

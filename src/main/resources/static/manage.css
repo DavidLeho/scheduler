@@ -540,3 +540,255 @@
 .shift-type-details-row button {
     grid-column: span 3;
 }
+
+/* ---------- Colorful theme for manage page ---------- */
+
+body.theme-colorful {
+    background:
+        radial-gradient(circle at top left, rgba(0, 194, 255, 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgba(255, 47, 160, 0.14), transparent 32%),
+        linear-gradient(135deg, #071326, #0b1022 45%, #14071f);
+
+    color: #f5f8ff;
+}
+
+body.theme-colorful .manage-page {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.07), rgba(255, 47, 160, 0.05)),
+        rgba(5, 12, 26, 0.72);
+
+    border: 1px solid rgba(89, 232, 255, 0.28);
+    border-radius: 14px;
+
+    box-shadow:
+        0 0 24px rgba(0, 194, 255, 0.14),
+        0 0 34px rgba(255, 47, 160, 0.10),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+}
+
+body.theme-colorful .manage-header,
+body.theme-colorful .top-actions,
+body.theme-colorful .manage-top-actions {
+    background:
+        linear-gradient(90deg, rgba(16, 46, 92, 0.55), rgba(38, 18, 70, 0.35)),
+        rgba(5, 10, 22, 0.6);
+
+    border: 1px solid rgba(89, 232, 255, 0.18);
+    border-radius: 12px;
+
+    box-shadow: 0 0 18px rgba(0, 194, 255, 0.10);
+}
+
+body.theme-colorful h1,
+body.theme-colorful h2,
+body.theme-colorful h3 {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(89, 232, 255, 0.25);
+}
+
+body.theme-colorful a,
+body.theme-colorful button,
+body.theme-colorful input[type="submit"] {
+    border-color: rgba(89, 232, 255, 0.35);
+
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.30), rgba(125, 56, 255, 0.22)),
+        #10233e;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 10px rgba(0, 194, 255, 0.16),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+body.theme-colorful a:hover,
+body.theme-colorful button:hover,
+body.theme-colorful input[type="submit"]:hover {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.48), rgba(255, 47, 160, 0.30)),
+        #15345e;
+
+    border-color: rgba(255, 255, 255, 0.50);
+}
+
+body.theme-colorful .manage-grid,
+body.theme-colorful .manage-layout {
+    background: transparent;
+}
+
+body.theme-colorful .manage-card,
+body.theme-colorful .panel,
+body.theme-colorful .card,
+body.theme-colorful section {
+    background:
+        linear-gradient(135deg, rgba(8, 23, 48, 0.96), rgba(12, 12, 30, 0.98)),
+        #071326;
+
+    border: 1px solid rgba(89, 232, 255, 0.20);
+    border-radius: 12px;
+
+    box-shadow:
+        0 0 18px rgba(0, 194, 255, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+body.theme-colorful label {
+    color: #e8fbff;
+}
+
+body.theme-colorful input[type="text"],
+body.theme-colorful input[type="number"],
+body.theme-colorful textarea,
+body.theme-colorful select {
+    background:
+        linear-gradient(135deg, rgba(7, 19, 38, 0.98), rgba(12, 16, 32, 0.98)),
+        #091426;
+
+    border: 1px solid rgba(126, 177, 255, 0.35);
+    border-radius: 5px;
+
+    color: #ffffff;
+}
+
+body.theme-colorful input[type="text"]:focus,
+body.theme-colorful input[type="number"]:focus,
+body.theme-colorful textarea:focus,
+body.theme-colorful select:focus {
+    outline: none;
+
+    border-color: rgba(89, 232, 255, 0.85);
+
+    box-shadow:
+        0 0 0 2px rgba(89, 232, 255, 0.16),
+        0 0 14px rgba(89, 232, 255, 0.16);
+}
+
+body.theme-colorful input::placeholder,
+body.theme-colorful textarea::placeholder {
+    color: #7f9bb8;
+}
+
+body.theme-colorful .employee-card,
+body.theme-colorful .employee-form,
+body.theme-colorful .employee-edit-card,
+body.theme-colorful .shift-type-card,
+body.theme-colorful .skill-card,
+body.theme-colorful .skill-description-row {
+    background:
+        linear-gradient(135deg, rgba(13, 32, 64, 0.96), rgba(15, 20, 46, 0.98)),
+        #0a1930;
+
+    border: 1px solid rgba(126, 177, 255, 0.30);
+    border-radius: 8px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+        0 0 10px rgba(0, 194, 255, 0.06);
+}
+
+body.theme-colorful .employee-card:hover,
+body.theme-colorful .employee-edit-card:hover,
+body.theme-colorful .shift-type-card:hover,
+body.theme-colorful .skill-card:hover {
+    border-color: rgba(89, 232, 255, 0.52);
+    box-shadow:
+        0 0 14px rgba(0, 194, 255, 0.14),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+body.theme-colorful .chip,
+body.theme-colorful .skill-chip,
+body.theme-colorful .shift-chip {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.22), rgba(125, 56, 255, 0.18)),
+        #10233e;
+
+    border: 1px solid rgba(89, 232, 255, 0.36);
+    color: #e8fbff;
+}
+
+body.theme-colorful .delete-button,
+body.theme-colorful .danger-button,
+body.theme-colorful button[name="delete"],
+body.theme-colorful .chip-delete-button {
+    background:
+        linear-gradient(135deg, rgba(255, 47, 100, 0.40), rgba(125, 56, 255, 0.22)),
+        #421331;
+
+    border-color: rgba(255, 98, 140, 0.55);
+    color: #ffffff;
+}
+
+body.theme-colorful .delete-button:hover,
+body.theme-colorful .danger-button:hover,
+body.theme-colorful button[name="delete"]:hover,
+body.theme-colorful .chip-delete-button:hover {
+    background:
+        linear-gradient(135deg, rgba(255, 47, 100, 0.62), rgba(255, 47, 160, 0.34)),
+        #5a173f;
+
+    border-color: rgba(255, 160, 190, 0.75);
+}
+
+body.theme-colorful .success-message {
+    background: rgba(35, 120, 58, 0.28);
+    border-color: rgba(89, 255, 150, 0.42);
+    color: #caffdd;
+}
+
+body.theme-colorful .error-message {
+    background: rgba(220, 55, 70, 0.22);
+    border-color: rgba(255, 105, 120, 0.45);
+    color: #ffd0d6;
+}
+
+body.theme-colorful ::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
+
+    border-radius: 999px;
+}
+
+body.theme-colorful ::-webkit-scrollbar-track {
+    background: #071326;
+}
+
+/* ---------- Colorful theme: egységes csúszkák manage oldalon ---------- */
+
+body.theme-colorful * {
+    scrollbar-width: thin;
+    scrollbar-color: #00c2ff #071326;
+}
+
+/* Chrome / Edge / Safari */
+body.theme-colorful *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-track {
+    background: #071326;
+    border-radius: 999px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
+
+    border-radius: 999px;
+    border: 2px solid #071326;
+
+    box-shadow:
+        0 0 8px rgba(0, 194, 255, 0.35),
+        0 0 10px rgba(255, 47, 160, 0.20);
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb:hover {
+    background:
+        linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
+}
+
+body.theme-colorful *::-webkit-scrollbar-corner {
+    background: #071326;
+}
