@@ -242,19 +242,12 @@
 }
 
 .checkbox-row label,
-.checkbox-column label,
 .skill-checkboxes label {
     flex-direction: row;
     align-items: center;
     gap: 5px;
 
     font-weight: bold;
-}
-
-.checkbox-column {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
 }
 
 .skill-checkboxes {
@@ -404,35 +397,6 @@
     color: #cfcfcf;
 }
 
-.shift-summary-edit-icon {
-    width: 28px;
-    height: 28px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    justify-self: end;
-
-    border: 1px solid #5879aa;
-    border-radius: 8px;
-
-    background: #203a61;
-
-    font-size: 15px;
-
-    transition:
-        transform 0.16s ease,
-        background 0.16s ease,
-        border-color 0.16s ease;
-}
-
-.shift-details-card[open] .shift-summary-edit-icon {
-    background: #315a94;
-    border-color: #8ebcff;
-    transform: rotate(18deg);
-}
-
 .shift-edit-panel {
     padding: 12px 12px 14px;
 
@@ -449,6 +413,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+}
+
+.shift-action-row,
+.shift-delete-form {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .shift-delete-form {
@@ -618,6 +588,10 @@
 }
 
 .employee-edit-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
     padding: 12px 14px 14px;
 
     border-top: 1px solid rgba(255, 255, 255, 0.09);
@@ -626,6 +600,8 @@
 }
 
 .employee-edit-form {
+    display: flex;
+    flex-direction: column;
     gap: 12px;
 }
 
@@ -635,15 +611,41 @@
     gap: 12px;
 }
 
+.employee-action-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+
+    margin-top: 4px;
+}
+
 .employee-delete-form {
-    margin-top: 10px;
+    margin: 0;
+}
+
+.employee-action-row button,
+.shift-action-row button,
+.shift-delete-form button {
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+
+    height: 34px;
+    min-height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 12px;
+    margin: 0;
+
+    text-align: center;
+    white-space: nowrap;
 }
 
 .danger-button {
-    align-self: flex-start;
-
-    min-width: 130px;
-
     background: #7d2340 !important;
     border-color: #d05b86 !important;
 }
@@ -849,8 +851,7 @@ body.theme-colorful .shift-summary-row:hover {
         linear-gradient(90deg, rgba(0, 194, 255, 0.10), rgba(255, 47, 160, 0.06));
 }
 
-body.theme-colorful .employee-summary-edit-icon,
-body.theme-colorful .shift-summary-edit-icon {
+body.theme-colorful .employee-summary-edit-icon {
     background:
         linear-gradient(135deg, rgba(0, 194, 255, 0.20), rgba(125, 56, 255, 0.22)),
         #10233e;
@@ -858,8 +859,7 @@ body.theme-colorful .shift-summary-edit-icon {
     border-color: rgba(89, 232, 255, 0.45);
 }
 
-body.theme-colorful .employee-details-card[open] .employee-summary-edit-icon,
-body.theme-colorful .shift-details-card[open] .shift-summary-edit-icon {
+body.theme-colorful .employee-details-card[open] .employee-summary-edit-icon {
     background:
         linear-gradient(135deg, rgba(0, 194, 255, 0.40), rgba(255, 47, 160, 0.28)),
         #15345e;

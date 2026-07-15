@@ -114,7 +114,6 @@
                                 Normál
                             </span>
                         </span>
-
           </summary>
 
           <div class="shift-edit-panel">
@@ -178,7 +177,10 @@
                        placeholder="Leírás">
               </label>
 
-              <button type="submit">Módosítás mentése</button>
+              <div class="shift-action-row">
+                <form></form>
+                <button type="submit">Módosítás mentése</button>
+              </div>
             </form>
 
             <form class="shift-delete-form"
@@ -317,7 +319,11 @@
         </summary>
 
         <div class="employee-edit-panel">
-          <form class="employee-edit-form" action="/employees/update" method="post">
+          <form class="employee-edit-form"
+                th:id="${'employee-edit-form-' + employee.id}"
+                action="/employees/update"
+                method="post">
+
             <input type="hidden" name="id" th:value="${employee.id}">
             <input type="hidden" name="year" th:value="${year}">
             <input type="hidden" name="month" th:value="${month}">
@@ -351,20 +357,29 @@
                 </label>
               </div>
             </div>
-
-            <button type="submit">Módosítás mentése</button>
           </form>
 
-          <form class="employee-delete-form"
-                action="/employees/delete"
-                method="post"
-                onsubmit="return confirm('Biztosan törlöd ezt a dolgozót? A hozzá tartozó beosztások is törlődnek.');">
-            <input type="hidden" name="id" th:value="${employee.id}">
-            <input type="hidden" name="year" th:value="${year}">
-            <input type="hidden" name="month" th:value="${month}">
+          <div class="employee-action-row">
+            <form class="employee-delete-form"
+                  action="/employees/delete"
+                  method="post"
+                  onsubmit="return confirm('Biztosan törlöd ezt a dolgozót? A hozzá tartozó beosztások is törlődnek.');">
 
-            <button class="danger-button" type="submit">Dolgozó törlése</button>
-          </form>
+              <input type="hidden" name="id" th:value="${employee.id}">
+              <input type="hidden" name="year" th:value="${year}">
+              <input type="hidden" name="month" th:value="${month}">
+
+              <button class="danger-button" type="submit">
+                Dolgozó törlése
+              </button>
+            </form>
+
+            <button class="primary-action-button"
+                    type="submit"
+                    th:attr="form=${'employee-edit-form-' + employee.id}">
+              Módosítás mentése
+            </button>
+          </div>
         </div>
       </details>
     </div>
