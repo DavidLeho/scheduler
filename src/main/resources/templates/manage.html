@@ -9,14 +9,16 @@
 <body class="manage-page">
 
 <header class="manage-header">
-  <a class="month-button"
-     th:href="@{/(year=${year}, month=${month})}">
-    ← Vissza a naptárhoz
-  </a>
+  <div class="manage-header-actions">
+    <a class="month-button"
+       th:href="@{/(year=${year}, month=${month})}">
+      ← Vissza a naptárhoz
+    </a>
 
-  <a class="month-button" href="/export/excel">
-    Excel export
-  </a>
+    <a class="month-button" href="/export/excel">
+      Excel export
+    </a>
+  </div>
 
   <h1>Dolgozók kezelése</h1>
 </header>
@@ -55,7 +57,7 @@
         <input type="text" name="description" placeholder="pl. 12 órás nappali">
       </label>
 
-      <div class="shift-type-checkboxes">
+      <div class="checkbox-row">
         <label>
           <input type="checkbox" name="night">
           Éjszakai
@@ -75,8 +77,8 @@
       <button type="submit">Műszak hozzáadása</button>
     </form>
 
-    <div class="shift-type-badge-list">
-      <div class="shift-type-badge" th:each="shiftType : ${manageableShiftTypes}">
+    <div class="compact-chip-list">
+      <div class="compact-chip" th:each="shiftType : ${manageableShiftTypes}">
         <span th:text="${shiftType.code}">A</span>
 
         <form action="/shift-types/delete"
@@ -91,7 +93,7 @@
       </div>
     </div>
 
-    <div class="shift-type-details-section">
+    <div class="details-section">
       <h3>Műszak részletek</h3>
 
       <div class="shift-type-details-list">
@@ -104,43 +106,47 @@
           <input type="hidden" name="year" th:value="${year}">
           <input type="hidden" name="month" th:value="${month}">
 
-          <input class="shift-code-input"
-                 type="text"
-                 name="code"
-                 maxlength="10"
-                 th:value="${shiftType.code}"
-                 required>
+          <div class="shift-inline-row">
+            <input class="shift-code-input"
+                   type="text"
+                   name="code"
+                   maxlength="10"
+                   th:value="${shiftType.code}"
+                   required>
 
-          <input class="shift-hours-input"
-                 type="number"
-                 name="hours"
-                 min="0"
-                 step="0.5"
-                 th:value="${shiftType.hours}"
-                 required>
+            <input class="shift-hours-input"
+                   type="number"
+                   name="hours"
+                   min="0"
+                   step="0.5"
+                   th:value="${shiftType.hours}"
+                   required>
 
-          <span>óra</span>
+            <span>óra</span>
+          </div>
 
-          <label>
-            <input type="checkbox"
-                   name="night"
-                   th:checked="${shiftType.night}">
-            éj
-          </label>
+          <div class="checkbox-column">
+            <label>
+              <input type="checkbox"
+                     name="night"
+                     th:checked="${shiftType.night}">
+              éj
+            </label>
 
-          <label>
-            <input type="checkbox"
-                   name="standby"
-                   th:checked="${shiftType.standby}">
-            készenlét
-          </label>
+            <label>
+              <input type="checkbox"
+                     name="standby"
+                     th:checked="${shiftType.standby}">
+              készenlét
+            </label>
 
-          <label>
-            <input type="checkbox"
-                   name="homeOffice"
-                   th:checked="${shiftType.homeOffice}">
-            HO
-          </label>
+            <label>
+              <input type="checkbox"
+                     name="homeOffice"
+                     th:checked="${shiftType.homeOffice}">
+              HO
+            </label>
+          </div>
 
           <input class="shift-description-input"
                  type="text"
@@ -174,8 +180,8 @@
       <button type="submit">Skill hozzáadása</button>
     </form>
 
-    <div class="manage-skill-list">
-      <div class="skill-item" th:each="skill : ${skills}">
+    <div class="compact-chip-list skill-chip-list">
+      <div class="compact-chip" th:each="skill : ${skills}">
         <span th:text="${skill}">A</span>
 
         <form action="/skills/delete"
@@ -190,7 +196,7 @@
       </div>
     </div>
 
-    <div class="skill-description-section">
+    <div class="details-section skill-description-section">
       <h3>Skill leírások</h3>
 
       <div class="skill-description-list">
@@ -252,55 +258,79 @@
     <h2>Dolgozók</h2>
 
     <div class="manage-employee-list">
-      <div class="employee-card" th:each="employee : ${employees}">
 
-        <form class="employee-form" action="/employees/update" method="post">
-          <input type="hidden" name="id" th:value="${employee.id}">
-          <input type="hidden" name="year" th:value="${year}">
-          <input type="hidden" name="month" th:value="${month}">
+      <details class="employee-details-card" th:each="employee : ${employees}">
+        <summary class="employee-summary-row">
+                    <span class="employee-summary-name" th:text="${employee.name}">
+                        Béla
+                    </span>
 
-          <label>
-            Név:
-            <input type="text" name="name" th:value="${employee.name}" required>
-          </label>
+          <span class="employee-summary-vacation">
+                        <strong th:text="${employee.vacationHours}">160</strong>
+                        <span>óra</span>
+                    </span>
 
-          <label>
-            Szabadság órában:
-            <input type="number"
-                   name="vacationHours"
-                   min="0"
-                   th:value="${employee.vacationHours}"
-                   required>
-          </label>
+          <span class="employee-summary-skills" th:text="${employee.skillsDisplayText}">
+                        A/B
+                    </span>
 
-          <div>
-            <strong>Skillek:</strong>
+          <span class="employee-summary-edit-icon" title="Szerkesztés">
+                        🔧
+                    </span>
+        </summary>
 
-            <div class="skill-checkboxes">
-              <label th:each="skill : ${skills}">
-                <input type="checkbox"
-                       name="selectedSkills"
-                       th:value="${skill}"
-                       th:checked="${employee.skills.contains(skill)}">
-                <span th:text="${skill}">A</span>
+        <div class="employee-edit-panel">
+          <form class="employee-edit-form" action="/employees/update" method="post">
+            <input type="hidden" name="id" th:value="${employee.id}">
+            <input type="hidden" name="year" th:value="${year}">
+            <input type="hidden" name="month" th:value="${month}">
+
+            <div class="employee-edit-grid">
+              <label>
+                Név:
+                <input type="text" name="name" th:value="${employee.name}" required>
+              </label>
+
+              <label>
+                Szabadság órában:
+                <input type="number"
+                       name="vacationHours"
+                       min="0"
+                       th:value="${employee.vacationHours}"
+                       required>
               </label>
             </div>
-          </div>
 
-          <button type="submit">Módosítás mentése</button>
-        </form>
+            <div>
+              <strong>Skillek:</strong>
 
-        <form action="/employees/delete"
-              method="post"
-              onsubmit="return confirm('Biztosan törlöd ezt a dolgozót? A hozzá tartozó beosztások is törlődnek.');">
-          <input type="hidden" name="id" th:value="${employee.id}">
-          <input type="hidden" name="year" th:value="${year}">
-          <input type="hidden" name="month" th:value="${month}">
+              <div class="skill-checkboxes">
+                <label th:each="skill : ${skills}">
+                  <input type="checkbox"
+                         name="selectedSkills"
+                         th:value="${skill}"
+                         th:checked="${employee.skills.contains(skill)}">
+                  <span th:text="${skill}">A</span>
+                </label>
+              </div>
+            </div>
 
-          <button type="submit">Dolgozó törlése</button>
-        </form>
+            <button type="submit">Módosítás mentése</button>
+          </form>
 
-      </div>
+          <form class="employee-delete-form"
+                action="/employees/delete"
+                method="post"
+                onsubmit="return confirm('Biztosan törlöd ezt a dolgozót? A hozzá tartozó beosztások is törlődnek.');">
+            <input type="hidden" name="id" th:value="${employee.id}">
+            <input type="hidden" name="year" th:value="${year}">
+            <input type="hidden" name="month" th:value="${month}">
+
+            <button class="danger-button" type="submit">Dolgozó törlése</button>
+          </form>
+        </div>
+      </details>
+
     </div>
   </section>
 

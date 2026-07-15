@@ -1,24 +1,28 @@
-/* =========================================================
-   manage.css - Dolgozók kezelése oldal
-   ========================================================= */
+/* ---------- Manage page layout ---------- */
 
-body.manage-page {
+.manage-page {
     height: 100vh;
-    padding: 24px;
+    padding: 20px;
     overflow: hidden;
 
     background: #1f1f1f;
     color: white;
 }
 
-/* ---------- fejléc ---------- */
-
 .manage-header {
-    height: 48px;
+    height: 46px;
+
     display: flex;
     align-items: center;
     gap: 24px;
-    margin-bottom: 24px;
+
+    margin-bottom: 16px;
+}
+
+.manage-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .manage-header h1 {
@@ -26,25 +30,22 @@ body.manage-page {
     font-size: 26px;
 }
 
-/* ---------- layout ---------- */
-
 .manage-grid {
-    height: calc(100vh - 96px);
+    height: calc(100vh - 70px);
     min-height: 0;
 
     display: grid;
-    grid-template-columns: 260px 260px 300px minmax(0, 1fr);
-    gap: 24px;
+    grid-template-columns: 260px 260px 300px minmax(520px, 1fr);
+    gap: 20px;
 
     overflow: hidden;
 }
 
+/* ---------- Cards ---------- */
+
 .manage-card {
     min-height: 0;
     overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
 
     background: #111;
     border-radius: 8px;
@@ -56,6 +57,7 @@ body.manage-page {
 .manage-card h2 {
     margin: 0 0 16px 0;
     flex-shrink: 0;
+    font-size: 24px;
 }
 
 .manage-card h3 {
@@ -63,13 +65,65 @@ body.manage-page {
     font-size: 18px;
 }
 
-/* ---------- üzenetek ---------- */
+/* ---------- Forms ---------- */
+
+.manage-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.manage-card label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    font-weight: bold;
+}
+
+.manage-card input[type="text"],
+.manage-card input[type="number"] {
+    width: 100%;
+    min-width: 0;
+
+    padding: 7px 8px;
+
+    border: 1px solid #666;
+    border-radius: 4px;
+
+    background: #2c2c2c;
+    color: white;
+}
+
+.manage-card input[type="checkbox"] {
+    width: auto;
+}
+
+.manage-card button {
+    min-height: 30px;
+
+    border: 1px solid #666;
+    border-radius: 6px;
+
+    background: #5c5c5c;
+    color: white;
+
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.manage-card button:hover {
+    background: #707070;
+}
+
+/* ---------- Messages ---------- */
 
 .message-area {
     position: fixed;
-    top: 22px;
+    top: 18px;
     left: 50%;
     transform: translateX(-50%);
+
     z-index: 999;
 
     display: flex;
@@ -80,13 +134,15 @@ body.manage-page {
 .message {
     min-width: 280px;
     max-width: 520px;
-    padding: 12px 18px;
 
+    padding: 12px 18px;
     border-radius: 8px;
+
     font-weight: bold;
     text-align: center;
 
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+
     animation: messageFadeOut 0.4s ease forwards;
     animation-delay: 3s;
 }
@@ -116,122 +172,120 @@ body.manage-page {
     }
 }
 
-/* ---------- formok ---------- */
+/* ---------- Shared compact chips ---------- */
 
-.shift-type-form,
-.skill-form,
-.employee-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 14px;
+.compact-chip-list {
     flex-shrink: 0;
-}
-
-.shift-type-form label,
-.skill-form label,
-.employee-form label {
-    font-weight: bold;
-}
-
-.shift-type-form input[type="text"],
-.shift-type-form input[type="number"],
-.skill-form input[type="text"],
-.employee-form input[type="text"],
-.employee-form input[type="number"] {
-    width: 100%;
-    margin-top: 4px;
-}
-
-.shift-type-form button,
-.shift-type-details-row button,
-.skill-form button,
-.skill-description-row button,
-.employee-form button {
-    padding: 8px 10px;
-
-    border: none;
-    border-radius: 6px;
-
-    background: #555;
-    color: white;
-
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.shift-type-form button:hover,
-.shift-type-details-row button:hover,
-.skill-form button:hover,
-.skill-description-row button:hover,
-.employee-form button:hover {
-    background: #333;
-}
-
-.shift-type-checkboxes,
-.skill-checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 10px;
-}
-
-.shift-type-checkboxes label,
-.skill-checkboxes label {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-/* ---------- műszakok ---------- */
-
-.manage-shifts-card {
-    min-height: 0;
-}
-
-.shift-type-badge-list {
-    flex: 0 0 90px;
-    min-height: 70px;
-    max-height: 90px;
 
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
     gap: 6px;
 
+    max-height: 95px;
     overflow-y: auto;
     overflow-x: hidden;
 
+    margin-top: 12px;
     padding-right: 6px;
-    margin-top: 8px;
 }
 
-.shift-type-badge,
-.skill-item {
+.compact-chip {
     display: inline-flex;
     align-items: center;
     gap: 6px;
 
-    background: #182235;
-    border: 1px solid #6f8fc9;
+    min-height: 28px;
+    padding: 3px 6px;
+
+    border: 1px solid #315a94;
+    border-radius: 6px;
+
+    background: #142845;
     color: white;
 
-    border-radius: 6px;
-    padding: 5px 7px;
-    font-size: 13px;
+    font-weight: bold;
 }
 
-.shift-type-badge form,
-.skill-item form {
+.compact-chip form {
+    display: inline-flex;
     margin: 0;
 }
 
-.shift-type-details-section,
-.skill-description-section {
+.small-delete-button {
+    width: 20px;
+    height: 20px;
+    min-height: 20px !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none !important;
+    border-radius: 50% !important;
+
+    background: #d64545 !important;
+    color: white !important;
+
+    font-size: 12px;
+    line-height: 1;
+}
+
+/* ---------- Checkboxes ---------- */
+
+.checkbox-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+}
+
+.checkbox-row label,
+.checkbox-column label,
+.skill-checkboxes label {
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+
+    font-weight: bold;
+}
+
+.checkbox-column {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.skill-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+
+    margin-top: 6px;
+}
+
+/* ---------- Shifts card ---------- */
+
+.manage-shifts-card,
+.manage-skills-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.shift-type-form,
+.skill-form {
+    flex-shrink: 0;
+}
+
+.details-section {
     flex: 1;
     min-height: 0;
 
     margin-top: 14px;
     padding-top: 14px;
+
     border-top: 1px solid #333;
 
     display: flex;
@@ -246,7 +300,7 @@ body.manage-page {
 
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
 
     overflow-y: auto;
     overflow-x: hidden;
@@ -254,88 +308,56 @@ body.manage-page {
 }
 
 .shift-type-details-row {
-    flex-shrink: 0;
-
-    display: grid;
-    grid-template-columns: 40px 54px auto;
-    gap: 6px;
-    align-items: center;
-
-    padding-bottom: 8px;
-    border-bottom: 1px solid #333;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #303030;
 }
 
-.shift-type-details-row label {
-    grid-column: 1 / -1;
-    display: inline-flex;
+.shift-inline-row {
+    display: grid;
+    grid-template-columns: 42px 64px auto;
     align-items: center;
-    gap: 4px;
-    font-size: 13px;
+    gap: 6px;
+}
+
+.shift-code-input,
+.shift-hours-input {
+    text-align: center;
 }
 
 .shift-description-input {
-    grid-column: 1 / -1;
     width: 100%;
 }
 
-.shift-type-details-row button {
-    grid-column: 1 / -1;
-    width: 100%;
-}
-
-.shift-code-input {
-    width: 40px;
-}
-
-.shift-hours-input {
-    width: 54px;
-}
-
-/* ---------- skillek ---------- */
-
-.manage-skill-list {
-    flex: 0 0 120px;
-    min-height: 80px;
-    max-height: 120px;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 6px;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 6px;
-}
+/* ---------- Skills card ---------- */
 
 .skill-description-row {
-    flex-shrink: 0;
-
-    display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) auto;
-    gap: 8px;
+    display: grid !important;
+    grid-template-columns: 28px minmax(0, 1fr) 68px;
     align-items: center;
+    gap: 8px;
 }
 
 .skill-description-name {
     font-weight: bold;
-    color: #dbe8ff;
+    color: #dfe9ff;
 }
 
-.skill-description-row input[type="text"] {
-    min-width: 0;
-}
-
-/* ---------- új dolgozó ---------- */
+/* ---------- New employee ---------- */
 
 .manage-new-employee-card {
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-/* ---------- dolgozók ---------- */
+.employee-form {
+    gap: 12px;
+}
+
+/* ---------- Employees compact list ---------- */
 
 .manage-employees-card {
+    display: flex;
+    flex-direction: column;
     min-height: 0;
 }
 
@@ -343,51 +365,193 @@ body.manage-page {
     flex: 1;
     min-height: 0;
 
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 6px;
-}
-
-.employee-card {
-    background: #182235;
-    border: 1px solid #6f8fc9;
-    border-radius: 6px;
-
-    padding: 10px;
-    margin-bottom: 10px;
-
     display: flex;
     flex-direction: column;
     gap: 8px;
 
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-right: 8px;
+}
+
+.employee-details-card {
+    border: 1px solid #3d5f96;
+    border-radius: 8px;
+
+    background: #14243d;
+
+    overflow: hidden;
+}
+
+.employee-details-card[open] {
+    background: #182b49;
+    border-color: #5e8ed8;
+
+    box-shadow:
+        0 0 0 1px rgba(100, 150, 220, 0.15),
+        0 6px 14px rgba(0, 0, 0, 0.24);
+}
+
+.employee-summary-row {
+    min-height: 46px;
+
+    display: grid;
+    grid-template-columns: minmax(150px, 1fr) 110px minmax(140px, 220px) 42px;
+    align-items: center;
+    gap: 12px;
+
+    padding: 8px 10px;
+
+    cursor: pointer;
+    list-style: none;
+}
+
+.employee-summary-row::-webkit-details-marker {
+    display: none;
+}
+
+.employee-summary-row::marker {
+    display: none;
+    content: "";
+}
+
+.employee-summary-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.employee-summary-name {
+    font-weight: bold;
     color: white;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.employee-card form {
-    margin: 0;
+.employee-summary-vacation {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+
+    color: #ffd56d;
+    font-weight: bold;
 }
 
-.employee-card .employee-form {
-    margin-bottom: 4px;
+.employee-summary-skills {
+    color: #aeeaff;
+    font-weight: bold;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.employee-card button[type="submit"] {
-    width: 100%;
+.employee-summary-edit-icon {
+    width: 32px;
+    height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    justify-self: end;
+
+    border: 1px solid #5879aa;
+    border-radius: 8px;
+
+    background: #203a61;
+
+    font-size: 16px;
+
+    transition:
+        transform 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease;
 }
 
-.employee-card > form:last-child button[type="submit"] {
-    width: auto;
-    padding: 6px 10px;
-    background: #666;
+.employee-details-card[open] .employee-summary-edit-icon {
+    background: #315a94;
+    border-color: #8ebcff;
+    transform: rotate(18deg);
 }
 
-.employee-card > form:last-child button[type="submit"]:hover {
-    background: #8b2f2f;
+.employee-edit-panel {
+    padding: 12px 14px 14px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+
+    background: rgba(0, 0, 0, 0.14);
 }
 
-/* =========================================================
-   SZÍNES TÉMA - manage
-   ========================================================= */
+.employee-edit-form {
+    gap: 12px;
+}
+
+.employee-edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    gap: 12px;
+}
+
+.employee-delete-form {
+    margin-top: 10px;
+}
+
+.danger-button {
+    align-self: flex-start;
+
+    min-width: 130px;
+
+    background: #7d2340 !important;
+    border-color: #d05b86 !important;
+}
+
+.danger-button:hover {
+    background: #a82f56 !important;
+}
+
+/* ---------- Scrollbars ---------- */
+
+.manage-skill-list::-webkit-scrollbar,
+.manage-employee-list::-webkit-scrollbar,
+.manage-new-employee-card::-webkit-scrollbar,
+.shift-type-details-list::-webkit-scrollbar,
+.skill-description-list::-webkit-scrollbar,
+.compact-chip-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.manage-skill-list::-webkit-scrollbar-track,
+.manage-employee-list::-webkit-scrollbar-track,
+.manage-new-employee-card::-webkit-scrollbar-track,
+.shift-type-details-list::-webkit-scrollbar-track,
+.skill-description-list::-webkit-scrollbar-track,
+.compact-chip-list::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 8px;
+}
+
+.manage-skill-list::-webkit-scrollbar-thumb,
+.manage-employee-list::-webkit-scrollbar-thumb,
+.manage-new-employee-card::-webkit-scrollbar-thumb,
+.shift-type-details-list::-webkit-scrollbar-thumb,
+.skill-description-list::-webkit-scrollbar-thumb,
+.compact-chip-list::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 8px;
+}
+
+.manage-skill-list::-webkit-scrollbar-thumb:hover,
+.manage-employee-list::-webkit-scrollbar-thumb:hover,
+.manage-new-employee-card::-webkit-scrollbar-thumb:hover,
+.shift-type-details-list::-webkit-scrollbar-thumb:hover,
+.skill-description-list::-webkit-scrollbar-thumb:hover,
+.compact-chip-list::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* ---------- Colorful theme for manage page ---------- */
 
 body.theme-colorful.manage-page {
     background:
@@ -399,8 +563,7 @@ body.theme-colorful.manage-page {
 }
 
 body.theme-colorful .manage-header {
-    padding: 10px 12px;
-    height: 58px;
+    padding: 8px 12px;
 
     background:
         linear-gradient(90deg, rgba(16, 46, 92, 0.55), rgba(38, 18, 70, 0.35)),
@@ -419,32 +582,6 @@ body.theme-colorful h3 {
     text-shadow: 0 0 10px rgba(89, 232, 255, 0.25);
 }
 
-body.theme-colorful .month-button,
-body.theme-colorful button,
-body.theme-colorful input[type="submit"] {
-    border-color: rgba(89, 232, 255, 0.35);
-
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.30), rgba(125, 56, 255, 0.22)),
-        #10233e;
-
-    color: #ffffff;
-
-    box-shadow:
-        0 0 10px rgba(0, 194, 255, 0.16),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-}
-
-body.theme-colorful .month-button:hover,
-body.theme-colorful button:hover,
-body.theme-colorful input[type="submit"]:hover {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.48), rgba(255, 47, 160, 0.30)),
-        #15345e;
-
-    border-color: rgba(255, 255, 255, 0.50);
-}
-
 body.theme-colorful .manage-card {
     background:
         linear-gradient(135deg, rgba(8, 23, 48, 0.96), rgba(12, 12, 30, 0.98)),
@@ -458,29 +595,20 @@ body.theme-colorful .manage-card {
         inset 0 0 0 1px rgba(255, 255, 255, 0.025);
 }
 
-body.theme-colorful label {
-    color: #e8fbff;
-}
-
-body.theme-colorful input[type="text"],
-body.theme-colorful input[type="number"],
-body.theme-colorful textarea,
-body.theme-colorful select {
+body.theme-colorful .manage-card input[type="text"],
+body.theme-colorful .manage-card input[type="number"] {
     background:
         linear-gradient(135deg, rgba(7, 19, 38, 0.98), rgba(12, 16, 32, 0.98)),
         #091426;
 
     border: 1px solid rgba(126, 177, 255, 0.35);
-    border-radius: 5px;
-
     color: #ffffff;
 }
 
-body.theme-colorful input[type="text"]:focus,
-body.theme-colorful input[type="number"]:focus,
-body.theme-colorful textarea:focus,
-body.theme-colorful select:focus {
+body.theme-colorful .manage-card input[type="text"]:focus,
+body.theme-colorful .manage-card input[type="number"]:focus {
     outline: none;
+
     border-color: rgba(89, 232, 255, 0.85);
 
     box-shadow:
@@ -488,62 +616,223 @@ body.theme-colorful select:focus {
         0 0 14px rgba(89, 232, 255, 0.16);
 }
 
-body.theme-colorful input::placeholder,
-body.theme-colorful textarea::placeholder {
-    color: #7f9bb8;
+body.theme-colorful .manage-card button {
+    border-color: rgba(89, 232, 255, 0.35);
+
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.30), rgba(125, 56, 255, 0.22)),
+        #10233e;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 10px rgba(0, 194, 255, 0.16),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-body.theme-colorful .employee-card,
-body.theme-colorful .shift-type-badge,
-body.theme-colorful .skill-item,
-body.theme-colorful .skill-description-row,
-body.theme-colorful .shift-type-details-row {
+body.theme-colorful .manage-card button:hover {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.48), rgba(255, 47, 160, 0.30)),
+        #15345e;
+
+    border-color: rgba(255, 255, 255, 0.50);
+}
+
+body.theme-colorful .compact-chip,
+body.theme-colorful .employee-details-card {
     background:
         linear-gradient(135deg, rgba(13, 32, 64, 0.96), rgba(15, 20, 46, 0.98)),
         #0a1930;
 
-    border: 1px solid rgba(126, 177, 255, 0.30);
-    border-radius: 8px;
+    border-color: rgba(126, 177, 255, 0.30);
 
     box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.025),
         0 0 10px rgba(0, 194, 255, 0.06);
 }
 
-body.theme-colorful .employee-card:hover,
-body.theme-colorful .shift-type-badge:hover,
-body.theme-colorful .skill-item:hover {
-    border-color: rgba(89, 232, 255, 0.52);
+body.theme-colorful .employee-details-card[open] {
+    border-color: rgba(89, 232, 255, 0.58);
+
+    background:
+        linear-gradient(135deg, rgba(18, 44, 86, 0.98), rgba(22, 20, 58, 0.98)),
+        #10284a;
+
     box-shadow:
-        0 0 14px rgba(0, 194, 255, 0.14),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        0 0 16px rgba(0, 194, 255, 0.16),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.035);
 }
 
+body.theme-colorful .employee-summary-row:hover {
+    background:
+        linear-gradient(90deg, rgba(0, 194, 255, 0.10), rgba(255, 47, 160, 0.06));
+}
+
+body.theme-colorful .employee-summary-edit-icon {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.20), rgba(125, 56, 255, 0.22)),
+        #10233e;
+
+    border-color: rgba(89, 232, 255, 0.45);
+}
+
+body.theme-colorful .employee-details-card[open] .employee-summary-edit-icon {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.40), rgba(255, 47, 160, 0.28)),
+        #15345e;
+
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+body.theme-colorful .employee-summary-skills {
+    color: #8ff4ff;
+}
+
+body.theme-colorful .employee-summary-vacation {
+    color: #ffd35a;
+}
+
+body.theme-colorful .employee-edit-panel {
+    border-top-color: rgba(89, 232, 255, 0.20);
+
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.06), rgba(255, 47, 160, 0.04)),
+        rgba(0, 0, 0, 0.18);
+}
+
+body.theme-colorful .danger-button,
 body.theme-colorful .small-delete-button {
     background:
-        linear-gradient(135deg, rgba(255, 47, 100, 0.65), rgba(125, 56, 255, 0.24)),
-        #421331;
-
-    border-color: rgba(255, 98, 140, 0.55);
-    color: #ffffff;
-}
-
-body.theme-colorful .employee-card > form:last-child button[type="submit"] {
-    background:
         linear-gradient(135deg, rgba(255, 47, 100, 0.40), rgba(125, 56, 255, 0.22)),
-        #421331;
+        #421331 !important;
 
-    border-color: rgba(255, 98, 140, 0.55);
+    border-color: rgba(255, 98, 140, 0.55) !important;
+    color: #ffffff !important;
 }
 
-body.theme-colorful .success-message {
-    background: rgba(35, 120, 58, 0.28);
-    border-color: rgba(89, 255, 150, 0.42);
-    color: #caffdd;
+body.theme-colorful .danger-button:hover,
+body.theme-colorful .small-delete-button:hover {
+    background:
+        linear-gradient(135deg, rgba(255, 47, 100, 0.62), rgba(255, 47, 160, 0.34)),
+        #5a173f !important;
+
+    border-color: rgba(255, 160, 190, 0.75) !important;
 }
 
-body.theme-colorful .error-message {
-    background: rgba(220, 55, 70, 0.22);
-    border-color: rgba(255, 105, 120, 0.45);
-    color: #ffd0d6;
+body.theme-colorful * {
+    scrollbar-width: thin;
+    scrollbar-color: #00c2ff #071326;
+}
+
+body.theme-colorful *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-track {
+    background: #071326;
+    border-radius: 999px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
+
+    border-radius: 999px;
+    border: 2px solid #071326;
+
+    box-shadow:
+        0 0 8px rgba(0, 194, 255, 0.35),
+        0 0 10px rgba(255, 47, 160, 0.20);
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb:hover {
+    background:
+        linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
+}
+
+body.theme-colorful *::-webkit-scrollbar-corner {
+    background: #071326;
+}
+
+/* ---------- Colorful theme: felső manage navigációs gombok ---------- */
+
+body.theme-colorful .manage-header .month-button {
+    border: 1px solid rgba(89, 232, 255, 0.42);
+    border-radius: 8px;
+
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.35), rgba(89, 47, 255, 0.28)),
+        #10233e;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 12px rgba(0, 194, 255, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    text-decoration: none;
+}
+
+body.theme-colorful .manage-header .month-button:hover {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.52), rgba(255, 47, 160, 0.32)),
+        #15345e;
+
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+/* Excel export legyen kicsit lilásabb, hogy elkülönüljön */
+body.theme-colorful .manage-header .month-button:nth-child(2) {
+    background:
+        linear-gradient(135deg, rgba(125, 56, 255, 0.34), rgba(255, 47, 160, 0.26)),
+        #21163e;
+
+    border-color: rgba(255, 98, 194, 0.45);
+}
+
+body.theme-colorful .manage-header .month-button:nth-child(2):hover {
+    background:
+        linear-gradient(135deg, rgba(125, 56, 255, 0.48), rgba(255, 47, 160, 0.38)),
+        #30194e;
+
+    border-color: rgba(255, 160, 220, 0.65);
+}
+
+/* ---------- Manage employees list scroll fix ---------- */
+
+.manage-employees-card {
+    min-height: 0;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.manage-employees-card h2 {
+    flex-shrink: 0;
+}
+
+.manage-employee-list {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-right: 8px;
+    padding-bottom: 12px;
+}
+
+/* Ha a böngésző alacsonyabb / sok dolgozó van, akkor se nyomja szét az oldalt */
+.manage-grid {
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* A details elemek ne akarják kitolni a teljes oldalt */
+.employee-details-card {
+    flex-shrink: 0;
 }
