@@ -1,6 +1,8 @@
-/* ---------- Manage page layout ---------- */
+/* =========================================================
+   manage.css - Dolgozók kezelése oldal
+   ========================================================= */
 
-.manage-page {
+body.manage-page {
     height: 100vh;
     padding: 24px;
     overflow: hidden;
@@ -8,6 +10,8 @@
     background: #1f1f1f;
     color: white;
 }
+
+/* ---------- fejléc ---------- */
 
 .manage-header {
     height: 48px;
@@ -22,6 +26,8 @@
     font-size: 26px;
 }
 
+/* ---------- layout ---------- */
+
 .manage-grid {
     height: calc(100vh - 96px);
     min-height: 0;
@@ -33,11 +39,12 @@
     overflow: hidden;
 }
 
-/* ---------- Cards ---------- */
-
 .manage-card {
     min-height: 0;
     overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
 
     background: #111;
     border-radius: 8px;
@@ -47,98 +54,22 @@
 }
 
 .manage-card h2 {
-    margin-top: 0;
+    margin: 0 0 16px 0;
     flex-shrink: 0;
 }
 
-/* ---------- Skills card ---------- */
-
-.manage-skills-card {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+.manage-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
 }
 
-.manage-skills-card .skill-form {
-    flex-shrink: 0;
-}
-
-.manage-skill-list {
-    flex: 1;
-    min-height: 0;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 6px;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 6px;
-}
-
-/* ---------- New employee card ---------- */
-
-.manage-new-employee-card {
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-/* ---------- Employees card ---------- */
-
-.manage-employees-card {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
-.manage-employee-list {
-    flex: 1;
-    min-height: 0;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 6px;
-}
-
-/* ---------- Manage scrollbars ---------- */
-
-.manage-skill-list::-webkit-scrollbar,
-.manage-employee-list::-webkit-scrollbar,
-.manage-new-employee-card::-webkit-scrollbar {
-    width: 8px;
-}
-
-.manage-skill-list::-webkit-scrollbar-track,
-.manage-employee-list::-webkit-scrollbar-track,
-.manage-new-employee-card::-webkit-scrollbar-track {
-    background: #111;
-    border-radius: 8px;
-}
-
-.manage-skill-list::-webkit-scrollbar-thumb,
-.manage-employee-list::-webkit-scrollbar-thumb,
-.manage-new-employee-card::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 8px;
-}
-
-.manage-skill-list::-webkit-scrollbar-thumb:hover,
-.manage-employee-list::-webkit-scrollbar-thumb:hover,
-.manage-new-employee-card::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
-
-/* ---------- Messages ---------- */
-
-/* ---------- Messages ---------- */
+/* ---------- üzenetek ---------- */
 
 .message-area {
     position: fixed;
     top: 22px;
     left: 50%;
     transform: translateX(-50%);
-
     z-index: 999;
 
     display: flex;
@@ -149,15 +80,13 @@
 .message {
     min-width: 280px;
     max-width: 520px;
-
     padding: 12px 18px;
-    border-radius: 8px;
 
+    border-radius: 8px;
     font-weight: bold;
     text-align: center;
 
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
-
     animation: messageFadeOut 0.4s ease forwards;
     animation-delay: 3s;
 }
@@ -187,219 +116,38 @@
     }
 }
 
-.message {
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-weight: bold;
-}
+/* ---------- formok ---------- */
 
-.success-message {
-    background: #16381f;
-    border: 1px solid #2fa84f;
-    color: #d9ffe2;
-}
-
-.error-message {
-    background: #421919;
-    border: 1px solid #cc4444;
-    color: #ffe1e1;
-}
-
-/* ---------- Skill descriptions ---------- */
-
-/* ---------- Skills card layout fix ---------- */
-
-.manage-skills-card {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
-.manage-skills-card .skill-form {
-    flex-shrink: 0;
-}
-
-/* A felső skill betűs lista kapjon fix, scrollozható területet */
-.manage-skill-list {
-    flex: 0 0 120px;
-    min-height: 80px;
-    max-height: 120px;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 6px;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 6px;
-}
-
-/* ---------- Skill descriptions ---------- */
-
-.skill-description-section {
-    flex: 1;
-    min-height: 0;
-
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid #333;
-
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.skill-description-section h3 {
-    flex-shrink: 0;
-
-    margin: 0 0 10px 0;
-    font-size: 18px;
-}
-
-.skill-description-list {
-    flex: 1;
-    min-height: 0;
-
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 6px;
-}
-
-.skill-description-row {
-    flex-shrink: 0;
-
-    display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) auto;
-    gap: 8px;
-    align-items: center;
-}
-
-.skill-description-name {
-    font-weight: bold;
-    color: #dbe8ff;
-}
-
-.skill-description-row input[type="text"] {
-    min-width: 0;
-    padding: 6px 8px;
-
-    background: #333;
-    color: white;
-
-    border: 1px solid #777;
-    border-radius: 4px;
-}
-
-.skill-description-row button {
-    padding: 6px 9px;
-
-    border: none;
-    border-radius: 5px;
-
-    background: #555;
-    color: white;
-
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.skill-description-row button:hover {
-    background: #333;
-}
-
-.skill-description-section h3 {
-    margin: 0 0 10px 0;
-    font-size: 18px;
-}
-
-.skill-description-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.skill-description-row {
-    display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) auto;
-    gap: 8px;
-    align-items: center;
-}
-
-.skill-description-name {
-    font-weight: bold;
-    color: #dbe8ff;
-}
-
-.skill-description-row input[type="text"] {
-    min-width: 0;
-    padding: 6px 8px;
-
-    background: #333;
-    color: white;
-
-    border: 1px solid #777;
-    border-radius: 4px;
-}
-
-.skill-description-row button {
-    padding: 6px 9px;
-
-    border: none;
-    border-radius: 5px;
-
-    background: #555;
-    color: white;
-
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.skill-description-row button:hover {
-    background: #333;
-}
-
-/* ---------- Shift type config ---------- */
-
-.manage-shifts-card {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    overflow: hidden;
-}
-
-.shift-type-form {
-    flex-shrink: 0;
-
+.shift-type-form,
+.skill-form,
+.employee-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
 }
 
-.shift-type-form label {
+.shift-type-form label,
+.skill-form label,
+.employee-form label {
     font-weight: bold;
 }
 
 .shift-type-form input[type="text"],
-.shift-type-form input[type="number"] {
+.shift-type-form input[type="number"],
+.skill-form input[type="text"],
+.employee-form input[type="text"],
+.employee-form input[type="number"] {
     width: 100%;
-    padding: 7px;
     margin-top: 4px;
-
-    background: #333;
-    color: white;
-
-    border: 1px solid #777;
-    border-radius: 3px;
 }
 
 .shift-type-form button,
-.shift-type-details-row button {
+.shift-type-details-row button,
+.skill-form button,
+.skill-description-row button,
+.employee-form button {
     padding: 8px 10px;
 
     border: none;
@@ -413,20 +161,31 @@
 }
 
 .shift-type-form button:hover,
-.shift-type-details-row button:hover {
+.shift-type-details-row button:hover,
+.skill-form button:hover,
+.skill-description-row button:hover,
+.employee-form button:hover {
     background: #333;
 }
 
-.shift-type-checkboxes {
+.shift-type-checkboxes,
+.skill-checkboxes {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 8px 10px;
 }
 
-.shift-type-checkboxes label {
-    display: flex;
+.shift-type-checkboxes label,
+.skill-checkboxes label {
+    display: inline-flex;
     align-items: center;
     gap: 4px;
+}
+
+/* ---------- műszakok ---------- */
+
+.manage-shifts-card {
+    min-height: 0;
 }
 
 .shift-type-badge-list {
@@ -446,8 +205,9 @@
     margin-top: 8px;
 }
 
-.shift-type-badge {
-    display: flex;
+.shift-type-badge,
+.skill-item {
+    display: inline-flex;
     align-items: center;
     gap: 6px;
 
@@ -460,17 +220,18 @@
     font-size: 13px;
 }
 
-.shift-type-badge form {
+.shift-type-badge form,
+.skill-item form {
     margin: 0;
 }
 
-.shift-type-details-section {
+.shift-type-details-section,
+.skill-description-section {
     flex: 1;
     min-height: 0;
 
     margin-top: 14px;
     padding-top: 14px;
-
     border-top: 1px solid #333;
 
     display: flex;
@@ -478,14 +239,8 @@
     overflow: hidden;
 }
 
-.shift-type-details-section h3 {
-    flex-shrink: 0;
-
-    margin: 0 0 10px 0;
-    font-size: 18px;
-}
-
-.shift-type-details-list {
+.shift-type-details-list,
+.skill-description-list {
     flex: 1;
     min-height: 0;
 
@@ -495,7 +250,6 @@
 
     overflow-y: auto;
     overflow-x: hidden;
-
     padding-right: 6px;
 }
 
@@ -503,47 +257,139 @@
     flex-shrink: 0;
 
     display: grid;
-    grid-template-columns: 38px 58px auto;
+    grid-template-columns: 40px 54px auto;
     gap: 6px;
     align-items: center;
 
     padding-bottom: 8px;
-    border-bottom: 1px solid #2c2c2c;
+    border-bottom: 1px solid #333;
 }
 
 .shift-type-details-row label {
-    display: flex;
+    grid-column: 1 / -1;
+    display: inline-flex;
     align-items: center;
     gap: 4px;
-
-    font-size: 12px;
-    grid-column: span 3;
-}
-
-.shift-code-input,
-.shift-hours-input,
-.shift-description-input {
-    min-width: 0;
-    padding: 6px 8px;
-
-    background: #333;
-    color: white;
-
-    border: 1px solid #777;
-    border-radius: 4px;
+    font-size: 13px;
 }
 
 .shift-description-input {
-    grid-column: span 3;
+    grid-column: 1 / -1;
+    width: 100%;
 }
 
 .shift-type-details-row button {
-    grid-column: span 3;
+    grid-column: 1 / -1;
+    width: 100%;
 }
 
-/* ---------- Colorful theme for manage page ---------- */
+.shift-code-input {
+    width: 40px;
+}
 
-body.theme-colorful {
+.shift-hours-input {
+    width: 54px;
+}
+
+/* ---------- skillek ---------- */
+
+.manage-skill-list {
+    flex: 0 0 120px;
+    min-height: 80px;
+    max-height: 120px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 6px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+}
+
+.skill-description-row {
+    flex-shrink: 0;
+
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.skill-description-name {
+    font-weight: bold;
+    color: #dbe8ff;
+}
+
+.skill-description-row input[type="text"] {
+    min-width: 0;
+}
+
+/* ---------- új dolgozó ---------- */
+
+.manage-new-employee-card {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ---------- dolgozók ---------- */
+
+.manage-employees-card {
+    min-height: 0;
+}
+
+.manage-employee-list {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+}
+
+.employee-card {
+    background: #182235;
+    border: 1px solid #6f8fc9;
+    border-radius: 6px;
+
+    padding: 10px;
+    margin-bottom: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    color: white;
+}
+
+.employee-card form {
+    margin: 0;
+}
+
+.employee-card .employee-form {
+    margin-bottom: 4px;
+}
+
+.employee-card button[type="submit"] {
+    width: 100%;
+}
+
+.employee-card > form:last-child button[type="submit"] {
+    width: auto;
+    padding: 6px 10px;
+    background: #666;
+}
+
+.employee-card > form:last-child button[type="submit"]:hover {
+    background: #8b2f2f;
+}
+
+/* =========================================================
+   SZÍNES TÉMA - manage
+   ========================================================= */
+
+body.theme-colorful.manage-page {
     background:
         radial-gradient(circle at top left, rgba(0, 194, 255, 0.16), transparent 34%),
         radial-gradient(circle at top right, rgba(255, 47, 160, 0.14), transparent 32%),
@@ -552,23 +398,10 @@ body.theme-colorful {
     color: #f5f8ff;
 }
 
-body.theme-colorful .manage-page {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.07), rgba(255, 47, 160, 0.05)),
-        rgba(5, 12, 26, 0.72);
+body.theme-colorful .manage-header {
+    padding: 10px 12px;
+    height: 58px;
 
-    border: 1px solid rgba(89, 232, 255, 0.28);
-    border-radius: 14px;
-
-    box-shadow:
-        0 0 24px rgba(0, 194, 255, 0.14),
-        0 0 34px rgba(255, 47, 160, 0.10),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.035);
-}
-
-body.theme-colorful .manage-header,
-body.theme-colorful .top-actions,
-body.theme-colorful .manage-top-actions {
     background:
         linear-gradient(90deg, rgba(16, 46, 92, 0.55), rgba(38, 18, 70, 0.35)),
         rgba(5, 10, 22, 0.6);
@@ -586,7 +419,7 @@ body.theme-colorful h3 {
     text-shadow: 0 0 10px rgba(89, 232, 255, 0.25);
 }
 
-body.theme-colorful a,
+body.theme-colorful .month-button,
 body.theme-colorful button,
 body.theme-colorful input[type="submit"] {
     border-color: rgba(89, 232, 255, 0.35);
@@ -602,7 +435,7 @@ body.theme-colorful input[type="submit"] {
         inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-body.theme-colorful a:hover,
+body.theme-colorful .month-button:hover,
 body.theme-colorful button:hover,
 body.theme-colorful input[type="submit"]:hover {
     background:
@@ -612,15 +445,7 @@ body.theme-colorful input[type="submit"]:hover {
     border-color: rgba(255, 255, 255, 0.50);
 }
 
-body.theme-colorful .manage-grid,
-body.theme-colorful .manage-layout {
-    background: transparent;
-}
-
-body.theme-colorful .manage-card,
-body.theme-colorful .panel,
-body.theme-colorful .card,
-body.theme-colorful section {
+body.theme-colorful .manage-card {
     background:
         linear-gradient(135deg, rgba(8, 23, 48, 0.96), rgba(12, 12, 30, 0.98)),
         #071326;
@@ -656,7 +481,6 @@ body.theme-colorful input[type="number"]:focus,
 body.theme-colorful textarea:focus,
 body.theme-colorful select:focus {
     outline: none;
-
     border-color: rgba(89, 232, 255, 0.85);
 
     box-shadow:
@@ -670,11 +494,10 @@ body.theme-colorful textarea::placeholder {
 }
 
 body.theme-colorful .employee-card,
-body.theme-colorful .employee-form,
-body.theme-colorful .employee-edit-card,
-body.theme-colorful .shift-type-card,
-body.theme-colorful .skill-card,
-body.theme-colorful .skill-description-row {
+body.theme-colorful .shift-type-badge,
+body.theme-colorful .skill-item,
+body.theme-colorful .skill-description-row,
+body.theme-colorful .shift-type-details-row {
     background:
         linear-gradient(135deg, rgba(13, 32, 64, 0.96), rgba(15, 20, 46, 0.98)),
         #0a1930;
@@ -688,47 +511,29 @@ body.theme-colorful .skill-description-row {
 }
 
 body.theme-colorful .employee-card:hover,
-body.theme-colorful .employee-edit-card:hover,
-body.theme-colorful .shift-type-card:hover,
-body.theme-colorful .skill-card:hover {
+body.theme-colorful .shift-type-badge:hover,
+body.theme-colorful .skill-item:hover {
     border-color: rgba(89, 232, 255, 0.52);
     box-shadow:
         0 0 14px rgba(0, 194, 255, 0.14),
         inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-body.theme-colorful .chip,
-body.theme-colorful .skill-chip,
-body.theme-colorful .shift-chip {
+body.theme-colorful .small-delete-button {
     background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.22), rgba(125, 56, 255, 0.18)),
-        #10233e;
-
-    border: 1px solid rgba(89, 232, 255, 0.36);
-    color: #e8fbff;
-}
-
-body.theme-colorful .delete-button,
-body.theme-colorful .danger-button,
-body.theme-colorful button[name="delete"],
-body.theme-colorful .chip-delete-button {
-    background:
-        linear-gradient(135deg, rgba(255, 47, 100, 0.40), rgba(125, 56, 255, 0.22)),
+        linear-gradient(135deg, rgba(255, 47, 100, 0.65), rgba(125, 56, 255, 0.24)),
         #421331;
 
     border-color: rgba(255, 98, 140, 0.55);
     color: #ffffff;
 }
 
-body.theme-colorful .delete-button:hover,
-body.theme-colorful .danger-button:hover,
-body.theme-colorful button[name="delete"]:hover,
-body.theme-colorful .chip-delete-button:hover {
+body.theme-colorful .employee-card > form:last-child button[type="submit"] {
     background:
-        linear-gradient(135deg, rgba(255, 47, 100, 0.62), rgba(255, 47, 160, 0.34)),
-        #5a173f;
+        linear-gradient(135deg, rgba(255, 47, 100, 0.40), rgba(125, 56, 255, 0.22)),
+        #421331;
 
-    border-color: rgba(255, 160, 190, 0.75);
+    border-color: rgba(255, 98, 140, 0.55);
 }
 
 body.theme-colorful .success-message {
@@ -741,54 +546,4 @@ body.theme-colorful .error-message {
     background: rgba(220, 55, 70, 0.22);
     border-color: rgba(255, 105, 120, 0.45);
     color: #ffd0d6;
-}
-
-body.theme-colorful ::-webkit-scrollbar-thumb {
-    background:
-        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
-
-    border-radius: 999px;
-}
-
-body.theme-colorful ::-webkit-scrollbar-track {
-    background: #071326;
-}
-
-/* ---------- Colorful theme: egységes csúszkák manage oldalon ---------- */
-
-body.theme-colorful * {
-    scrollbar-width: thin;
-    scrollbar-color: #00c2ff #071326;
-}
-
-/* Chrome / Edge / Safari */
-body.theme-colorful *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-track {
-    background: #071326;
-    border-radius: 999px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb {
-    background:
-        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
-
-    border-radius: 999px;
-    border: 2px solid #071326;
-
-    box-shadow:
-        0 0 8px rgba(0, 194, 255, 0.35),
-        0 0 10px rgba(255, 47, 160, 0.20);
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb:hover {
-    background:
-        linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
-}
-
-body.theme-colorful *::-webkit-scrollbar-corner {
-    background: #071326;
 }

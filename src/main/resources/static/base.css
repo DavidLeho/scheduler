@@ -1,4 +1,6 @@
-/* ---------- Global reset ---------- */
+/* =========================================================
+   base.css - közös alapok mindkét oldalhoz
+   ========================================================= */
 
 * {
     box-sizing: border-box;
@@ -17,8 +19,6 @@ body {
     overflow: hidden;
 }
 
-/* ---------- Basic elements ---------- */
-
 h1,
 h2,
 h3 {
@@ -32,24 +32,33 @@ hr {
     margin: 12px 0;
 }
 
-/* ---------- Buttons ---------- */
-
-button {
+button,
+input,
+textarea,
+select {
     font-family: inherit;
 }
 
+/* ---------- közös gombok ---------- */
+
 .month-button,
 .manage-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     padding: 9px 14px;
 
+    border: none;
     border-radius: 6px;
+
     background: #333;
     color: white;
 
     text-decoration: none;
     font-weight: bold;
     white-space: nowrap;
+    cursor: pointer;
 }
 
 .month-button:hover,
@@ -57,22 +66,22 @@ button {
     background: #555;
 }
 
-/* ---------- Delete buttons ---------- */
-
 .delete-assignment-button,
 .small-delete-button {
-    border: none;
-    background: #cc3333;
-    color: white;
-
-    border-radius: 50%;
     width: 20px;
     height: 20px;
     line-height: 18px;
 
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #cc3333;
+    color: white;
+
     cursor: pointer;
     font-weight: bold;
-    flex-shrink: 0;
 }
 
 .delete-assignment-button:hover,
@@ -80,54 +89,27 @@ button {
     background: #991f1f;
 }
 
-/* ---------- Forms ---------- */
+/* ---------- közös form alapok ---------- */
 
-.skill-form,
-.employee-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-
-.skill-form label,
-.employee-form label {
-    font-weight: bold;
-}
-
-.skill-form input[type="text"],
-.employee-form input[type="text"]
-.employee-form input[type="number"]{
-    width: 100%;
-    padding: 7px;
-    margin-top: 4px;
-
+input[type="text"],
+input[type="number"],
+textarea,
+select {
     background: #333;
     color: white;
     border: 1px solid #777;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
-.skill-form button,
-.employee-form button {
-    width: 100%;
-    padding: 8px 10px;
-
-    border: none;
-    border-radius: 6px;
-    background: #555;
-    color: white;
-
-    cursor: pointer;
-    font-weight: bold;
+input[type="text"],
+input[type="number"] {
+    padding: 6px 8px;
 }
 
-.skill-form button:hover,
-.employee-form button:hover {
-    background: #333;
+input::placeholder,
+textarea::placeholder {
+    color: #9a9a9a;
 }
-
-/* ---------- Skill checkboxes ---------- */
 
 .skill-checkboxes {
     display: flex;
@@ -136,130 +118,80 @@ button {
 }
 
 .skill-checkboxes label {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 4px;
 }
 
-/* ---------- Skill badges ---------- */
+/* ---------- közös scrollbar alap ---------- */
 
-.skill-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    background: #182235;
-    border: 1px solid #6f8fc9;
-    color: white;
-
-    border-radius: 6px;
-    padding: 5px 7px;
-    font-size: 13px;
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #666 #111;
 }
 
-.skill-item form {
-    margin: 0;
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
 }
 
-/* ---------- Employee cards ---------- */
-
-.employee-card {
-    background: #182235;
-    border: 1px solid #6f8fc9;
-    border-radius: 6px;
-
-    padding: 10px;
-    margin-bottom: 10px;
-
-    user-select: none;
-
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    color: white;
-    max-width: 100%;
-    overflow: hidden;
-}
-
-.employee-card[draggable="true"] {
-    cursor: grab;
-}
-
-.employee-card[draggable="true"]:active {
-    cursor: grabbing;
-}
-
-.employee-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    width: 100%;
-}
-
-.employee-card-top form {
-    margin: 0;
-}
-
-.employee-card-name {
-    font-weight: bold;
-    font-size: 15px;
-    line-height: 1.25;
-
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-.employee-card-skills {
-    font-size: 13px;
-    line-height: 1.25;
-    opacity: 0.85;
-
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-/* ---------- Scrollbars ---------- */
-
-.skill-list::-webkit-scrollbar,
-.employee-list::-webkit-scrollbar,
-.assigned-list::-webkit-scrollbar,
-.manage-scroll-list::-webkit-scrollbar,
-.manage-new-employee-card::-webkit-scrollbar {
-    width: 8px;
-}
-
-.skill-list::-webkit-scrollbar-track,
-.employee-list::-webkit-scrollbar-track,
-.assigned-list::-webkit-scrollbar-track,
-.manage-scroll-list::-webkit-scrollbar-track,
-.manage-new-employee-card::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
     background: #111;
-    border-radius: 8px;
 }
 
-.skill-list::-webkit-scrollbar-thumb,
-.employee-list::-webkit-scrollbar-thumb,
-.assigned-list::-webkit-scrollbar-thumb,
-.manage-scroll-list::-webkit-scrollbar-thumb,
-.manage-new-employee-card::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     background: #555;
-    border-radius: 8px;
+    border-radius: 999px;
+    border: 2px solid #111;
 }
 
-.skill-list::-webkit-scrollbar-thumb:hover,
-.employee-list::-webkit-scrollbar-thumb:hover,
-.assigned-list::-webkit-scrollbar-thumb:hover,
-.manage-scroll-list::-webkit-scrollbar-thumb:hover,
-.manage-new-employee-card::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
     background: #777;
 }
 
-.employee-card-vacation {
-    font-size: 13px;
-    line-height: 1.25;
-    opacity: 0.85;
+*::-webkit-scrollbar-corner {
+    background: #111;
+}
+
+/* ---------- színes téma közös alap ---------- */
+
+body.theme-colorful {
+    background:
+        radial-gradient(circle at top left, rgba(0, 194, 255, 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgba(255, 47, 160, 0.14), transparent 32%),
+        linear-gradient(135deg, #071326, #0b1022 45%, #14071f);
+
+    color: #f5f8ff;
+}
+
+body.theme-colorful * {
+    scrollbar-width: thin;
+    scrollbar-color: #00c2ff #071326;
+}
+
+body.theme-colorful *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-track {
+    background: #071326;
+    border-radius: 999px;
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
+    border-radius: 999px;
+    border: 2px solid #071326;
+    box-shadow:
+        0 0 8px rgba(0, 194, 255, 0.35),
+        0 0 10px rgba(255, 47, 160, 0.20);
+}
+
+body.theme-colorful *::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
+}
+
+body.theme-colorful *::-webkit-scrollbar-corner {
+    background: #071326;
 }

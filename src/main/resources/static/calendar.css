@@ -1,4 +1,8 @@
-/* ---------- Schedule page ---------- */
+/* =========================================================
+   calendar.css - naptár oldal
+   ========================================================= */
+
+/* ---------- oldal / fejléc ---------- */
 
 .schedule-page {
     height: 100vh;
@@ -12,53 +16,62 @@
     color: white;
 }
 
-/* ---------- Header ---------- */
-
 .schedule-header {
     flex-shrink: 0;
-
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    margin-bottom: 14px;
+    display: block;
+    margin-bottom: 8px;
 }
 
-.schedule-top-actions {
+.schedule-header-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+}
+
+.schedule-header-left,
+.schedule-header-center {
     display: flex;
+    align-items: center;
+}
+
+.schedule-header-left {
     justify-content: flex-start;
-    align-items: center;
 }
 
-.schedule-month-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+.schedule-header-center {
+    justify-content: center;
+    gap: 10px;
 }
 
-.schedule-header .month-button {
-    flex-shrink: 0;
+.schedule-header-right {
+    min-width: 1px;
+}
+
+.compact-month-button {
+    white-space: nowrap;
 }
 
 .month-picker {
     position: relative;
-    flex: 1;
-
     display: flex;
     justify-content: center;
 }
 
 .month-title-button {
+    min-width: 220px;
+    padding: 8px 14px;
+
     border: none;
+    border-radius: 8px;
+
     background: transparent;
     color: white;
 
     font-size: 26px;
     font-weight: bold;
-
+    text-align: center;
     cursor: pointer;
-    padding: 8px 14px;
-    border-radius: 8px;
 }
 
 .month-title-button:hover {
@@ -72,15 +85,15 @@
     top: 48px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 3000;
 
     width: 360px;
-    z-index: 1000;
+    padding: 14px;
 
     background: #111;
     border: 1px solid #555;
     border-radius: 10px;
 
-    padding: 14px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
@@ -92,7 +105,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     margin-bottom: 12px;
 }
 
@@ -127,13 +139,13 @@
 }
 
 .month-picker-grid button {
+    padding: 9px 6px;
+
     border: 1px solid #555;
     border-radius: 6px;
 
     background: #222;
     color: white;
-
-    padding: 9px 6px;
 
     cursor: pointer;
     font-weight: bold;
@@ -148,7 +160,63 @@
     border-color: #35b85a;
 }
 
-/* ---------- Table ---------- */
+/* ---------- téma kapcsoló ---------- */
+
+.theme-switch-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 14px;
+
+    color: #dfe8ff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.theme-toggle-button {
+    width: 58px;
+    height: 30px;
+
+    position: relative;
+
+    border: 1px solid #555;
+    border-radius: 999px;
+
+    background: #222;
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-toggle-knob {
+    width: 24px;
+    height: 24px;
+
+    position: absolute;
+    top: 2px;
+    left: 3px;
+
+    border-radius: 50%;
+    background: #eee;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+
+    transition: transform 0.22s ease, background 0.2s ease;
+}
+
+.theme-toggle-button.active {
+    border-color: #59e8ff;
+    background: linear-gradient(90deg, #00c2ff, #7d38ff, #ff2fa0);
+    box-shadow:
+        0 0 14px rgba(0, 194, 255, 0.45),
+        0 0 18px rgba(255, 47, 160, 0.28);
+}
+
+.theme-toggle-button.active .theme-toggle-knob {
+    transform: translateX(27px);
+    background: #fff;
+}
+
+/* ---------- táblázat panel ---------- */
 
 .schedule-table-panel {
     flex: 1;
@@ -169,7 +237,6 @@
     min-height: 0;
 
     overflow: auto;
-
     border: 1px solid #555;
 }
 
@@ -192,13 +259,13 @@
 .schedule-table th {
     position: sticky;
     top: 0;
-    z-index: 20;
-
-    background: #333;
-    color: white;
+    z-index: 30;
 
     height: 32px;
     min-width: 44px;
+
+    background: #333;
+    color: white;
 
     text-align: center;
     font-weight: bold;
@@ -206,11 +273,10 @@
 
 .schedule-table thead tr:nth-child(2) th {
     top: 32px;
-    z-index: 20;
+    z-index: 25;
 }
 
 .schedule-table td {
-    min-height: 36px;
     height: 36px;
     min-width: 44px;
 
@@ -218,22 +284,17 @@
     text-align: center;
 }
 
-.schedule-table tbody tr {
-    height: 36px;
-}
-
-.schedule-table tbody td.sticky-column {
-    height: auto;
-}
-
-/* ---------- Sticky left columns ---------- */
+/* ---------- bal sticky oszlopok ---------- */
 
 .sticky-column {
     position: sticky;
-    z-index: 80;
+    z-index: 90;
+    background: #151515;
+}
 
-    background-color: #151515;
-    background-image: none;
+th.sticky-column {
+    z-index: 140;
+    background: #333;
 }
 
 .employee-name-column {
@@ -255,33 +316,29 @@
     min-width: 70px;
     width: 70px;
     max-width: 70px;
-}
-
-th.sticky-column {
-    z-index: 120;
-
-    background-color: #333;
-    background-image: none;
-
-    box-shadow: 3px 0 0 #666;
+    box-shadow: 4px 0 0 #666;
 }
 
 .employee-name-cell,
- .employee-skills-cell,
- .vacation-cell {
-     padding: 0 8px;
+.employee-skills-cell,
+.vacation-cell {
+    padding: 0 8px;
+    font-weight: bold;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-height: 1.15;
+    vertical-align: middle;
+}
 
-     font-weight: bold;
-
-     white-space: normal;
-     overflow-wrap: anywhere;
-     word-break: normal;
-     line-height: 1.15;
- }
-
+.employee-name-cell,
 .employee-skills-cell,
 .vacation-cell {
     text-align: center;
+}
+
+.employee-skills-cell {
+    color: white;
 }
 
 .vacation-cell.vacation-low {
@@ -292,7 +349,39 @@ th.sticky-column {
     color: #ff8f8f;
 }
 
-/* ---------- Day styling ---------- */
+/* bal oszlopok elrejtése */
+
+.left-column-hidden {
+    display: none !important;
+}
+
+.schedule-table.left-name-hidden .employee-skills-column {
+    left: 0;
+}
+
+.schedule-table.left-name-hidden .vacation-column {
+    left: 120px;
+}
+
+.schedule-table.left-skills-hidden .vacation-column {
+    left: 190px;
+}
+
+.schedule-table.left-name-hidden.left-skills-hidden .vacation-column {
+    left: 0;
+}
+
+.schedule-table.left-vacation-hidden .vacation-column {
+    box-shadow: none;
+}
+
+.schedule-table.left-name-hidden.left-vacation-hidden .employee-skills-column,
+.schedule-table.left-skills-hidden.left-vacation-hidden .employee-name-column,
+.schedule-table.left-name-hidden.left-skills-hidden .vacation-column {
+    box-shadow: 4px 0 0 #666;
+}
+
+/* ---------- nap fejlécek ---------- */
 
 .day-header,
 .day-number-header {
@@ -301,7 +390,7 @@ th.sticky-column {
 }
 
 .other-month {
-    opacity: 0.6;
+    opacity: 0.65;
 }
 
 th.other-month {
@@ -312,7 +401,6 @@ td.other-month {
     background: #202020;
 }
 
-/* Hétvége: melegebb barna, de nem túl rikító */
 th.weekend {
     background: #4a352b;
 }
@@ -330,9 +418,89 @@ td.today-column {
     box-shadow: inset 0 0 0 2px #8fb7d9;
 }
 
-/* ---------- Schedule cells ---------- */
+.day-header {
+    position: sticky;
+    overflow: visible;
+}
 
-.schedule-cell {
+.day-header-button {
+    width: 100%;
+    height: 100%;
+
+    border: none;
+    background: transparent;
+    color: inherit;
+
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+}
+
+.day-header-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.day-holiday-dropdown {
+    display: none;
+
+    position: absolute;
+    z-index: 2500;
+    top: 100%;
+    left: 0;
+
+    min-width: 150px;
+    padding: 6px;
+
+    background: #151515;
+    border: 1px solid #555;
+    border-radius: 6px;
+
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.day-header.holiday-dropdown-open {
+    z-index: 2600;
+}
+
+.day-header.holiday-dropdown-open .day-holiday-dropdown {
+    display: block;
+}
+
+.day-holiday-toggle-button {
+    width: 100%;
+    padding: 7px 9px;
+
+    border: 1px solid #793535;
+    border-radius: 5px;
+
+    background: #331717;
+    color: #ffd0d0;
+
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.day-holiday-toggle-button:hover {
+    background: #4a1d1d;
+    color: white;
+}
+
+.day-header.holiday-column,
+.day-number-header.holiday-column {
+    background: #4a1717;
+    color: #ff9a9a;
+    box-shadow: inset 0 0 0 2px rgba(255, 90, 90, 0.65);
+}
+
+.schedule-cell.holiday-column,
+.standby-placeholder-cell.holiday-column {
+    background: #251313;
+}
+
+/* ---------- naptár cellák ---------- */
+
+.assignment-cell {
     position: relative;
     padding: 0;
 }
@@ -350,53 +518,77 @@ td.today-column {
     font-size: 13px;
 }
 
-.schedule-cell-display:hover {
-    outline: 2px solid #8fb7d9;
-    outline-offset: -2px;
-    background-image: linear-gradient(
-        rgba(255, 255, 255, 0.08),
-        rgba(255, 255, 255, 0.08)
-    );
-}
-
-.schedule-cell-display.empty-cell {
+.schedule-cell-display.empty-cell,
+.standby-cell-display.empty-cell {
     color: #555;
 }
 
-/* Shift color priority:
-   vacation/unavailable are grey,
-   standby strongest, then night, otherwise normal.
-   HO is shown as text next to the hour, e.g. 8HO. */
+.schedule-cell-display.empty-cell:hover,
+.standby-cell-display.empty-cell:hover {
+    outline: 2px solid #8fb7d9;
+    outline-offset: -2px;
+}
 
-/* Normál nappali: tompa teal / petrol */
+.assignment-cell.other-month .schedule-cell-display {
+    cursor: default;
+    opacity: 0.65;
+}
+
+.assignment-cell.other-month .schedule-cell-display:hover {
+    outline: none;
+}
+
+.employee-main-row td,
+.employee-standby-row td {
+    height: 34px;
+}
+
+.employee-standby-row td {
+    border-bottom: 2px solid #4d4d4d;
+}
+
+.employee-main-row td {
+    border-bottom-color: #333;
+}
+
+.standby-placeholder-cell {
+    background: #121212;
+    text-align: center;
+}
+
+.standby-cell-display {
+    color: #555;
+}
+
+/* ---------- műszakszínek - EZEKET NEM ÍRJA FELÜL A THEME ---------- */
+
 .schedule-cell-display.shift-normal {
-    background: #b88a2a;;
-}
-
-/* Éjszakai: mély lila */
-.schedule-cell-display.shift-night {
-    background: #5b3a8e;
-}
-
-/* Készenlét: tiszta kék */
-.shift-picker-option.picker-standby {
-    background: #2f67a2;
-    border-color: #4f8aca;
-}
-
-/* Szabadság */
-.schedule-cell-display.shift-vacation {
-    background: #5c5c5c;
+    background: #b88a2a;
     color: #ffffff;
 }
 
-/* Nem szeretne dolgozni */
+.schedule-cell-display.shift-night {
+    background: #5b3a8e;
+    color: #ffffff;
+}
+
+.schedule-cell-display.shift-standby {
+    background: #3f8fd2;
+    color: #ffffff;
+}
+
+.schedule-cell-display.shift-standby-night {
+    background: #163f78;
+    color: #ffffff;
+}
+
+.schedule-cell-display.shift-vacation,
 .schedule-cell-display.shift-unavailable {
     background: #5c5c5c;
     color: #ffffff;
 }
 
-/* ---------- Picker ---------- */
+/* ---------- műszakválasztó dropdown ---------- */
 
 .shift-picker {
     display: none;
@@ -404,29 +596,29 @@ td.today-column {
     position: absolute;
     top: 32px;
     left: 0;
+    z-index: 2200;
 
     min-width: 170px;
     max-height: 260px;
     overflow-y: auto;
 
-    z-index: 2000;
+    padding: 7px;
 
     background: #151515;
     border: 1px solid #5f6f85;
     border-radius: 10px;
 
-    padding: 7px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75);
 }
 
-.schedule-cell.open .shift-picker {
+.assignment-cell.open .shift-picker {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
 .shift-picker-option {
-    text-align: left;
+    padding: 8px 10px;
 
     border: 1px solid #444;
     border-radius: 6px;
@@ -434,10 +626,9 @@ td.today-column {
     background: #262626;
     color: white;
 
-    padding: 8px 10px;
-
     cursor: pointer;
     font-weight: bold;
+    text-align: left;
     white-space: nowrap;
 }
 
@@ -446,23 +637,52 @@ td.today-column {
     border-color: #7892b3;
 }
 
+.shift-picker-option.picker-clear,
 .clear-option {
     background: #3a2020;
     border-color: #6b3333;
 }
 
-.clear-option:hover {
-    background: #613030;
-    border-color: #a34a4a;
+.shift-picker-option.picker-normal {
+    background: #b88a2a;
+    border-color: #d6aa45;
 }
 
-/* ---------- Summary columns ---------- */
+.shift-picker-option.picker-night {
+    background: #5b3a8e;
+    border-color: #7a56b3;
+}
+
+.shift-picker-option.picker-standby {
+    background: #3f8fd2;
+    border-color: #67abe6;
+}
+
+.shift-picker-option.picker-standby-night {
+    background: #163f78;
+    border-color: #2f67a2;
+}
+
+.shift-picker-option.picker-vacation,
+.shift-picker-option.picker-unavailable {
+    background: #5c5c5c;
+    border-color: #858585;
+}
+
+.assignment-cell[data-assignment-layer="NORMAL"] .picker-layer-standby {
+    display: none;
+}
+
+.assignment-cell[data-assignment-layer="STANDBY"] .picker-layer-normal {
+    display: none;
+}
+
+/* ---------- jobb oldali összesítők ---------- */
 
 .summary-header,
 .summary-cell {
     min-width: 58px;
     width: 58px;
-
     text-align: center;
     font-weight: bold;
 }
@@ -470,19 +690,21 @@ td.today-column {
 .summary-header {
     background: #20252d;
     color: #dce8ff;
-
     border-left: 2px solid #6b7d96;
 }
 
 .summary-cell {
     background: #141a22;
     color: #e9f1ff;
-
     border-left: 2px solid #44556b;
 }
 
 .row-total-hours {
     color: #dfffe9;
+}
+
+.row-shift-count {
+    color: #fff4a8;
 }
 
 .row-night-hours {
@@ -497,155 +719,22 @@ td.today-column {
     color: #cbefff;
 }
 
-.row-shift-count {
-    color: #fff1b8;
-}
-
-/* ---------- Scrollbars ---------- */
-
-.schedule-table-wrapper::-webkit-scrollbar,
-.shift-picker::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-.schedule-table-wrapper::-webkit-scrollbar-track,
-.shift-picker::-webkit-scrollbar-track {
-    background: #111;
-}
-
-.schedule-table-wrapper::-webkit-scrollbar-thumb,
-.shift-picker::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 8px;
-}
-
-.schedule-table-wrapper::-webkit-scrollbar-thumb:hover,
-.shift-picker::-webkit-scrollbar-thumb:hover {
-    background: #777;
-}
-
-/* ---------- Colored picker options ---------- */
-
-.shift-picker-option.picker-normal {
-    background: #b88a2a;
-    border-color: #4f9b9f;
-}
-
-.shift-picker-option.picker-night {
-    background: #5b3a8e;
-    border-color: #8060b3;
-}
-
-.shift-picker-option.picker-standby {
-    background: #2f67a2;
-    border-color: #5d8fc8;
-}
-
-.shift-picker-option.picker-vacation,
-.shift-picker-option.picker-unavailable {
-    background: #5c5c5c;
-    border-color: #858585;
-}
-
-.shift-picker-option.picker-clear {
-    background: #3a2020;
-    border-color: #6b3333;
-}
-
-.shift-picker-option.picker-normal:hover,
-.shift-picker-option.picker-night:hover,
-.shift-picker-option.picker-standby:hover,
-.shift-picker-option.picker-vacation:hover,
-.shift-picker-option.picker-unavailable:hover {
-    filter: brightness(1.18);
-}
-
-.shift-picker-option.picker-clear:hover {
-    background: #613030;
-    border-color: #a34a4a;
-}
-
-/* ---------- HO percentage colors ---------- */
-
-.summary-cell.row-ho-hours.ho-percent-ok {
+.ho-percent-ok {
     background: #245a2b;
     color: #ffffff;
 }
 
-.summary-cell.row-ho-hours.ho-percent-warning {
+.ho-percent-warning {
     background: #b86f22;
     color: #ffffff;
 }
 
-.summary-cell.row-ho-hours.ho-percent-danger {
+.ho-percent-danger {
     background: #9f2d2d;
     color: #ffffff;
 }
 
-/* ---------- Highlight selected employee row ---------- */
-
-.schedule-table tbody tr.highlighted-row td {
-    background-image: linear-gradient(
-        rgba(255, 204, 64, 0.28),
-        rgba(255, 204, 64, 0.28)
-    );
-}
-
-.schedule-table tbody tr.highlighted-row .sticky-column {
-    background-color: #6b5a22;
-    background-image: none;
-
-    box-shadow:
-        3px 0 0 #ffe678,
-        inset 0 0 0 2px rgba(255, 230, 120, 0.75);
-}
-
-.schedule-table tbody tr.highlighted-row .schedule-cell-display {
-    box-shadow:
-        inset 0 0 0 2px rgba(255, 230, 120, 0.95),
-        inset 0 0 14px rgba(255, 204, 64, 0.35);
-}
-
-/* A jobb oldali összesítő cellákon is legyen egyértelmű */
-.schedule-table tbody tr.highlighted-row .summary-cell {
-    background-image: linear-gradient(
-        rgba(255, 204, 64, 0.34),
-        rgba(255, 204, 64, 0.34)
-    );
-    box-shadow: inset 0 0 0 2px rgba(255, 230, 120, 0.9);
-}
-
-/* A HO százalék színe maradjon felismerhető, csak kapjon erős kijelölő keretet */
-.schedule-table tbody tr.highlighted-row .row-ho-hours {
-    background-image: none;
-    box-shadow:
-        inset 4px 0 0 rgba(255, 230, 120, 1),
-        inset 0 0 0 2px rgba(255, 230, 120, 0.95),
-        0 0 10px rgba(255, 230, 120, 0.45);
-}
-
-.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-ok {
-    background: #245a2b;
-}
-
-.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-warning {
-    background: #b86f22;
-}
-
-.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-danger {
-    background: #9f2d2d;
-}
-
-.employee-name-cell {
-    cursor: pointer;
-}
-
-.employee-name-cell:hover {
-    text-decoration: underline;
-}
-
-/* ---------- Hide / restore summary columns ---------- */
+/* jobb oldali oszlopok elrejtése */
 
 .summary-column-toolbar {
     flex-shrink: 0;
@@ -675,14 +764,13 @@ td.today-column {
 
 .summary-column-restore-button {
     display: none;
+    padding: 5px 9px;
 
     border: 1px solid #6b7d96;
     border-radius: 6px;
 
     background: #20252d;
     color: #dce8ff;
-
-    padding: 5px 9px;
 
     cursor: pointer;
     font-weight: bold;
@@ -700,12 +788,10 @@ td.today-column {
 
 .summary-header-content {
     height: 100%;
-
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
-
     padding: 0 4px;
 }
 
@@ -736,464 +822,39 @@ td.today-column {
 }
 
 .summary-column-hidden {
-    display: none;
-}
-
-/* ---------- Sticky column scroll separation fix ---------- */
-
-.employee-name-column,
-.employee-skills-column,
-.vacation-column {
-    background-clip: padding-box;
-}
-
-.schedule-table tbody td.sticky-column {
-    position: sticky;
-    z-index: 90;
-}
-
-.schedule-table thead th.sticky-column {
-    position: sticky;
-    z-index: 130;
-}
-
-.vacation-column {
-    box-shadow: 4px 0 0 #666;
-}
-
-/* Erős elválasztó csak a Szabi oszlop után, hogy a napok ne folyjanak össze vele */
-.vacation-column {
-    box-shadow: 4px 0 0 #666;
-}
-
-/* ---------- Two-row employee layout ---------- */
-
-.employee-main-row td,
-.employee-standby-row td {
-    height: 34px;
-}
-
-.employee-standby-row .standby-placeholder-cell {
-    position: relative;
-    padding: 0;
-
-    background: #121212;
-    text-align: center;
-}
-
-.employee-standby-row .standby-cell-display {
-    width: 100%;
-    height: 100%;
-
-    border: none;
-    background: transparent;
-    color: #555;
-
-    font-weight: bold;
-    font-size: 13px;
-}
-
-.employee-standby-row td {
-    border-bottom: 2px solid #4d4d4d;
-}
-
-.employee-main-row td {
-    border-bottom-color: #333;
-}
-
-/* A két soros dolgozóblokk bal oldali cellái maradjanak tiszták */
-.employee-main-row .sticky-column {
-    vertical-align: middle;
-}
-
-/* Highlightnál a készenléti sor is kapjon keretet */
-.schedule-table tbody tr.highlighted-row.employee-standby-row .standby-cell-display {
-    box-shadow:
-        inset 0 0 0 2px rgba(255, 230, 120, 0.95),
-        inset 0 0 14px rgba(255, 204, 64, 0.25);
-}
-
-/* ---------- Layer based picker filtering ---------- */
-
-.assignment-cell[data-assignment-layer="NORMAL"] .picker-layer-standby {
-    display: none;
-}
-
-.assignment-cell[data-assignment-layer="STANDBY"] .picker-layer-normal {
-    display: none;
-}
-
-.assignment-cell.open .shift-picker {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-/* ---------- Hide / restore left sticky columns ---------- */
-
-.left-column-hidden {
-    display: none;
-}
-
-/* Alap bal oldali sticky oszlopszélességek */
-.employee-name-column {
-    left: 0;
-    min-width: 190px;
-    width: 190px;
-    max-width: 190px;
-}
-
-.employee-skills-column {
-    left: 190px;
-    min-width: 120px;
-    width: 120px;
-    max-width: 120px;
-}
-
-.vacation-column {
-    left: 310px;
-    min-width: 70px;
-    width: 70px;
-    max-width: 70px;
-}
-
-/* Ha a Név rejtett, a Skillek menjen balra */
-.schedule-table.left-name-hidden .employee-skills-column {
-    left: 0;
-}
-
-/* Ha a Név rejtett, a Szabi a Skillek után jöjjön */
-.schedule-table.left-name-hidden .vacation-column {
-    left: 120px;
-}
-
-/* Ha a Skillek rejtett, a Szabi a Név után jöjjön */
-.schedule-table.left-skills-hidden .vacation-column {
-    left: 190px;
-}
-
-/* Ha Név és Skillek is rejtett, Szabi menjen teljesen balra */
-.schedule-table.left-name-hidden.left-skills-hidden .vacation-column {
-    left: 0;
-}
-
-/* Ha a Szabi is rejtett, ne maradjon jobb oldali elválasztó */
-.schedule-table.left-vacation-hidden .vacation-column {
-    box-shadow: none;
-}
-
-/* Ha csak a Szabi maradt látható, legyen továbbra is egyértelmű sticky blokk */
-.schedule-table.left-name-hidden.left-skills-hidden .vacation-column {
-    box-shadow: 4px 0 0 #666;
-}
-
-/* Ha a Név rejtett, de a Skillek látszik, akkor a Skillek legyen a bal blokk vége, ha Szabi is rejtve van */
-.schedule-table.left-name-hidden.left-vacation-hidden .employee-skills-column {
-    box-shadow: 4px 0 0 #666;
-}
-
-/* Ha a Skillek és Szabi rejtett, akkor a Név legyen a bal blokk vége */
-.schedule-table.left-skills-hidden.left-vacation-hidden .employee-name-column {
-    box-shadow: 4px 0 0 #666;
-}
-
-/* Ha minden bal oldali oszlop rejtett, ne legyen sticky árnyék */
-.schedule-table.left-name-hidden.left-skills-hidden.left-vacation-hidden .employee-name-column,
-.schedule-table.left-name-hidden.left-skills-hidden.left-vacation-hidden .employee-skills-column,
-.schedule-table.left-name-hidden.left-skills-hidden.left-vacation-hidden .vacation-column {
-    box-shadow: none;
-}
-
-/* ---------- Force hidden left columns ---------- */
-
-.schedule-table [data-left-column].left-column-hidden {
     display: none !important;
 }
 
-/* Nappali készenlét - világoskék */
-.schedule-cell-display.shift-standby {
-    background: #3f8fd2;
-    color: white;
-}
+/* ---------- sor kijelölés ---------- */
 
-/* Éjszakai készenlét - sötétkék */
-.schedule-cell-display.shift-standby-night {
-    background: #163f78;
-    color: white;
-}
-
-/* Picker: nappali készenlét */
-.shift-picker-option.picker-standby {
-    background: #3f8fd2;
-    border-color: #67abe6;
-    color: white;
-}
-
-/* Picker: éjszakai készenlét */
-.shift-picker-option.picker-standby-night {
-    background: #163f78;
-    border-color: #2f67a2;
-    color: white;
-}
-
-/* ---------- Holiday columns ---------- */
-
-.day-header {
-    position: relative;
-}
-
-.day-header-button {
-    width: 100%;
-    height: 100%;
-
-    border: none;
-    background: transparent;
-    color: inherit;
-
-    cursor: pointer;
-    font: inherit;
-    font-weight: bold;
-}
-
-.day-header-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.day-holiday-dropdown {
-    display: none;
-
-    position: absolute;
-    z-index: 500;
-    top: 100%;
-    left: 0;
-
-    min-width: 150px;
-
-    padding: 6px;
-
-    background: #151515;
-    border: 1px solid #555;
-    border-radius: 6px;
-
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
-}
-
-.day-header.holiday-dropdown-open .day-holiday-dropdown {
-    display: block;
-}
-
-.day-holiday-toggle-button {
-    width: 100%;
-
-    padding: 7px 9px;
-
-    border: 1px solid #793535;
-    border-radius: 5px;
-
-    background: #331717;
-    color: #ffd0d0;
-
-    cursor: pointer;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-.day-holiday-toggle-button:hover {
-    background: #4a1d1d;
-    color: white;
-}
-
-.day-header.holiday-column,
-.day-number-header.holiday-column {
-    background: #4a1717;
-    color: #ff9a9a;
-
-    box-shadow: inset 0 0 0 2px rgba(255, 90, 90, 0.65);
-}
-
-
-.schedule-cell.holiday-column,
-.standby-placeholder-cell.holiday-column {
-    background: #251313;
-}
-
-.schedule-cell.holiday-column .schedule-cell-display.empty-cell,
-.standby-placeholder-cell.holiday-column .schedule-cell-display.empty-cell {
-    color: #ff8a8a;
-}
-
-.day-header.today-column.holiday-column,
-.day-number-header.today-column.holiday-column {
+.schedule-table tbody tr.highlighted-row .sticky-column {
+    background: #6b5a22;
     box-shadow:
-        inset 0 0 0 2px rgba(255, 90, 90, 0.95),
-        inset 0 0 12px rgba(255, 90, 90, 0.35);
+        3px 0 0 #ffe678,
+        inset 0 0 0 2px rgba(255, 230, 120, 0.75);
 }
 
-/* ---------- Holiday dropdown layering fix ---------- */
-
-.schedule-table thead {
-    position: relative;
-    z-index: 300;
+.schedule-table tbody tr.highlighted-row .schedule-cell,
+.schedule-table tbody tr.highlighted-row .standby-placeholder-cell,
+.schedule-table tbody tr.highlighted-row .summary-cell:not(.row-ho-hours) {
+    background-image: linear-gradient(rgba(255, 204, 64, 0.18), rgba(255, 204, 64, 0.18));
 }
 
-.day-header {
-    position: relative;
-    overflow: visible;
-    z-index: 310;
+.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-ok {
+    background: #245a2b;
 }
 
-.day-number-header {
-    position: relative;
-    z-index: 250;
+.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-warning {
+    background: #b86f22;
 }
 
-.day-header.holiday-dropdown-open {
-    z-index: 600;
+.schedule-table tbody tr.highlighted-row .row-ho-hours.ho-percent-danger {
+    background: #9f2d2d;
 }
 
-.day-header.holiday-dropdown-open .day-holiday-dropdown {
-    z-index: 700;
-}
-
-/* ---------- Previous month cells are read-only ---------- */
-
-.assignment-cell.other-month .schedule-cell-display {
-    cursor: default;
-    opacity: 0.65;
-}
-
-.assignment-cell.other-month .schedule-cell-display:hover {
-    box-shadow: none;
-    filter: none;
-}
-
-/* ---------- Compact calendar header ---------- */
-
-.schedule-header {
-    flex-shrink: 0;
-
-    display: block;
-
-    margin-bottom: 8px;
-}
-
-.schedule-header-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 12px;
-}
-
-.schedule-header-left {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.schedule-header-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.schedule-header-right {
-    min-width: 1px;
-}
-
-.schedule-top-actions,
-.schedule-month-row {
-    display: contents;
-}
-
-.compact-month-button {
-    white-space: nowrap;
-}
-
-.month-title-button {
-    min-width: 220px;
-    text-align: center;
-}
-
-/* ---------- Theme toggle ---------- */
-
-.theme-switch-wrapper {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-
-    margin-left: 14px;
-
-    color: #dfe8ff;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.theme-toggle-button {
-    width: 58px;
-    height: 30px;
-
-    position: relative;
-
-    border: 1px solid #555;
-    border-radius: 999px;
-
-    background: #222;
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-        0 0 0 rgba(0, 0, 0, 0);
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.theme-toggle-knob {
-    width: 24px;
-    height: 24px;
-
-    position: absolute;
-    top: 2px;
-    left: 3px;
-
-    border-radius: 50%;
-
-    background: #eee;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-
-    transition:
-        transform 0.22s ease,
-        background 0.2s ease;
-}
-
-.theme-toggle-button.active {
-    border-color: #59e8ff;
-
-    background: linear-gradient(90deg, #00c2ff, #7d38ff, #ff2fa0);
-
-    box-shadow:
-        0 0 14px rgba(0, 194, 255, 0.45),
-        0 0 18px rgba(255, 47, 160, 0.28);
-}
-
-.theme-toggle-button.active .theme-toggle-knob {
-    transform: translateX(27px);
-    background: #fff;
-}
-
-/* ---------- Colorful theme base ---------- */
-
-body.theme-colorful {
-    background:
-        radial-gradient(circle at top left, rgba(0, 194, 255, 0.16), transparent 34%),
-        radial-gradient(circle at top right, rgba(255, 47, 160, 0.14), transparent 32%),
-        linear-gradient(135deg, #071326, #0b1022 45%, #14071f);
-
-    color: #f5f8ff;
-}
+/* =========================================================
+   SZÍNES TÉMA - calendar
+   ========================================================= */
 
 body.theme-colorful .schedule-page {
     background:
@@ -1209,8 +870,6 @@ body.theme-colorful .schedule-page {
         inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-/* ---------- Colorful header ---------- */
-
 body.theme-colorful .schedule-header {
     padding: 10px 12px 8px;
     margin-bottom: 10px;
@@ -1223,10 +882,6 @@ body.theme-colorful .schedule-header {
     border-radius: 12px;
 
     box-shadow: 0 0 18px rgba(0, 194, 255, 0.10);
-}
-
-body.theme-colorful .schedule-header-left {
-    gap: 0;
 }
 
 body.theme-colorful .month-button {
@@ -1244,20 +899,6 @@ body.theme-colorful .month-button {
         inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
-body.theme-colorful .month-button:hover {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.52), rgba(255, 47, 160, 0.32)),
-        #15345e;
-
-    border-color: rgba(255, 255, 255, 0.55);
-}
-
-body.theme-colorful .compact-month-button:first-child {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.42), rgba(34, 115, 255, 0.28)),
-        #102842;
-}
-
 body.theme-colorful .compact-month-button:last-child {
     background:
         linear-gradient(135deg, rgba(255, 47, 160, 0.48), rgba(125, 56, 255, 0.30)),
@@ -1270,8 +911,6 @@ body.theme-colorful .month-title-button {
     color: #ffffff;
     text-shadow: 0 0 10px rgba(89, 232, 255, 0.35);
 }
-
-/* ---------- Colorful table panel ---------- */
 
 body.theme-colorful .schedule-table-panel {
     background:
@@ -1289,7 +928,6 @@ body.theme-colorful .schedule-table-panel {
 body.theme-colorful .schedule-table-wrapper {
     border-color: rgba(89, 232, 255, 0.35);
     border-radius: 8px;
-
     box-shadow:
         inset 0 0 18px rgba(0, 194, 255, 0.05),
         0 0 18px rgba(0, 194, 255, 0.08);
@@ -1299,10 +937,9 @@ body.theme-colorful .schedule-table {
     background: #071224;
 }
 
-/* ---------- Colorful table headers ---------- */
-
-body.theme-colorful .schedule-table th {
-    border-color: rgba(126, 177, 255, 0.28);
+body.theme-colorful .schedule-table th,
+body.theme-colorful .schedule-table td {
+    border-color: rgba(126, 177, 255, 0.24);
 }
 
 body.theme-colorful .sticky-column,
@@ -1339,7 +976,6 @@ body.theme-colorful .day-number-header {
         #0a1930;
 
     color: #dff9ff;
-    border-color: rgba(126, 177, 255, 0.30);
 }
 
 body.theme-colorful .day-header.weekend,
@@ -1365,80 +1001,210 @@ body.theme-colorful .day-number-header.today-column {
     box-shadow:
         inset 0 0 0 2px rgba(89, 232, 255, 0.95),
         0 0 12px rgba(89, 232, 255, 0.35);
-
-    color: #ffffff;
 }
 
-/* ---------- Colorful grid cells, without touching assignment colors ---------- */
+/* színes téma: normál és készenléti sorok fix hátterei */
 
-body.theme-colorful .schedule-table td {
-    border-color: rgba(126, 177, 255, 0.24);
-}
-
-body.theme-colorful .schedule-cell,
-body.theme-colorful .standby-placeholder-cell {
+body.theme-colorful .employee-main-row .schedule-cell:not(.weekend):not(.other-month):not(.holiday-column):not(.today-column) {
     background:
-        linear-gradient(135deg, rgba(9, 24, 48, 0.98), rgba(7, 15, 31, 0.98)),
+        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
         #071224;
 }
 
-body.theme-colorful .schedule-cell.weekend,
-body.theme-colorful .standby-placeholder-cell.weekend {
+body.theme-colorful .employee-standby-row .standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column):not(.today-column) {
     background:
-        linear-gradient(135deg, rgba(42, 17, 38, 0.96), rgba(20, 15, 30, 0.98)),
-        #16111f;
+        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
+        #050f21;
 }
 
-body.theme-colorful .schedule-cell.other-month,
-body.theme-colorful .standby-placeholder-cell.other-month {
+body.theme-colorful .employee-main-row .schedule-cell.weekend:not(.today-column) {
     background:
-        linear-gradient(135deg, rgba(9, 39, 54, 0.75), rgba(8, 20, 35, 0.95)),
+        linear-gradient(135deg, rgba(45, 18, 44, 0.98), rgba(24, 14, 32, 0.98)),
+        #171020;
+}
+
+body.theme-colorful .employee-standby-row .standby-placeholder-cell.weekend:not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(34, 12, 34, 0.98), rgba(17, 9, 26, 0.98)),
+        #100918;
+}
+
+body.theme-colorful .employee-main-row .schedule-cell.other-month:not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(9, 39, 54, 0.78), rgba(8, 20, 35, 0.96)),
         #081827;
 }
 
-/* Csak az üres cellák kapnak új, színesebb hangulatot.
-   A shift-normal / shift-night / shift-standby / stb. színeket nem írjuk felül. */
+body.theme-colorful .employee-standby-row .standby-placeholder-cell.other-month:not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(5, 28, 43, 0.78), rgba(5, 14, 28, 0.96)),
+        #061421;
+}
+
+body.theme-colorful .employee-main-row .schedule-cell.holiday-column:not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(52, 17, 28, 0.96), rgba(26, 10, 22, 0.98)),
+        #1c0c16;
+}
+
+body.theme-colorful .employee-standby-row .standby-placeholder-cell.holiday-column:not(.today-column) {
+    background:
+        linear-gradient(135deg, rgba(38, 12, 22, 0.96), rgba(19, 7, 16, 0.98)),
+        #140710;
+}
+
+body.theme-colorful .employee-main-row .schedule-cell.today-column {
+    background:
+        linear-gradient(135deg, rgba(8, 37, 68, 0.98), rgba(5, 20, 42, 0.98)),
+        #082344;
+
+    box-shadow:
+        inset 2px 0 0 rgba(160, 220, 255, 0.65),
+        inset -2px 0 0 rgba(160, 220, 255, 0.65);
+}
+
+body.theme-colorful .employee-standby-row .standby-placeholder-cell.today-column {
+    background:
+        linear-gradient(135deg, rgba(5, 28, 55, 0.98), rgba(3, 14, 32, 0.98)),
+        #061a35;
+
+    box-shadow:
+        inset 2px 0 0 rgba(160, 220, 255, 0.65),
+        inset -2px 0 0 rgba(160, 220, 255, 0.65);
+}
+
+/* hover: csak a konkrét cella kapjon kontúrt, sor soha */
+
+body.theme-colorful .schedule-table tbody tr:hover td.schedule-cell,
+body.theme-colorful .schedule-table tbody tr:hover td.standby-placeholder-cell,
+body.theme-colorful .schedule-table tbody tr:hover td.summary-cell {
+    filter: none;
+}
+
+body.theme-colorful td.assignment-cell .schedule-cell-display.empty-cell:hover {
+    outline: none;
+    box-shadow:
+        inset 0 0 0 2px rgba(160, 220, 255, 0.95),
+        0 0 10px rgba(89, 232, 255, 0.20);
+
+    background: transparent;
+    filter: none;
+}
+
+/* Színes téma: shift cellák saját színei maradjanak érintetlenek */
+body.theme-colorful .schedule-cell-display.shift-normal {
+    background: #b88a2a;
+}
+
+body.theme-colorful .schedule-cell-display.shift-night {
+    background: #5b3a8e;
+}
+
+body.theme-colorful .schedule-cell-display.shift-standby {
+    background: #3f8fd2;
+}
+
+body.theme-colorful .schedule-cell-display.shift-standby-night {
+    background: #163f78;
+}
+
+body.theme-colorful .schedule-cell-display.shift-vacation,
+body.theme-colorful .schedule-cell-display.shift-unavailable {
+    background: #5c5c5c;
+}
+
 body.theme-colorful .schedule-cell-display.empty-cell,
 body.theme-colorful .standby-cell-display.empty-cell {
     color: #8fb5d7;
 }
 
-/* ---------- Colorful summary / toolbar ---------- */
+/* jobb oldali összesítők színes témában */
 
-body.theme-colorful .summary-column-toolbar {
+body.theme-colorful .summary-header {
     background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.10), rgba(255, 47, 160, 0.08)),
-        #081426;
+        linear-gradient(135deg, rgba(32, 43, 88, 0.95), rgba(18, 22, 48, 0.96)),
+        #161b2f;
 
-    border-color: rgba(89, 232, 255, 0.32);
+    color: #ffffff;
+    border-color: rgba(89, 232, 255, 0.28);
 }
 
-body.theme-colorful .summary-column-toolbar-label {
-    color: #bdefff;
-}
-
-body.theme-colorful .summary-column-restore-button {
+body.theme-colorful .summary-cell:not(.row-ho-hours) {
     background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.18), rgba(125, 56, 255, 0.18)),
-        #0e223d;
+        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
+        #111319;
 
-    border-color: rgba(89, 232, 255, 0.38);
-    color: #e8fbff;
+    color: #f3f8ff;
+    border-color: rgba(89, 232, 255, 0.18);
 }
 
-body.theme-colorful .summary-column-hide-button {
-    background: #07172b;
-    border-color: rgba(89, 232, 255, 0.38);
-    color: #bdefff;
-}
+body.theme-colorful .summary-ho-column {
+    background:
+        linear-gradient(135deg, rgba(32, 43, 88, 0.95), rgba(18, 22, 48, 0.96)),
+        #161b2f;
 
-body.theme-colorful .summary-column-hide-button:hover {
-    background: #421331;
-    border-color: rgba(255, 98, 194, 0.7);
     color: #ffffff;
 }
 
-/* ---------- Colorful dropdowns ---------- */
+body.theme-colorful .row-ho-hours.ho-percent-ok {
+    background:
+        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
+        #1f6a35;
+
+    color: #ffffff;
+}
+
+body.theme-colorful .row-ho-hours.ho-percent-warning {
+    background:
+        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
+        #b86f22;
+
+    color: #ffffff;
+}
+
+body.theme-colorful .row-ho-hours.ho-percent-danger {
+    background:
+        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
+        #b92f3b;
+
+    color: #ffffff;
+}
+
+/* színes téma: kijelölt dolgozó sor */
+
+body.theme-colorful .schedule-table tbody tr.highlighted-row .sticky-column {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.24), rgba(125, 56, 255, 0.24)),
+        #10284a;
+
+    color: #ffffff;
+
+    box-shadow:
+        inset 4px 0 0 rgba(89, 232, 255, 0.95),
+        inset 0 0 0 1px rgba(89, 232, 255, 0.45),
+        0 0 14px rgba(0, 194, 255, 0.16);
+}
+
+body.theme-colorful .schedule-table tbody tr.highlighted-row .schedule-cell:not(.today-column),
+body.theme-colorful .schedule-table tbody tr.highlighted-row .standby-placeholder-cell:not(.today-column) {
+    box-shadow:
+        inset 0 0 0 1px rgba(89, 232, 255, 0.28),
+        inset 0 0 12px rgba(0, 194, 255, 0.05);
+}
+
+body.theme-colorful .schedule-table tbody tr.highlighted-row td.summary-cell:not(.row-ho-hours) {
+    background:
+        linear-gradient(135deg, rgba(0, 194, 255, 0.15), rgba(125, 56, 255, 0.14)),
+        #101c36;
+
+    color: #ffffff;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(89, 232, 255, 0.25),
+        inset 0 0 12px rgba(0, 194, 255, 0.06);
+}
+
+/* dropdownok színes témában */
 
 body.theme-colorful .month-picker-dropdown,
 body.theme-colorful .shift-picker,
@@ -1476,592 +1242,35 @@ body.theme-colorful .month-picker-grid button.selected-month {
     box-shadow: 0 0 14px rgba(0, 194, 255, 0.35);
 }
 
-/* ---------- Colorful scrollbars ---------- */
-
-body.theme-colorful ::-webkit-scrollbar-thumb {
+body.theme-colorful .summary-column-toolbar {
     background:
-        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
+        linear-gradient(135deg, rgba(0, 194, 255, 0.10), rgba(255, 47, 160, 0.08)),
+        #081426;
 
-    border-radius: 999px;
+    border-color: rgba(89, 232, 255, 0.32);
 }
 
-body.theme-colorful ::-webkit-scrollbar-track {
-    background: #071326;
+body.theme-colorful .summary-column-toolbar-label {
+    color: #bdefff;
 }
 
-/* ---------- Colorful theme: jobb oldali összesítő oszlopok ---------- */
-
-/* Az utolsó 5 oszlop: Össz, Mű, Éj, Kész, HO */
-body.theme-colorful .schedule-table th:nth-last-child(-n+5) {
+body.theme-colorful .summary-column-restore-button {
     background:
-        linear-gradient(135deg, rgba(32, 43, 88, 0.95), rgba(18, 22, 48, 0.96)),
-        #161b2f !important;
-    color: #ffffff !important;
-    border-color: rgba(89, 232, 255, 0.28) !important;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
-}
-
-body.theme-colorful .schedule-table td:nth-last-child(-n+5) {
-    background:
-        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
-        #111319 !important;
-    color: #f3f8ff !important;
-    border-color: rgba(89, 232, 255, 0.18) !important;
-    font-weight: 700;
-}
-
-/* Kijelölt sor esetén ezek is kapjanak highlightot */
-body.theme-colorful .schedule-table tr.row-selected td:nth-last-child(-n+5),
-body.theme-colorful .schedule-table tr.selected-row td:nth-last-child(-n+5),
-body.theme-colorful .schedule-table tr.active-row td:nth-last-child(-n+5) {
-    background:
-        linear-gradient(135deg, rgba(64, 40, 110, 0.95), rgba(17, 49, 94, 0.95)),
-        #25204a !important;
-    color: #ffffff !important;
-}
-
-/* Hover esetén is szépen reagáljon */
-body.theme-colorful .schedule-table tbody tr:hover td:nth-last-child(-n+5) {
-    background:
-        linear-gradient(135deg, rgba(30, 34, 58, 0.98), rgba(14, 20, 38, 0.98)),
-        #171b28 !important;
-}
-
-/* HO oszlop maradhat külön hangsúlyos */
-body.theme-colorful .schedule-table th:last-child {
-    background:
-        linear-gradient(135deg, rgba(18, 76, 46, 0.95), rgba(14, 46, 28, 0.96)),
-        #173b22 !important;
-    color: #ffffff !important;
-}
-
-body.theme-colorful .schedule-table td:last-child {
-    border-left: 1px solid rgba(80, 255, 150, 0.28) !important;
-}
-
-/* ---------- Colorful theme: HO százalék színek visszaállítása ---------- */
-
-body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-ok,
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-ok {
-    background:
-        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
-        #1f6a35 !important;
-
-    color: #ffffff !important;
-    border-color: rgba(89, 255, 150, 0.35) !important;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(89, 255, 150, 0.18),
-        0 0 10px rgba(89, 255, 150, 0.08);
-}
-
-body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-warning,
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-warning {
-    background:
-        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
-        #b86f22 !important;
-
-    color: #ffffff !important;
-    border-color: rgba(255, 186, 92, 0.42) !important;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 186, 92, 0.22),
-        0 0 10px rgba(255, 186, 92, 0.08);
-}
-
-body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-danger,
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-danger {
-    background:
-        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
-        #b92f3b !important;
-
-    color: #ffffff !important;
-    border-color: rgba(255, 105, 120, 0.45) !important;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 105, 120, 0.25),
-        0 0 12px rgba(255, 55, 90, 0.14);
-}
-
-
-
-/* ---------- Colorful theme: egységes csúszkák manage oldalon ---------- */
-
-body.theme-colorful * {
-    scrollbar-width: thin;
-    scrollbar-color: #00c2ff #071326;
-}
-
-/* Chrome / Edge / Safari */
-body.theme-colorful *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-track {
-    background: #071326;
-    border-radius: 999px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb {
-    background:
-        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
-
-    border-radius: 999px;
-    border: 2px solid #071326;
-
-    box-shadow:
-        0 0 8px rgba(0, 194, 255, 0.35),
-        0 0 10px rgba(255, 47, 160, 0.20);
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb:hover {
-    background:
-        linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
-}
-
-body.theme-colorful *::-webkit-scrollbar-corner {
-    background: #071326;
-}
-
-/* ---------- Colorful theme: szebb kijelölt dolgozó sor ---------- */
-
-body.theme-colorful .schedule-table tbody tr.highlighted-row .sticky-column {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.24), rgba(125, 56, 255, 0.24)),
-        #10284a !important;
-
-    color: #ffffff !important;
-
-    box-shadow:
-        inset 4px 0 0 rgba(89, 232, 255, 0.95),
-        inset 0 0 0 1px rgba(89, 232, 255, 0.45),
-        0 0 14px rgba(0, 194, 255, 0.16) !important;
-}
-
-body.theme-colorful .schedule-table tbody tr.highlighted-row .schedule-cell,
-body.theme-colorful .schedule-table tbody tr.highlighted-row .standby-placeholder-cell {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.13), rgba(125, 56, 255, 0.12)),
-        #0a1e38 !important;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(89, 232, 255, 0.28),
-        inset 0 0 12px rgba(0, 194, 255, 0.05);
-}
-
-/* A kijelölt sorban az assignment cellák saját színei maradjanak erősebbek */
-body.theme-colorful .schedule-table tbody tr.highlighted-row .schedule-cell-display:not(.empty-cell) {
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.22),
-        0 0 10px rgba(89, 232, 255, 0.12);
-}
-
-/* Kijelölt sor jobb oldali összesítői is illeszkedjenek a színes témához */
-body.theme-colorful .schedule-table tbody tr.highlighted-row td.summary-cell:not(.row-ho-hours) {
-    background:
-        linear-gradient(135deg, rgba(0, 194, 255, 0.15), rgba(125, 56, 255, 0.14)),
-        #101c36 !important;
-
-    color: #ffffff !important;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(89, 232, 255, 0.25),
-        inset 0 0 12px rgba(0, 194, 255, 0.06);
-}
-
-/* ---------- Colorful theme: HO fejléc ne legyen zöld ---------- */
-
-body.theme-colorful .schedule-table th.summary-ho-column {
-    background:
-        linear-gradient(135deg, rgba(32, 43, 88, 0.95), rgba(18, 22, 48, 0.96)),
-        #161b2f !important;
-
-    color: #ffffff !important;
-    border-color: rgba(89, 232, 255, 0.28) !important;
-
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03) !important;
-}
-
-/* HO értékek továbbra is állapot szerint színesek maradnak */
-body.theme-colorful .schedule-table tbody tr.highlighted-row td.row-ho-hours.ho-percent-ok,
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-ok,
-body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-ok {
-    background:
-        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
-        #1f6a35 !important;
-
-    color: #ffffff !important;
-    border-color: rgba(89, 255, 150, 0.35) !important;
-}
-
-body.theme-colorful .schedule-table tbody tr.highlighted-row td.row-ho-hours.ho-percent-warning,
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-warning,
-body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-warning {
-    background:
-        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
-        #b86f22 !important;
-
-    color: #ffffff !important;
-    border-color: rgba(255, 186, 92, 0.42) !important;
-}
-
-body.theme-colorful .schedule-table tbody tr.highlighted-row td.row-ho-hours.ho-percent-danger,
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-danger,
-body.theme-colorful .schedule-table td.row-ho-hours.ho-percent-danger {
-    background:
-        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
-        #b92f3b !important;
-
-    color: #ffffff !important;
-    border-color: rgba(255, 105, 120, 0.45) !important;
-}
-
-/* ---------- Colorful theme: hover háttér kikapcsolása, csak cellakontúr maradjon ---------- */
-
-/* Ne színezze át hoverre az egész sort */
-body.theme-colorful .schedule-table tbody tr:hover td,
-body.theme-colorful .schedule-table tbody tr:hover .schedule-cell,
-body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell,
-body.theme-colorful .schedule-table tbody tr:hover td.summary-cell:not(.row-ho-hours) {
-    background-color: inherit;
-}
-
-/* Jobb oldali összesítők hoverre NE váltsanak más háttérre */
-body.theme-colorful .schedule-table tbody tr:hover td:nth-last-child(-n+5):not(.row-ho-hours) {
-    background:
-        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
-        #111319 !important;
-
-    color: #f3f8ff !important;
-}
-
-/* Normál naptárcellák hoverre maradjanak az alap színes témás hátterükön */
-body.theme-colorful .schedule-table tbody tr:hover .schedule-cell:not(.weekend):not(.other-month):not(.holiday-column),
-body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column) {
-    background:
-        linear-gradient(135deg, rgba(9, 24, 48, 0.98), rgba(7, 15, 31, 0.98)),
-        #071224 !important;
-}
-
-/* Hétvégi cellák hoverre is maradjanak hétvégi színűek */
-body.theme-colorful .schedule-table tbody tr:hover .schedule-cell.weekend,
-body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell.weekend {
-    background:
-        linear-gradient(135deg, rgba(42, 17, 38, 0.96), rgba(20, 15, 30, 0.98)),
-        #16111f !important;
-}
-
-/* Másik havi cellák hoverre is maradjanak másik havi színűek */
-body.theme-colorful .schedule-table tbody tr:hover .schedule-cell.other-month,
-body.theme-colorful .schedule-table tbody tr:hover .standby-placeholder-cell.other-month {
-    background:
-        linear-gradient(135deg, rgba(9, 39, 54, 0.75), rgba(8, 20, 35, 0.95)),
-        #081827 !important;
-}
-
-/* A HO százalék továbbra is maradjon állapotszínű hover esetén is */
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-ok {
-    background:
-        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
-        #1f6a35 !important;
-}
-
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-warning {
-    background:
-        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
-        #b86f22 !important;
-}
+        linear-gradient(135deg, rgba(0, 194, 255, 0.18), rgba(125, 56, 255, 0.18)),
+        #0e223d;
 
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-danger {
-    background:
-        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
-        #b92f3b !important;
+    border-color: rgba(89, 232, 255, 0.38);
+    color: #e8fbff;
 }
 
-/* ---------- Colorful theme: két soros dolgozóblokk egységes színezése ---------- */
-
-/* Felső sor: normál műszak sor */
-body.theme-colorful .employee-main-row .schedule-cell {
-    background:
-        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
-        #071224 !important;
-}
-
-/* Alsó sor: készenlét sor - picit más árnyalat */
-body.theme-colorful .employee-standby-row .standby-placeholder-cell {
-    background:
-        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
-        #050f21 !important;
-}
-
-/* Felső sor hétvége */
-body.theme-colorful .employee-main-row .schedule-cell.weekend {
-    background:
-        linear-gradient(135deg, rgba(45, 18, 44, 0.98), rgba(24, 14, 32, 0.98)),
-        #171020 !important;
-}
-
-/* Alsó sor hétvége - sötétebb/mélyebb */
-body.theme-colorful .employee-standby-row .standby-placeholder-cell.weekend {
-    background:
-        linear-gradient(135deg, rgba(34, 12, 34, 0.98), rgba(17, 9, 26, 0.98)),
-        #100918 !important;
-}
-
-/* Felső sor előző/következő havi nap */
-body.theme-colorful .employee-main-row .schedule-cell.other-month {
-    background:
-        linear-gradient(135deg, rgba(9, 39, 54, 0.78), rgba(8, 20, 35, 0.96)),
-        #081827 !important;
-}
-
-/* Alsó sor előző/következő havi nap */
-body.theme-colorful .employee-standby-row .standby-placeholder-cell.other-month {
-    background:
-        linear-gradient(135deg, rgba(5, 28, 43, 0.78), rgba(5, 14, 28, 0.96)),
-        #061421 !important;
-}
-
-/* Ünnepnap felső sor */
-body.theme-colorful .employee-main-row .schedule-cell.holiday-column {
-    background:
-        linear-gradient(135deg, rgba(52, 17, 28, 0.96), rgba(26, 10, 22, 0.98)),
-        #1c0c16 !important;
-}
-
-/* Ünnepnap alsó sor */
-body.theme-colorful .employee-standby-row .standby-placeholder-cell.holiday-column {
-    background:
-        linear-gradient(135deg, rgba(38, 12, 22, 0.96), rgba(19, 7, 16, 0.98)),
-        #140710 !important;
-}
-
-/* Hovernél se mossa össze a két sort */
-body.theme-colorful .schedule-table tbody tr:hover.employee-main-row .schedule-cell:not(.weekend):not(.other-month):not(.holiday-column) {
-    background:
-        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
-        #071224 !important;
-}
-
-body.theme-colorful .schedule-table tbody tr:hover.employee-standby-row .standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column) {
-    background:
-        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
-        #050f21 !important;
-}
-
-/* Assignment cellák színe maradjon érintetlen */
-body.theme-colorful .schedule-cell-display:not(.empty-cell) {
-    background-color: inherit;
-}
-
-/* A cella fölötti kék kontúr maradjon szép */
-body.theme-colorful .schedule-cell-display.empty-cell:hover,
-body.theme-colorful .standby-cell-display.empty-cell:hover {
-    box-shadow:
-        inset 0 0 0 2px rgba(160, 220, 255, 0.95),
-        0 0 10px rgba(89, 232, 255, 0.18);
-}
-
-/* ---------- Colorful theme: teljes row-hover háttér tiltása ---------- */
-
-/* Hoverre ne változzon a felső normál sor háttérszíne */
-body.theme-colorful .schedule-table tbody tr.employee-main-row:not(.highlighted-row):hover .schedule-cell:not(.weekend):not(.other-month):not(.holiday-column) {
-    background:
-        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
-        #071224 !important;
-
-    box-shadow: none !important;
-}
-
-/* Hoverre ne változzon az alsó készenléti sor háttérszíne */
-body.theme-colorful .schedule-table tbody tr.employee-standby-row:not(.highlighted-row):hover .standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column) {
-    background:
-        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
-        #050f21 !important;
-
-    box-shadow: none !important;
-}
-
-/* Hoverre a hétvégi felső sor maradjon ugyanaz */
-body.theme-colorful .schedule-table tbody tr.employee-main-row:not(.highlighted-row):hover .schedule-cell.weekend {
-    background:
-        linear-gradient(135deg, rgba(45, 18, 44, 0.98), rgba(24, 14, 32, 0.98)),
-        #171020 !important;
-
-    box-shadow: none !important;
-}
-
-/* Hoverre a hétvégi alsó sor maradjon ugyanaz */
-body.theme-colorful .schedule-table tbody tr.employee-standby-row:not(.highlighted-row):hover .standby-placeholder-cell.weekend {
-    background:
-        linear-gradient(135deg, rgba(34, 12, 34, 0.98), rgba(17, 9, 26, 0.98)),
-        #100918 !important;
-
-    box-shadow: none !important;
-}
-
-/* Hoverre az előző/következő havi cellák se kapjanak extra kijelölést */
-body.theme-colorful .schedule-table tbody tr.employee-main-row:not(.highlighted-row):hover .schedule-cell.other-month {
-    background:
-        linear-gradient(135deg, rgba(9, 39, 54, 0.78), rgba(8, 20, 35, 0.96)),
-        #081827 !important;
-
-    box-shadow: none !important;
-}
-
-body.theme-colorful .schedule-table tbody tr.employee-standby-row:not(.highlighted-row):hover .standby-placeholder-cell.other-month {
-    background:
-        linear-gradient(135deg, rgba(5, 28, 43, 0.78), rgba(5, 14, 28, 0.96)),
-        #061421 !important;
-
-    box-shadow: none !important;
+body.theme-colorful .summary-column-hide-button {
+    background: #07172b;
+    border-color: rgba(89, 232, 255, 0.38);
+    color: #bdefff;
 }
-
-/* Jobb oldali összesítők hoverre ne színeződjenek át */
-body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.summary-cell:not(.row-ho-hours) {
-    background:
-        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
-        #111319 !important;
-
-    box-shadow: none !important;
-}
-
-/* HO cellák hoverre is maradjanak a saját állapot-színükön */
-body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.row-ho-hours.ho-percent-ok {
-    background:
-        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
-        #1f6a35 !important;
-}
-
-body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.row-ho-hours.ho-percent-warning {
-    background:
-        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
-        #b86f22 !important;
-}
-
-body.theme-colorful .schedule-table tbody tr:not(.highlighted-row):hover td.row-ho-hours.ho-percent-danger {
-    background:
-        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
-        #b92f3b !important;
-}
-
-/* A konkrét egér alatti üres cella kontúrja viszont maradjon */
-body.theme-colorful .schedule-cell-display.empty-cell:hover,
-body.theme-colorful .standby-cell-display.empty-cell:hover {
-    box-shadow:
-        inset 0 0 0 2px rgba(160, 220, 255, 0.95),
-        0 0 10px rgba(89, 232, 255, 0.20) !important;
-
-    filter: none !important;
-}
-
-/* ---------- Colorful theme: végleges hover fix ---------- */
-
-/* Semmilyen sor-hover ne színezzen át cellahátteret színes nézetben */
-body.theme-colorful .schedule-table tbody tr:hover td.schedule-cell,
-body.theme-colorful .schedule-table tbody tr:hover td.standby-placeholder-cell,
-body.theme-colorful .schedule-table tbody tr:hover td.summary-cell {
-    filter: none !important;
-}
-
-/* Normál felső sor alapállapot hover alatt is */
-body.theme-colorful .schedule-table tbody tr.employee-main-row:hover td.schedule-cell:not(.weekend):not(.other-month):not(.holiday-column):not(.today-column) {
-    background:
-        linear-gradient(135deg, rgba(8, 24, 48, 0.98), rgba(6, 14, 30, 0.98)),
-        #071224 !important;
-
-    box-shadow: none !important;
-}
-
-/* Készenléti alsó sor alapállapot hover alatt is */
-body.theme-colorful .schedule-table tbody tr.employee-standby-row:hover td.standby-placeholder-cell:not(.weekend):not(.other-month):not(.holiday-column):not(.today-column) {
-    background:
-        linear-gradient(135deg, rgba(5, 18, 36, 0.98), rgba(3, 10, 24, 0.98)),
-        #050f21 !important;
-
-    box-shadow: none !important;
-}
-
-/* Hétvége felső sor hover alatt is */
-body.theme-colorful .schedule-table tbody tr.employee-main-row:hover td.schedule-cell.weekend:not(.today-column) {
-    background:
-        linear-gradient(135deg, rgba(45, 18, 44, 0.98), rgba(24, 14, 32, 0.98)),
-        #171020 !important;
-
-    box-shadow: none !important;
-}
-
-/* Hétvége alsó sor hover alatt is */
-body.theme-colorful .schedule-table tbody tr.employee-standby-row:hover td.standby-placeholder-cell.weekend:not(.today-column) {
-    background:
-        linear-gradient(135deg, rgba(34, 12, 34, 0.98), rgba(17, 9, 26, 0.98)),
-        #100918 !important;
-
-    box-shadow: none !important;
-}
-
-/* Aktuális nap felső sor: fix, hover nem módosítja */
-body.theme-colorful .employee-main-row td.schedule-cell.today-column,
-body.theme-colorful .employee-main-row:hover td.schedule-cell.today-column {
-    background:
-        linear-gradient(135deg, rgba(8, 37, 68, 0.98), rgba(5, 20, 42, 0.98)),
-        #082344 !important;
-
-    box-shadow:
-        inset 2px 0 0 rgba(160, 220, 255, 0.65),
-        inset -2px 0 0 rgba(160, 220, 255, 0.65) !important;
-}
-
-/* Aktuális nap alsó sor: fix, hover nem módosítja */
-body.theme-colorful .employee-standby-row td.standby-placeholder-cell.today-column,
-body.theme-colorful .employee-standby-row:hover td.standby-placeholder-cell.today-column {
-    background:
-        linear-gradient(135deg, rgba(5, 28, 55, 0.98), rgba(3, 14, 32, 0.98)),
-        #061a35 !important;
-
-    box-shadow:
-        inset 2px 0 0 rgba(160, 220, 255, 0.65),
-        inset -2px 0 0 rgba(160, 220, 255, 0.65) !important;
-}
-
-/* Jobb oldali összesítő cellák hover alatt is maradjanak fixek */
-body.theme-colorful .schedule-table tbody tr:hover td.summary-cell:not(.row-ho-hours) {
-    background:
-        linear-gradient(135deg, rgba(16, 20, 33, 0.98), rgba(10, 12, 22, 0.98)),
-        #111319 !important;
-
-    box-shadow: none !important;
-}
-
-/* HO értékcellák maradjanak saját állapotszínűek hover alatt is */
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-ok,
-body.theme-colorful td.row-ho-hours.ho-percent-ok {
-    background:
-        linear-gradient(135deg, rgba(35, 120, 58, 0.96), rgba(20, 82, 39, 0.98)),
-        #1f6a35 !important;
-}
-
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-warning,
-body.theme-colorful td.row-ho-hours.ho-percent-warning {
-    background:
-        linear-gradient(135deg, rgba(214, 127, 31, 0.96), rgba(151, 78, 24, 0.98)),
-        #b86f22 !important;
-}
-
-body.theme-colorful .schedule-table tbody tr:hover td.row-ho-hours.ho-percent-danger,
-body.theme-colorful td.row-ho-hours.ho-percent-danger {
-    background:
-        linear-gradient(135deg, rgba(220, 55, 70, 0.98), rgba(145, 32, 44, 0.98)),
-        #b92f3b !important;
-}
-
-/* Az egér alatti KONKRÉT üres cella kapjon csak kontúrt */
-body.theme-colorful td.assignment-cell .schedule-cell-display.empty-cell:hover {
-    box-shadow:
-        inset 0 0 0 2px rgba(160, 220, 255, 0.95),
-        0 0 10px rgba(89, 232, 255, 0.20) !important;
 
-    background: transparent !important;
-    filter: none !important;
+body.theme-colorful .summary-column-hide-button:hover {
+    background: #421331;
+    border-color: rgba(255, 98, 194, 0.7);
+    color: #ffffff;
 }
