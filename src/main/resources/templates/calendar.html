@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="/calendar.css">
 </head>
 <body>
+<script>
+    (function () {
+        if (localStorage.getItem("scheduler-theme") === "colorful") {
+            document.body.classList.add("theme-colorful");
+        }
+    })();
+</script>
 
 <main class="schedule-page">
 

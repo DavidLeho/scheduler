@@ -7,6 +7,13 @@
   <link rel="stylesheet" href="/manage.css">
 </head>
 <body class="manage-page">
+<script>
+  (function () {
+      if (localStorage.getItem("scheduler-theme") === "colorful") {
+          document.body.classList.add("theme-colorful");
+      }
+  })();
+</script>
 
 <header class="manage-header">
   <div class="manage-header-actions">
@@ -118,6 +125,7 @@
 
           <div class="shift-edit-panel">
             <form class="shift-type-edit-form"
+                  th:id="${'shift-edit-form-' + shiftType.id}"
                   action="/shift-types/update"
                   method="post">
 
@@ -176,24 +184,29 @@
                        th:value="${shiftType.description}"
                        placeholder="Leírás">
               </label>
-
-              <div class="shift-action-row">
-                <form></form>
-                <button type="submit">Módosítás mentése</button>
-              </div>
             </form>
 
-            <form class="shift-delete-form"
-                  action="/shift-types/delete"
-                  method="post"
-                  onsubmit="return confirm('Biztosan törlöd ezt a műszakot?');">
+            <div class="shift-action-row">
+              <form class="shift-delete-form"
+                    action="/shift-types/delete"
+                    method="post"
+                    onsubmit="return confirm('Biztosan törlöd ezt a műszakot?');">
 
-              <input type="hidden" name="id" th:value="${shiftType.id}">
-              <input type="hidden" name="year" th:value="${year}">
-              <input type="hidden" name="month" th:value="${month}">
+                <input type="hidden" name="id" th:value="${shiftType.id}">
+                <input type="hidden" name="year" th:value="${year}">
+                <input type="hidden" name="month" th:value="${month}">
 
-              <button class="danger-button" type="submit">Műszak törlése</button>
-            </form>
+                <button class="danger-button" type="submit">
+                  Törlés
+                </button>
+              </form>
+
+              <button class="primary-action-button"
+                      type="submit"
+                      th:attr="form=${'shift-edit-form-' + shiftType.id}">
+                Mentés
+              </button>
+            </div>
           </div>
         </details>
       </div>
