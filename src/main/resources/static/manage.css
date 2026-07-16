@@ -955,3 +955,31 @@ body.theme-colorful *::-webkit-scrollbar-thumb:hover {
 body.theme-colorful *::-webkit-scrollbar-corner {
     background: #071326;
 }
+
+/* ---------- Shift edit buttons align fix ---------- */
+
+.shift-edit-panel .shift-type-edit-form,
+.shift-edit-panel .shift-delete-form {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.shift-edit-panel .shift-action-row,
+.shift-edit-panel .shift-delete-form {
+    display: flex !important;
+    width: 100% !important;
+}
+
+.shift-edit-panel .shift-action-row button,
+.shift-edit-panel .shift-delete-form button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.shift-edit-panel .shift-delete-form {
+    margin-top: 8px !important;
+}
