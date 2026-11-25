@@ -16,9 +16,12 @@ import static com.pufi.scheduler.Assignment.LAYER_STANDBY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -30,6 +33,7 @@ class AssignmentIntegrationTests {
 
     private static final String LAST_DAY_OF_MONTH = "2026-11-30";
     private static final String FIRST_DAY_OF_NEXT_MONTH = "2026-12-01";
+    private static final String SECOND_DAY_OF_NEXT_MONTH = "2026-12-02";
 
     @Autowired
     private WebApplicationContext context;
@@ -47,6 +51,7 @@ class AssignmentIntegrationTests {
     private ShiftType standby;
     private ShiftType twentyFourHours;
     private ShiftType unavailable;
+    private ShiftType vacation;
 
     @BeforeEach
     void setUp() {
@@ -57,6 +62,7 @@ class AssignmentIntegrationTests {
         standby = shift("STANDBY", 8, true);
         twentyFourHours = shift("24H", 24, false);
         unavailable = shiftTypes.findByCodeIgnoreCase("-").orElseThrow();
+        vacation = shiftTypes.findByCodeIgnoreCase("SZ").orElseThrow();
     }
 
     @Test
@@ -88,32 +94,86 @@ class AssignmentIntegrationTests {
     }
 
     @Test
-    void protectsTheFirstDayOfTheNextMonthAfterATwentyFourHourShift() throws Exception {
+    void protectsBothDaysOfTheNextMonthAndUnlocksAfterShortening() throws Exception {
         save(LAST_DAY_OF_MONTH, LAYER_NORMAL, twentyFourHours, "CREATED");
 
-        save(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL, normal, "PREVIOUS_DAY_24H_REST_REQUIRED");
-        save(FIRST_DAY_OF_NEXT_MONTH, LAYER_STANDBY, standby, "PREVIOUS_DAY_24H_REST_REQUIRED");
+        for (String date : List.of(FIRST_DAY_OF_NEXT_MONTH, SECOND_DAY_OF_NEXT_MONTH)) {
+            save(date, LAYER_NORMAL, normal, "REST_REQUIRED_AFTER_24H|2026-11-30|NORMAL");
+            save(date, LAYER_STANDBY, standby, "REST_REQUIRED_AFTER_24H|2026-11-30|NORMAL");
+        }
         save(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL, unavailable, "CREATED");
+        save(SECOND_DAY_OF_NEXT_MONTH, LAYER_NORMAL, vacation, "CREATED");
 
         assertEquals(unavailable.getId(), assignment(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL).getShiftTypeId());
-        assertEquals(2, assignments.findByEmployee(employee).size());
+        assertEquals(vacation.getId(), assignment(SECOND_DAY_OF_NEXT_MONTH, LAYER_NORMAL).getShiftTypeId());
+        save(LAST_DAY_OF_MONTH, LAYER_NORMAL, normal, "UPDATED");
+        save(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL, normal, "UPDATED");
+        save(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY, standby, "CREATED");
     }
 
     @Test
     void rejectsUpdatingToTwentyFourHoursWhenTheNextMonthAlreadyHasWork() throws Exception {
         save(LAST_DAY_OF_MONTH, LAYER_NORMAL, normal, "CREATED");
         save(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL, normal, "CREATED");
-        save(LAST_DAY_OF_MONTH, LAYER_NORMAL, twentyFourHours, "NEXT_DAY_MUST_BE_EMPTY_AFTER_24H");
+        save(LAST_DAY_OF_MONTH, LAYER_NORMAL, twentyFourHours, "REST_CONFLICT_AFTER_24H|2026-12-01|NORMAL");
         assertEquals(normal.getId(), assignment(LAST_DAY_OF_MONTH, LAYER_NORMAL).getShiftTypeId());
+        assertEquals(normal.getId(), assignment(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL).getShiftTypeId());
 
         save(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL, unavailable, "UPDATED");
-        save(FIRST_DAY_OF_NEXT_MONTH, LAYER_STANDBY, standby, "CREATED");
-        save(LAST_DAY_OF_MONTH, LAYER_NORMAL, twentyFourHours, "NEXT_DAY_MUST_BE_EMPTY_AFTER_24H");
+        save(SECOND_DAY_OF_NEXT_MONTH, LAYER_NORMAL, vacation, "CREATED");
+        save(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY, standby, "CREATED");
+        save(LAST_DAY_OF_MONTH, LAYER_NORMAL, twentyFourHours, "REST_CONFLICT_AFTER_24H|2026-12-02|STANDBY");
         assertEquals(normal.getId(), assignment(LAST_DAY_OF_MONTH, LAYER_NORMAL).getShiftTypeId());
+        assertEquals(standby.getId(), assignment(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY).getShiftTypeId());
 
-        remove(FIRST_DAY_OF_NEXT_MONTH, LAYER_STANDBY);
+        remove(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY);
         save(LAST_DAY_OF_MONTH, LAYER_NORMAL, twentyFourHours, "UPDATED");
         assertEquals(twentyFourHours.getId(), assignment(LAST_DAY_OF_MONTH, LAYER_NORMAL).getShiftTypeId());
+        assertEquals(unavailable.getId(), assignment(FIRST_DAY_OF_NEXT_MONTH, LAYER_NORMAL).getShiftTypeId());
+        assertEquals(vacation.getId(), assignment(SECOND_DAY_OF_NEXT_MONTH, LAYER_NORMAL).getShiftTypeId());
+    }
+
+    @Test
+    void appliesToTwentyFourHourStandbyAcrossTheYearAndUnlocksAfterDeletion() throws Exception {
+        ShiftType longStandby = shift("STANDBY-24H", 24, true);
+        save("2026-12-31", LAYER_STANDBY, longStandby, "CREATED");
+
+        save("2027-01-01", LAYER_STANDBY, standby, "REST_REQUIRED_AFTER_24H|2026-12-31|STANDBY");
+        save("2027-01-02", LAYER_NORMAL, normal, "REST_REQUIRED_AFTER_24H|2026-12-31|STANDBY");
+        save("2027-01-03", LAYER_NORMAL, normal, "CREATED");
+        remove("2026-12-31", LAYER_STANDBY);
+
+        save("2027-01-01", LAYER_NORMAL, normal, "CREATED");
+        save("2027-01-02", LAYER_STANDBY, standby, "CREATED");
+    }
+
+    @Test
+    void rejectsPromotingAUsedShiftTypeIfItsAssignmentsWouldCauseAConflict() throws Exception {
+        save(LAST_DAY_OF_MONTH, LAYER_NORMAL, normal, "CREATED");
+        save(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY, standby, "CREATED");
+
+        mvc.perform(post("/shift-types/update")
+                        .param("id", normal.getId().toString()).param("code", normal.getCode())
+                        .param("hours", "24").param("year", "2026").param("month", "11"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute("errorMessage", containsString("2026-12-02")));
+
+        assertEquals(8, assignment(LAST_DAY_OF_MONTH, LAYER_NORMAL).getHours());
+        assertEquals(standby.getId(), assignment(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY).getShiftTypeId());
+    }
+
+    @Test
+    void leavesAnExistingSecondDayConflictInPlaceUntilExplicitDeletion() throws Exception {
+        Assignment source = assignments.save(new Assignment(employee, LAST_DAY_OF_MONTH, LAYER_NORMAL, twentyFourHours));
+        Assignment legacy = assignments.save(new Assignment(employee, SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY, standby));
+
+        mvc.perform(get("/assignments")).andExpect(status().isOk());
+        save(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY, standby, "REST_REQUIRED_AFTER_24H|2026-11-30|NORMAL");
+        assertEquals(legacy.getId(), assignment(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY).getId());
+
+        remove(SECOND_DAY_OF_NEXT_MONTH, LAYER_STANDBY);
+        assertEquals(source.getId(), assignment(LAST_DAY_OF_MONTH, LAYER_NORMAL).getId());
+        assertEquals(1, assignments.findByEmployee(employee).size());
     }
 
     @Test

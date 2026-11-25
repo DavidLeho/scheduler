@@ -20,6 +20,7 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 @Controller
@@ -140,14 +141,13 @@ public class CalendarController {
     @ResponseBody
     @Transactional
     public String createOrUpdateAssignment(@RequestBody AssignmentRequest request) {
-        // A pihenőnap ellenőrzése a szomszédos napokat is érinti, ezért dolgozónként sorosítjuk a mentést.
+        // Take locks in the same order as catalog edits: shift type, then employee.
+        ShiftType shiftType = shiftTypeRepository.findByIdForScheduling(request.getShiftTypeId()).orElse(null);
         Employee employee = employeeRepository.findByIdForAssignmentWrite(request.getEmployeeId()).orElse(null);
 
         if (employee == null) {
             return "EMPLOYEE_NOT_FOUND";
         }
-
-        ShiftType shiftType = shiftTypeRepository.findById(request.getShiftTypeId()).orElse(null);
 
         if (shiftType == null) {
             return "SHIFT_TYPE_NOT_FOUND";
@@ -163,15 +163,15 @@ public class CalendarController {
             return "NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW";
         }
 
-        String twentyFourHourRuleResult = validateTwentyFourHourRule(
+        RestConflict restViolation = findRestConflict(
                 employee,
-                request.getDate(),
-                requestedLayer,
-                shiftType
+                LocalDate.parse(request.getDate()),
+                isRestMarker(requestedLayer, shiftType.getCode()),
+                Double.compare(shiftType.getHours(), 24) == 0
         );
 
-        if (!"OK".equals(twentyFourHourRuleResult)) {
-            return twentyFourHourRuleResult;
+        if (restViolation != null) {
+            return restViolation.response();
         }
 
         Assignment assignment = assignmentRepository
@@ -427,6 +427,7 @@ public class CalendarController {
     }
 
     @PostMapping("/shift-types/update")
+    @Transactional
     public String updateShiftType(
             @RequestParam Long id,
             @RequestParam String code,
@@ -439,7 +440,7 @@ public class CalendarController {
             @RequestParam Integer month,
             RedirectAttributes redirectAttributes
     ) {
-        ShiftType shiftType = shiftTypeRepository.findById(id).orElse(null);
+        ShiftType shiftType = shiftTypeRepository.findByIdForScheduling(id).orElse(null);
 
         if (shiftType == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Nem található a módosítandó műszak.");
@@ -475,6 +476,15 @@ public class CalendarController {
 
         if (description != null) {
             cleanedDescription = description.trim();
+        }
+
+        if (Double.compare(hours, 24) == 0 && Double.compare(shiftType.getHours(), 24) != 0) {
+            String conflict = findRestViolationForShiftTypeUpdate(shiftType);
+            if (conflict != null) {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "A műszaktípus nem állítható 24 órásra. " + conflict);
+                return redirectToManage(year, month);
+            }
         }
 
         shiftType.setCode(cleanedCode);
@@ -749,131 +759,74 @@ public class CalendarController {
                 .toList();
     }
 
-    private String validateTwentyFourHourRule(
-            Employee employee,
-            String assignmentDate,
-            String requestedLayer,
-            ShiftType selectedShiftType
-    ) {
-        LocalDate date = LocalDate.parse(assignmentDate);
-
-        if (previousDayHasTwentyFourHourShift(employee, date)) {
-            if (Assignment.LAYER_NORMAL.equals(requestedLayer) && isUnavailableShift(selectedShiftType)) {
-                return "OK";
-            }
-
-            return "PREVIOUS_DAY_24H_REST_REQUIRED";
-        }
-
-        if (Assignment.LAYER_NORMAL.equals(requestedLayer) && isTwentyFourHourNormalShift(selectedShiftType)) {
-            if (nextDayHasForbiddenAssignmentAfterTwentyFourHourShift(employee, date)) {
-                return "NEXT_DAY_MUST_BE_EMPTY_AFTER_24H";
+    private RestConflict findRestConflict(Employee employee, LocalDate date, boolean restMarker, boolean twentyFourHours) {
+        if (!restMarker) {
+            List<Assignment> previous = assignmentRepository.findByEmployeeAndAssignmentDateInOrderByAssignmentDateAscAssignmentLayerAsc(
+                    employee, List.of(date.minusDays(2).toString(), date.minusDays(1).toString())
+            );
+            for (Assignment assignment : previous) {
+                if (Double.compare(assignment.getHours(), 24) == 0
+                        && !isSpecialShiftType(assignment.getShiftCode())) {
+                    return new RestConflict(assignment, true);
+                }
             }
         }
 
-        return "OK";
+        if (twentyFourHours) {
+            List<Assignment> next = assignmentRepository.findByEmployeeAndAssignmentDateInOrderByAssignmentDateAscAssignmentLayerAsc(
+                    employee, List.of(date.plusDays(1).toString(), date.plusDays(2).toString())
+            );
+            for (Assignment assignment : next) {
+                if (!isRestMarker(assignment.getAssignmentLayer(), assignment.getShiftCode())) {
+                    return new RestConflict(assignment, false);
+                }
+            }
+        }
+
+        return null;
     }
 
-    private boolean previousDayHasTwentyFourHourShift(Employee employee, LocalDate date) {
-        LocalDate previousDate = date.minusDays(1);
-
-        Assignment previousAssignment = assignmentRepository
-                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
-                        employee,
-                        previousDate.toString(),
-                        Assignment.LAYER_NORMAL
-                )
-                .orElse(null);
-
-        if (previousAssignment == null) {
-            return false;
+    private String findRestViolationForShiftTypeUpdate(ShiftType shiftType) {
+        // Hold the shift-type lock while gathering affected employees so no new uses can slip in.
+        List<Long> employeeIds = assignmentRepository.findByShiftType(shiftType).stream()
+                .map(Assignment::getEmployeeId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .sorted()
+                .toList();
+        Map<Long, Employee> employees = new HashMap<>();
+        for (Long employeeId : employeeIds) {
+            employeeRepository.findByIdForAssignmentWrite(employeeId)
+                    .ifPresent(employee -> employees.put(employeeId, employee));
         }
 
-        return isTwentyFourHourAssignment(previousAssignment);
+        for (Assignment assignment : assignmentRepository.findByShiftType(shiftType)) {
+            Employee employee = employees.get(assignment.getEmployeeId());
+            if (employee == null) {
+                continue;
+            }
+
+            RestConflict conflict = findRestConflict(employee, LocalDate.parse(assignment.getDate()), false, true);
+            if (conflict != null) {
+                return employee.getName() + " (" + assignment.getDate() + "): ütköző beosztás "
+                        + conflict.assignment().getDate() + " napján, a "
+                        + (Assignment.LAYER_STANDBY.equals(conflict.assignment().getAssignmentLayer())
+                                ? "készenléti" : "normál") + " sorban.";
+            }
+        }
+
+        return null;
     }
 
-    private boolean nextDayHasForbiddenAssignmentAfterTwentyFourHourShift(Employee employee, LocalDate date) {
-        LocalDate nextDate = date.plusDays(1);
-
-        Assignment nextNormalAssignment = assignmentRepository
-                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
-                        employee,
-                        nextDate.toString(),
-                        Assignment.LAYER_NORMAL
-                )
-                .orElse(null);
-
-        if (nextNormalAssignment != null && !isUnavailableAssignment(nextNormalAssignment)) {
-            return true;
-        }
-
-        Assignment nextStandbyAssignment = assignmentRepository
-                .findByEmployeeAndAssignmentDateAndAssignmentLayer(
-                        employee,
-                        nextDate.toString(),
-                        Assignment.LAYER_STANDBY
-                )
-                .orElse(null);
-
-        return nextStandbyAssignment != null;
+    private boolean isRestMarker(String layer, String code) {
+        return Assignment.LAYER_NORMAL.equals(layer) && isSpecialShiftType(code);
     }
 
-    private boolean isTwentyFourHourAssignment(Assignment assignment) {
-        if (assignment == null) {
-            return false;
+    private record RestConflict(Assignment assignment, boolean preceding) {
+        String response() {
+            String code = preceding ? "REST_REQUIRED_AFTER_24H" : "REST_CONFLICT_AFTER_24H";
+            return code + "|" + assignment.getDate() + "|" + assignment.getAssignmentLayer();
         }
-
-        if (assignment.isStandby()) {
-            return false;
-        }
-
-        if (isSpecialShiftCode(assignment.getShiftCode())) {
-            return false;
-        }
-
-        return Double.compare(assignment.getHours(), 24) == 0;
-    }
-
-    private boolean isTwentyFourHourNormalShift(ShiftType shiftType) {
-        if (shiftType == null) {
-            return false;
-        }
-
-        if (shiftType.isStandby()) {
-            return false;
-        }
-
-        if (isSpecialShiftCode(shiftType.getCode())) {
-            return false;
-        }
-
-        return Double.compare(shiftType.getHours(), 24) == 0;
-    }
-
-    private boolean isUnavailableAssignment(Assignment assignment) {
-        if (assignment == null) {
-            return false;
-        }
-
-        return "-".equals(assignment.getShiftCode());
-    }
-
-    private boolean isUnavailableShift(ShiftType shiftType) {
-        if (shiftType == null) {
-            return false;
-        }
-
-        return "-".equals(shiftType.getCode());
-    }
-
-    private boolean isSpecialShiftCode(String code) {
-        if (code == null) {
-            return false;
-        }
-
-        String normalizedCode = code.trim().toUpperCase();
-
-        return normalizedCode.equals("SZ") || normalizedCode.equals("-");
     }
 
 }

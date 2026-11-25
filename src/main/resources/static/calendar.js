@@ -1,5 +1,7 @@
 /* ---------- Schedule table assignment handling ---------- */
 
+const assignmentsByEmployee = new Map();
+
 function closeAllPickers() {
     document.querySelectorAll(".assignment-cell.open").forEach(cell => {
         cell.classList.remove("open");
@@ -7,8 +9,15 @@ function closeAllPickers() {
 }
 
 document.addEventListener("click", event => {
+    const conflictClear = event.target.closest(".rest-conflict-clear");
     const displayButton = event.target.closest(".schedule-cell-display");
     const pickerOption = event.target.closest(".shift-picker-option");
+
+    if (conflictClear) {
+        deleteAssignmentFromCell(conflictClear.closest(".assignment-cell"));
+        closeAllPickers();
+        return;
+    }
 
     if (displayButton) {
         event.stopPropagation();
@@ -19,7 +28,7 @@ document.addEventListener("click", event => {
             return;
         }
 
-        if (cell.dataset.currentMonth !== "true") {
+        if (cell.dataset.currentMonth !== "true" || cell.classList.contains("rest-locked")) {
             closeAllPickers();
             return;
         }
@@ -40,7 +49,7 @@ document.addEventListener("click", event => {
 
         const cell = pickerOption.closest(".assignment-cell");
 
-        if (!cell) {
+        if (!cell || cell.classList.contains("rest-locked")) {
             return;
         }
 
@@ -72,25 +81,29 @@ function saveAssignmentToCell(cell, option) {
     })
         .then(response => response.text())
         .then(result => {
+            const [status, conflictDate, conflictLayer] = result.split("|");
             if (result === "CREATED" || result === "UPDATED" || result === "OK") {
-                applyShiftToCell(cell, {
-                    shiftTypeId: Number(option.dataset.shiftId),
+                const savedAssignment = {
+                    ...assignment,
                     shiftCode: option.dataset.code,
-                    assignmentLayer: cell.dataset.assignmentLayer,
                     hours: Number(option.dataset.hours),
                     night: option.dataset.night === "true",
                     standby: option.dataset.standby === "true",
                     homeOffice: option.dataset.homeOffice === "true",
                     shiftDescription: option.dataset.description || ""
-                });
+                };
+                rememberAssignment(savedAssignment);
+                applyShiftToCell(cell, savedAssignment);
+                updateRestLocks(assignment.employeeId);
             } else if (result === "STANDBY_ONLY_ALLOWED_IN_STANDBY_ROW") {
                 alert("Készenlétet csak az alsó készenléti sorba lehet tenni.");
             } else if (result === "NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW") {
                 alert("Ezt a műszakot csak a felső normál sorba lehet tenni.");
-            } else if (result === "PREVIOUS_DAY_24H_REST_REQUIRED") {
-                alert("24 órás műszak után a következő napra csak üres mező vagy szürke '-' kerülhet.");
-            } else if (result === "NEXT_DAY_MUST_BE_EMPTY_AFTER_24H") {
-                alert("24 órás műszak után a következő napnak üresnek kell lennie. Előbb töröld a következő napi beosztást.");
+            } else if (status === "REST_REQUIRED_AFTER_24H") {
+                alert(`A ${conflictDate} napján rögzített 24 órás műszak után két naptári nap pihenő kötelező.`);
+            } else if (status === "REST_CONFLICT_AFTER_24H") {
+                const row = conflictLayer === "STANDBY" ? "készenléti" : "normál";
+                alert(`A 24 órás műszak nem menthető: ${conflictDate} napján már van beosztás a ${row} sorban. Előbb töröld vagy módosítsd azt.`);
             } else {
                 alert("Nem sikerült menteni a beosztást.");
             }
@@ -111,12 +124,83 @@ function deleteAssignmentFromCell(cell) {
         .then(response => response.text())
         .then(result => {
             if (result === "OK" || result === "NOT_FOUND") {
+                const { employeeId, date, assignmentLayer } = cell.dataset;
+                assignmentsByEmployee.get(employeeId)?.delete(assignmentKey(date, assignmentLayer));
                 clearCell(cell);
+                updateRestLocks(employeeId);
             } else {
                 alert("Nem sikerült törölni a beosztást.");
             }
         })
         .catch(error => console.error("Hiba a beosztás törlésénél:", error));
+}
+
+function assignmentKey(date, layer) {
+    return `${date}:${layer || "NORMAL"}`;
+}
+
+function rememberAssignment(assignment) {
+    const employeeId = String(assignment.employeeId);
+    if (!assignmentsByEmployee.has(employeeId)) {
+        assignmentsByEmployee.set(employeeId, new Map());
+    }
+    assignmentsByEmployee.get(employeeId).set(assignmentKey(assignment.date, assignment.assignmentLayer), assignment);
+}
+
+function updateRestLocks(employeeId) {
+    const assignments = assignmentsByEmployee.get(String(employeeId));
+    const restDates = new Map();
+
+    // Use calendar dates in UTC so a time zone or daylight-saving change does not move the lock.
+    for (const assignment of assignments?.values() ?? []) {
+        if (assignment.hours !== 24 || isRestMarker(assignment)) {
+            continue;
+        }
+        const restDate = new Date(`${assignment.date}T00:00:00Z`);
+        if (Number.isNaN(restDate.valueOf())) {
+            continue;
+        }
+        for (let offset = 0; offset < 2; offset++) {
+            restDate.setUTCDate(restDate.getUTCDate() + 1);
+            restDates.set(restDate.toISOString().split("T")[0], assignment.date);
+        }
+    }
+
+    document.querySelectorAll(`.assignment-cell[data-employee-id="${employeeId}"]`).forEach(cell => {
+        const { date, assignmentLayer, currentMonth } = cell.dataset;
+        const sourceDate = restDates.get(date);
+        const locked = Boolean(sourceDate);
+        const display = cell.querySelector(".schedule-cell-display");
+        display.disabled = locked;
+        cell.classList.toggle("rest-locked", locked);
+        if (locked) {
+            cell.classList.remove("open");
+            cell.title = `Kötelező pihenőnap a ${sourceDate} napján rögzített 24 órás műszak után.`;
+        } else {
+            cell.removeAttribute("title");
+        }
+
+        const assignment = assignments?.get(assignmentKey(date, assignmentLayer));
+        const conflict = locked && assignment && !isRestMarker(assignment);
+        cell.classList.toggle("rest-conflict", Boolean(conflict));
+        const clearButton = cell.querySelector(".rest-conflict-clear");
+        if (conflict && currentMonth === "true" && !clearButton) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "delete-assignment-button rest-conflict-clear";
+            button.textContent = "×";
+            button.setAttribute("aria-label", "Ütköző beosztás törlése");
+            button.title = "Ütköző beosztás törlése";
+            cell.append(button);
+        } else if (!conflict) {
+            clearButton?.remove();
+        }
+    });
+}
+
+function isRestMarker(assignment) {
+    const code = (assignment.shiftCode || "").trim().toUpperCase();
+    return (assignment.assignmentLayer || "NORMAL") === "NORMAL" && (code === "-" || code === "SZ");
 }
 
 function applyShiftToCell(cell, assignment) {
@@ -383,6 +467,7 @@ function loadAssignments() {
         .then(response => response.json())
         .then(assignments => {
             assignments.forEach(assignment => {
+                rememberAssignment(assignment);
                 const layer = assignment.assignmentLayer || "NORMAL";
 
                 const cell = document.querySelector(
@@ -394,6 +479,7 @@ function loadAssignments() {
                 }
             });
 
+            assignmentsByEmployee.forEach((_, employeeId) => updateRestLocks(employeeId));
             updateAllSummaries();
         })
         .catch(error => console.error("Hiba a beosztások betöltésénél:", error));

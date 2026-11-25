@@ -165,13 +165,13 @@ sequenceDiagram
     participant C as CalendarController transaction
     participant H as H2 through JPA
     B->>C: POST /assignments
-    C->>H: Lock employee row and load shift type
-    C->>H: Read adjacent days for rest rule and find matching layer
+    C->>H: Lock shift type and employee rows
+    C->>H: Check rest windows and find matching layer
     alt Allowed
         C->>H: Insert or change managed assignment in place
         H-->>C: Flush and commit with unique constraint
         C-->>B: CREATED or UPDATED
-        Note over B: Update cell and recalculate totals
+        Note over B: Update cell, totals and rest locks
     else Rejected by a rule
         C-->>B: Text validation token
         Note over B: Keep current cell and show message
@@ -180,14 +180,14 @@ sequenceDiagram
 
 ## Transactions and concurrency
 
-Assignment POST and DELETE have controller-level `@Transactional` boundaries. The employee lookup for both requests uses `PESSIMISTIC_WRITE`, so assignment writes for the same employee serialize around neighbor checks and mutation. Distinct employees do not share this row lock. JPA flushes changes to an existing managed row at transaction completion. The database constraint also guards against duplicate tuples from other write paths.
+Assignment POST and DELETE have controller-level `@Transactional` boundaries and pessimistically lock the affected employee. POST locks the selected shift type first to coordinate with updates to its hours. JPA flushes changes to an existing managed row at transaction completion. The database constraint also guards against duplicate tuples from other write paths.
 
-The lock applies to these two assignment endpoints. Catalog edits, employee deletion, holiday toggles and Excel reads do not participate in the same coordination. Employee deletion and skill removal span multiple repository operations without a surrounding controller transaction. Export reads the repositories separately and has no guaranteed cross-sheet snapshot.
+Shift-type edits lock the type in a transaction. Promotion to 24 hours additionally locks the affected employees in ID order and validates both rest days before applying changes. Employee deletion and skill removal span multiple repository operations without a surrounding controller transaction. Export reads the repositories separately and has no guaranteed cross-sheet snapshot.
 
 ## Validation and error handling
 
 - Spring MVC binds JSON or form/query parameters. Required form fields and incompatible input types can fail during binding.
-- Controller assignment checks on a successfully bound request return HTTP 200 with plain-text business tokens. `POST /assignments` can return `EMPLOYEE_NOT_FOUND`, `SHIFT_TYPE_NOT_FOUND`, `STANDBY_ONLY_ALLOWED_IN_STANDBY_ROW`, `NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW`, `PREVIOUS_DAY_24H_REST_REQUIRED` or `NEXT_DAY_MUST_BE_EMPTY_AFTER_24H`.
+- Controller assignment checks on a successfully bound request return HTTP 200 with plain-text business tokens. `POST /assignments` can return `EMPLOYEE_NOT_FOUND`, `SHIFT_TYPE_NOT_FOUND`, `STANDBY_ONLY_ALLOWED_IN_STANDBY_ROW` or `NORMAL_ONLY_ALLOWED_IN_NORMAL_ROW`. Rest failures use `REST_REQUIRED_AFTER_24H|date|layer` for a previous 24-hour shift or `REST_CONFLICT_AFTER_24H|date|layer` for a conflicting future assignment.
 - Date parsing, invalid numeric month ranges or persistence failures can escape controller business handling. The repository has no application-wide error adapter for these cases. Assignment DELETE compares the provided date as text.
 - Management handlers report explicit validation failures in Hungarian flash messages. The calendar recognizes known tokens and reports many transport or decoding failures only in the browser console. [Business rules](BUSINESS_RULES.md)
 

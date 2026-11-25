@@ -5,7 +5,7 @@ Scheduler is a Hungarian-language web application for manually maintaining emplo
 ## Current features
 
 - Monthly calendar with previous and next month navigation and a month/year picker.
-- Per-cell assignment, replacement and clearing. The server checks layer compatibility and the rest day after a 24-hour normal shift.
+- Per-cell assignment, replacement and clearing. The server checks layer compatibility and enforces two calendar days of rest after a 24-hour shift in either row.
 - Employee, skill and shift-type management. Shift types carry hours and night, standby and home-office flags.
 - Default holidays for the years displayed, with manual holiday toggling.
 - Monthly hours, shift count, night hours, standby hours, home-office percentage and displayed vacation balance.

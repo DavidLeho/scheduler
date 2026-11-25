@@ -27,11 +27,11 @@ S is a contained change, M spans several related components or tests, and L requ
 ### TD-002 — Preserve scheduling invariants when editing assigned shift types
 
 - **Priority and classification.** P0, Confirmed integrity gap.
-- **Problem.** Non-system type updates change the live flags and hours read by existing assignments without checking layers or rest-day compatibility.
+- **Problem.** Non-system type updates change the live flags and hours read by existing assignments. Promotion to 24 hours checks rest-day compatibility, while layer flag edits can still make historical assignments inconsistent.
 - **Affected components.** CalendarController.updateShiftType, Assignment, shift_type.
 - **Proposed solution.** Agree on how catalog updates affect historical rows. Implement validation, restricted edits or catalog versioning according to the approved policy.
 - **Acceptance criteria.** An accepted edit cannot silently violate the approved historical and scheduling invariants. Rejected edits leave catalog and assignments unchanged.
-- **Testing requirements.** Referenced normal-to-standby edit, 8-to-24-hour edit with following-day work, protected types and permitted metadata edits.
+- **Testing requirements.** Referenced normal-to-standby edit, protected types and permitted metadata edits. Retain the existing test for promotion to 24 hours with conflicting work.
 - **Complexity.** L.
 - **Status.** Open, policy approval required.
 

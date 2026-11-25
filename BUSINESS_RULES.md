@@ -86,9 +86,9 @@ Startup creates or restores the metadata of `SZ` (8 h vacation) and `-` (0 h una
 
 ### BR-009 — Referenced shift types
 
-Deletion is rejected if any assignment references the type. Updates to non-system types are allowed even when referenced. Assignment reads use the linked type's current metadata. An edit can therefore alter historical totals or leave previously accepted assignments inconsistent with current flags or rest checks.
+Deletion is rejected if any assignment references the type. Updates to non-system types are allowed even when referenced, subject to the rest check when changing a type to 24 hours (BR-015). Assignment reads use the linked type's current metadata. Other edits can still alter historical totals or leave assignments inconsistent with the current flags.
 
-**Example.** Changing an assigned type from 8 h to 24 h changes the earlier cell's displayed hours, without revalidating its next day.
+**Example.** Changing an assigned type from 8 h to 24 h fails if a linked assignment would conflict with work on either of the following two days.
 
 **Source.** [updateShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L430), [deleteShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L495) and [Assignment.java](src/main/java/com/pufi/scheduler/Assignment.java)
 
@@ -134,29 +134,31 @@ DELETE looks up employee, exact date text and normalized layer. It deletes the m
 
 **Automated coverage.** [updatesNormalAssignmentInPlaceAndKeepsStandbySeparate](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L63) covers a successful standby deletion. [Assignment E2E](e2e/tests/assignments.spec.ts) covers clearing normal and standby cells. Missing-record cases are untested.
 
-### BR-014 — Rest day after a 24-hour shift
+### BR-014 — Two rest days after a 24-hour shift
 
-A non-system normal shift of exactly 24 hours triggers the rule. If the previous day has such a shift, only a normal `-` entry may be saved on the next day. Regular work, vacation and standby are blocked. Empty cells are allowed.
+A shift of exactly 24 hours in either layer requires the next two calendar days to be rest days. The server rejects normal work and standby on those days. An empty row, a normal `-` marker or a normal `SZ` vacation marker is compatible with rest. Markers are assigned manually. The rule does not create any assignment.
 
-**Example.** After a 24 h shift on 2026-11-30, a standby entry on 2026-12-01 returns `PREVIOUS_DAY_24H_REST_REQUIRED`. A normal `-` entry succeeds.
+The calendar disables the pickers in both rows and shows a distinct background and a tooltip with the triggering date. It recalculates the locks after a successful save or deletion. If an older assignment conflicts, the cell keeps its value and offers an explicit removal action in its own month. One remaining qualifying shift is enough to keep a day locked.
 
-**Source.** [validateTwentyFourHourRule](src/main/java/com/pufi/scheduler/CalendarController.java#L752)
+**Example.** A 24 h standby shift on 2026-12-31 locks both rows on 2027-01-01 and 2027-01-02. January 3 is outside that lock.
 
-**Automated coverage.** [protectsTheFirstDayOfTheNextMonthAfterATwentyFourHourShift](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L91) and [assignment E2E](e2e/tests/assignments.spec.ts) cover normal and standby rejection and the `-` exception. Vacation rejection and exact-hour thresholds are untested.
+**Source.** [findRestConflict](src/main/java/com/pufi/scheduler/CalendarController.java#L762) and [updateRestLocks](src/main/resources/static/calendar.js#L150)
+
+**Automated coverage.** [Java integration tests](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java) and [assignment E2E](e2e/tests/assignments.spec.ts) cover both layers, shortening and deleting a 24-hour shift, both calendar boundaries and the rest markers. E2E also checks disabled buttons, tooltip text and both themes.
 
 ### BR-015 — Rest rule when saving the earlier day
 
-Before creating or changing a normal assignment to a qualifying 24-hour type, the following day must have no standby entry and no normal assignment except `-`. Calendar arithmetic checks actual adjacent dates across month and year boundaries.
+Before creating or replacing an assignment with a 24-hour type, the next two calendar days must contain no normal work and no standby. Existing normal `-` and `SZ` markers are preserved and do not block the save. If there is a conflict, the save is rejected and the calendar reports the conflicting date and layer. Changing a used shift type to 24 hours validates its affected assignments before updating the catalog.
 
-**Example.** An existing standby entry on January 1 prevents saving a qualifying 24-hour normal shift on December 31.
+**Example.** A December 31 24-hour shift can be saved if January 1 has `-` and January 2 has `SZ`. A standby assignment on January 2 prevents the save and stays in place.
 
-**Source.** [validateTwentyFourHourRule](src/main/java/com/pufi/scheduler/CalendarController.java#L752) and [nextDayHasForbiddenAssignmentAfterTwentyFourHourShift](src/main/java/com/pufi/scheduler/CalendarController.java#L795)
+**Source.** [findRestConflict](src/main/java/com/pufi/scheduler/CalendarController.java#L762) and [findRestViolationForShiftTypeUpdate](src/main/java/com/pufi/scheduler/CalendarController.java#L790)
 
-**Automated coverage.** [rejectsUpdatingToTwentyFourHoursWhenTheNextMonthAlreadyHasWork](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L103) covers November–December, both blocking layers and acceptance after removing standby. December–January is inferred from `LocalDate` arithmetic.
+**Automated coverage.** [Java integration tests](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java) check rejection without mutation, catalog changes and explicit cleanup of legacy conflicts. [Assignment E2E](e2e/tests/assignments.spec.ts) checks a second-day conflict across months and an allowed save after clearing it.
 
 ### BR-016 — Assignment serialization
 
-Assignment POST and DELETE run in transactions and use a pessimistic lock on the employee. Save checks adjacent dates while holding that lock. Catalog changes use separate paths.
+Assignment POST and DELETE use an employee row lock in a transaction. POST also locks the selected shift type before the employee. A catalog change that increases a used type to 24 hours locks the affected employee rows in ID order under the shift-type lock. This keeps the check and update against the same scheduling state.
 
 **Example.** Two requests that schedule the earlier 24-hour shift and the next day's standby change for the same employee are checked serially through these endpoints.
 

@@ -14,4 +14,10 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     );
 
     List<Assignment> findByEmployee(Employee employee);
+
+    List<Assignment> findByEmployeeAndAssignmentDateInOrderByAssignmentDateAscAssignmentLayerAsc(
+            Employee employee, List<String> dates
+    );
+
+    List<Assignment> findByShiftType(ShiftType shiftType);
 }

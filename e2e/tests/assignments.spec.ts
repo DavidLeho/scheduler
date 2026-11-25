@@ -87,32 +87,96 @@ test('BR-010 and BR-011 keep normal and standby shifts in separate rows', async 
   await expect(normalCell).toHaveAttribute('data-shift-code', normal);
 });
 
-test('BR-014 enforces rest after a 24-hour shift across a month boundary', async ({ calendar, testData, page }) => {
+test('BR-014 locks and unlocks both rows immediately when a 24-hour shift changes', async ({ calendar, testData }) => {
   const employee = await testData.createEmployee();
   const longShift = await testData.createShift(24);
   const normal = await testData.createShift(8);
+  await calendar.open(2026, 11);
+
+  const source = calendar.cell(employee.id, '2026-11-10', 'NORMAL');
+  const restCells = ['2026-11-11', '2026-11-12'].flatMap(date =>
+    (['NORMAL', 'STANDBY'] as const).map(layer => calendar.cell(employee.id, date, layer)),
+  );
+
+  await expectAssignmentResult(await calendar.assign(source, longShift), 'CREATED');
+  for (const cell of restCells) {
+    const display = cell.locator('button.schedule-cell-display');
+    await expect(display).toBeDisabled();
+    await expect(display).toHaveCSS('background-color', 'rgb(35, 67, 71)');
+    await expect(cell).toHaveAttribute('title', /Kötelező pihenőnap.*2026-11-10/);
+  }
+  await calendar.themeToggle.click();
+  await expect(restCells[0].locator('button.schedule-cell-display')).toHaveCSS('background-color', 'rgb(35, 67, 71)');
+
+  await expectAssignmentResult(await calendar.assign(source, normal), 'UPDATED');
+  for (const cell of restCells) {
+    await expect(cell.locator('button.schedule-cell-display')).toBeEnabled();
+    await expect(cell).not.toHaveAttribute('title', /Kötelező pihenőnap/);
+  }
+
+  await expectAssignmentResult(await calendar.assign(source, longShift), 'UPDATED');
+  await expect(restCells[3].locator('button.schedule-cell-display')).toBeDisabled();
+  await expectAssignmentResult(await calendar.clear(source), 'OK');
+  for (const cell of restCells) {
+    await expect(cell.locator('button.schedule-cell-display')).toBeEnabled();
+  }
+});
+
+test('BR-015 reports a second-day conflict across months and preserves both rest markers', async ({ calendar, testData, page }) => {
+  const employee = await testData.createEmployee();
+  const longShift = await testData.createShift(24);
   const standby = await testData.createShift(6, { standby: true });
+  const unavailable = calendar.cell(employee.id, '2026-12-01', 'NORMAL');
+  const vacation = calendar.cell(employee.id, '2026-12-02', 'NORMAL');
+  const conflicting = calendar.cell(employee.id, '2026-12-02', 'STANDBY');
+  const source = calendar.cell(employee.id, '2026-11-30', 'NORMAL');
   const alerts: string[] = [];
   page.on('dialog', async dialog => {
     alerts.push(dialog.message());
     await dialog.accept();
   });
-  await calendar.open(2026, 11);
-  const lastDay = calendar.cell(employee.id, '2026-11-30', 'NORMAL');
-  await expectAssignmentResult(await calendar.assign(lastDay, longShift), 'CREATED');
-  await expect(lastDay).toHaveAttribute('data-shift-code', longShift);
+
+  await calendar.open(2026, 12);
+  await expectAssignmentResult(await calendar.assign(unavailable, '-'), 'CREATED');
+  await expectAssignmentResult(await calendar.assign(vacation, 'SZ'), 'CREATED');
+  await expectAssignmentResult(await calendar.assign(conflicting, standby), 'CREATED');
+
+  await calendar.previousMonth();
+  await expectAssignmentResult(await calendar.assign(source, longShift), 'REST_CONFLICT_AFTER_24H|2026-12-02|STANDBY');
+  expect(alerts).toEqual([expect.stringMatching(/2026-12-02.*készenléti sorban/)]);
+  await expect(source).not.toHaveAttribute('data-shift-code', /.+/);
+
   await calendar.nextMonth();
-  await expect(calendar.monthPicker).toHaveText(/2026 december/i);
+  await expect(conflicting).toHaveAttribute('data-shift-code', standby);
+  await expectAssignmentResult(await calendar.clear(conflicting), 'OK');
+  await calendar.previousMonth();
+  await expectAssignmentResult(await calendar.assign(source, longShift), 'CREATED');
 
-  const normalCell = calendar.cell(employee.id, '2026-12-01', 'NORMAL');
-  const standbyCell = calendar.cell(employee.id, '2026-12-01', 'STANDBY');
-  await expectAssignmentResult(await calendar.assign(normalCell, normal), 'PREVIOUS_DAY_24H_REST_REQUIRED');
-  await expectAssignmentResult(await calendar.assign(standbyCell, standby), 'PREVIOUS_DAY_24H_REST_REQUIRED');
-  expect(alerts).toHaveLength(2);
-  for (const message of alerts) expect(message).toContain('24 órás műszak után');
-  await expect(normalCell).not.toHaveAttribute('data-shift-code', /.+/);
-  await expect(standbyCell).not.toHaveAttribute('data-shift-code', /.+/);
+  await calendar.nextMonth();
+  await expect(unavailable).toHaveAttribute('data-shift-code', '-');
+  await expect(vacation).toHaveAttribute('data-shift-code', 'SZ');
+  for (const date of ['2026-12-01', '2026-12-02']) {
+    for (const layer of ['NORMAL', 'STANDBY'] as const) {
+      const cell = calendar.cell(employee.id, date, layer);
+      await expect(cell.locator('button.schedule-cell-display')).toBeDisabled();
+      await expect(cell).toHaveAttribute('title', /Kötelező pihenőnap.*2026-11-30/);
+    }
+  }
+});
 
-  await expectAssignmentResult(await calendar.assign(normalCell, '-'), 'CREATED');
-  await expect(normalCell).toHaveAttribute('data-shift-code', '-');
+test('BR-014 applies two rest days after a 24-hour standby across the year boundary', async ({ calendar, testData }) => {
+  const employee = await testData.createEmployee();
+  const longStandby = await testData.createShift(24, { standby: true });
+  await calendar.open(2026, 12);
+
+  const source = calendar.cell(employee.id, '2026-12-31', 'STANDBY');
+  await expectAssignmentResult(await calendar.assign(source, longStandby), 'CREATED');
+  await calendar.nextMonth();
+
+  for (const date of ['2027-01-01', '2027-01-02']) {
+    for (const layer of ['NORMAL', 'STANDBY'] as const) {
+      await expect(calendar.cell(employee.id, date, layer).locator('button.schedule-cell-display')).toBeDisabled();
+    }
+  }
+  await expect(calendar.cell(employee.id, '2027-01-03', 'NORMAL').locator('button.schedule-cell-display')).toBeEnabled();
 });
