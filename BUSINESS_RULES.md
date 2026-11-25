@@ -244,6 +244,16 @@ Ordinary cells show hours with a decimal comma when needed and append `HO` for h
 
 **Automated coverage.** [Assignment E2E](e2e/tests/assignments.spec.ts) checks ordinary shift hours and the cleared cell display. Decimal, home-office and tooltip formatting remain uncovered.
 
+### BR-025 — Shift picker order
+
+Each picker starts with `Üres` (clear). Normal choices follow in this order: gold day shifts, purple night shifts and the gray `-` and `SZ` markers. Standby choices show blue day standby before light-blue night standby. Within each color group, choices are ordered by increasing hours, then by shift code using Hungarian alphabetical order. Each cell applies the same ordering to the available shift catalog.
+
+**Example.** Gold options with codes `N6` (6 h), `A` (12 h) and `N12` (12 h) appear in that order. The gray group shows `-` (0 h) before `SZ` (8 h).
+
+**Source.** [initializeShiftPickerOptions](src/main/resources/static/calendar.js#L404)
+
+**Automated coverage.** [Shift picker E2E](e2e/tests/shift-picker.spec.ts) checks both rows, all color groups, hour and code ordering, and the same result across two employees and dates using newly created types.
+
 ## Unresolved product questions
 
 - The stored vacation allocation and selected-month balance do not establish an annual accounting policy. Carryover, cross-month deduction and approval requirements need a product decision.

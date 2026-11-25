@@ -56,9 +56,14 @@ export class CalendarPage {
     return response;
   }
 
-  private async openPicker(cell: Locator): Promise<void> {
+  async openPicker(cell: Locator): Promise<void> {
     await cell.locator('button.schedule-cell-display').click();
     await expect(cell.getByRole('button', { name: 'Üres', exact: true })).toBeVisible();
+  }
+
+  async closePicker(cell: Locator): Promise<void> {
+    await cell.locator('button.schedule-cell-display').click();
+    await expect(cell.getByRole('button', { name: 'Üres', exact: true })).toBeHidden();
   }
 
   private isAssignmentResponse(response: Response, method: string): boolean {

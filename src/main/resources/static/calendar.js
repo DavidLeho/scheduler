@@ -402,45 +402,68 @@ function loadAssignments() {
 /* ---------- Shift picker option display ---------- */
 
 function initializeShiftPickerOptions() {
-    document.querySelectorAll(".shift-picker-option").forEach(option => {
-        if (option.dataset.clear === "true") {
-            option.textContent = "Üres";
-            option.classList.add("picker-clear");
-            return;
-        }
+    const colorOrder = {
+        "picker-clear": 0,
+        "picker-normal": 1,
+        "picker-night": 2,
+        // Vacation and unavailable use the same gray style.
+        "picker-vacation": 3,
+        "picker-unavailable": 3,
+        "picker-standby": 4,
+        "picker-standby-night": 5
+    };
+    const shiftCodes = new Intl.Collator("hu");
 
-        const assignmentPreview = {
-            shiftCode: option.dataset.code,
-            hours: Number(option.dataset.hours),
-            night: option.dataset.night === "true",
-            standby: option.dataset.standby === "true",
-            homeOffice: option.dataset.homeOffice === "true",
-            shiftDescription: option.dataset.description || ""
-        };
-
-        option.textContent = formatCellText(assignmentPreview);
-
-        option.classList.remove(
-            "picker-normal",
-            "picker-night",
-            "picker-standby",
-            "picker-standby-night",
-            "picker-vacation",
-            "picker-unavailable",
-            "picker-layer-normal",
-            "picker-layer-standby"
+    document.querySelectorAll(".shift-picker").forEach(picker => {
+        const options = Array.from(picker.querySelectorAll(".shift-picker-option"), configureShiftPickerOption);
+        options.sort((left, right) =>
+            colorOrder[left.color] - colorOrder[right.color]
+            || left.hours - right.hours
+            || shiftCodes.compare(left.code, right.code)
         );
-
-        option.classList.add(getPickerClass(assignmentPreview));
-
-        if (assignmentPreview.standby) {
-            option.classList.add("picker-layer-standby");
-        } else {
-            option.classList.add("picker-layer-normal");
-        }
-
-        option.title = buildShiftTitle(assignmentPreview);
+        picker.append(...options.map(({ button }) => button));
     });
+}
+
+function configureShiftPickerOption(option) {
+    if (option.dataset.clear === "true") {
+        option.textContent = "Üres";
+        option.classList.add("picker-clear");
+        return { button: option, color: "picker-clear", hours: 0, code: "" };
+    }
+
+    const assignmentPreview = {
+        shiftCode: option.dataset.code,
+        hours: Number(option.dataset.hours),
+        night: option.dataset.night === "true",
+        standby: option.dataset.standby === "true",
+        homeOffice: option.dataset.homeOffice === "true",
+        shiftDescription: option.dataset.description || ""
+    };
+
+    option.textContent = formatCellText(assignmentPreview);
+
+    option.classList.remove(
+        "picker-normal",
+        "picker-night",
+        "picker-standby",
+        "picker-standby-night",
+        "picker-vacation",
+        "picker-unavailable",
+        "picker-layer-normal",
+        "picker-layer-standby"
+    );
+
+    const color = getPickerClass(assignmentPreview);
+    option.classList.add(color, assignmentPreview.standby ? "picker-layer-standby" : "picker-layer-normal");
+    option.title = buildShiftTitle(assignmentPreview);
+
+    return {
+        button: option,
+        color,
+        hours: Number.isNaN(assignmentPreview.hours) ? Infinity : assignmentPreview.hours,
+        code: assignmentPreview.shiftCode
+    };
 }
 
 function getPickerClass(assignment) {

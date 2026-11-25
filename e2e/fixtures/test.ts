@@ -34,10 +34,18 @@ class TestData {
     return { id, name };
   }
 
-  async createShift(hours: number, standby = false): Promise<string> {
-    const code = `E${randomUUID().slice(0, 8).toUpperCase()}`;
+  async createShift(
+    hours: number,
+    { standby = false, night = false, codePrefix = 'E' } = {},
+  ): Promise<string> {
+    const code = `${codePrefix}${randomUUID().slice(0, 8).toUpperCase()}`;
     this.names.shift.push(code);
-    const form = { code, hours: String(hours), ...(standby ? { standby: 'on' } : {}) };
+    const form = {
+      code,
+      hours: String(hours),
+      ...(standby ? { standby: 'on' } : {}),
+      ...(night ? { night: 'on' } : {}),
+    };
     await this.post('/shift-types', form);
     await this.management.open();
     await this.management.shift(code).waitFor({ state: 'visible' });

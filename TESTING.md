@@ -1,6 +1,6 @@
 # Testing and QA
 
-The project has six JUnit Jupiter tests across two classes and ten Playwright Chromium tests. Java tests focus on Spring context startup and the assignment write path. Browser tests cover core workflows from the calendar and management pages. See [Business rules](BUSINESS_RULES.md) for rule identifiers and [Architecture](ARCHITECTURE.md) for the HTTP and persistence flow.
+The project has six JUnit Jupiter tests across two classes and eleven Playwright Chromium tests. Java tests focus on Spring context startup and the assignment write path. Browser tests cover core workflows from the calendar and management pages. See [Business rules](BUSINESS_RULES.md) for rule identifiers and [Architecture](ARCHITECTURE.md) for the HTTP and persistence flow.
 
 ## Execution
 
@@ -98,8 +98,9 @@ test('BR-012 saves a normal shift', async ({ calendar, testData }) => {
 | [calendar.spec.ts](e2e/tests/calendar.spec.ts) | Calendar load and both directions of navigation across December–January (BR-017), plus theme state and persistence (BR-023). |
 | [management.spec.ts](e2e/tests/management.spec.ts) | Employee creation via the form with a vacation allocation (BR-002). |
 | [assignments.spec.ts](e2e/tests/assignments.spec.ts) | Creation, replacement and reload (BR-012), clearing and persistence of deletion (BR-013), independent normal and standby rows (BR-010/BR-011), and next-day rest across November–December including the unavailable exception (BR-014). |
+| [shift-picker.spec.ts](e2e/tests/shift-picker.spec.ts) | Color groups, ascending hours, code tie-breaks and consistent ordering across employees, dates and both assignment rows (BR-025). |
 
-The full Chromium suite passed all ten tests, and `npm.cmd run typecheck` passed during setup verification.
+The full Chromium suite passed all eleven tests, and `npm.cmd run typecheck` passed.
 
 ## Regression strategy and boundary analysis
 

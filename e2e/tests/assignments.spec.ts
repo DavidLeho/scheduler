@@ -72,7 +72,7 @@ test('BR-012 restores the saved shift after a reload', async ({ calendar, testDa
 test('BR-010 and BR-011 keep normal and standby shifts in separate rows', async ({ calendar, testData }) => {
   const employee = await testData.createEmployee();
   const normal = await testData.createShift(8);
-  const standby = await testData.createShift(6, true);
+  const standby = await testData.createShift(6, { standby: true });
   await calendar.open(2026, 11);
   const normalCell = calendar.cell(employee.id, novemberDay, 'NORMAL');
   const standbyCell = calendar.cell(employee.id, novemberDay, 'STANDBY');
@@ -91,7 +91,7 @@ test('BR-014 enforces rest after a 24-hour shift across a month boundary', async
   const employee = await testData.createEmployee();
   const longShift = await testData.createShift(24);
   const normal = await testData.createShift(8);
-  const standby = await testData.createShift(6, true);
+  const standby = await testData.createShift(6, { standby: true });
   const alerts: string[] = [];
   page.on('dialog', async dialog => {
     alerts.push(dialog.message());
