@@ -226,13 +226,13 @@ Management requests require year/month redirect context and their declared form 
 
 ### BR-023 — Browser calendar preferences
 
-Clicking an employee name highlights the paired rows. The default dark and colorful themes and hidden-column preferences use local storage. Calendar month changes use page navigation. Mutation responses update the selected cell or reload the page for holiday toggles.
+Clicking an employee name highlights the paired rows. Enabling the colorful theme reveals a palette selector on the calendar. The palette applies to interface accents on both pages, while shift and warning colors keep their existing meanings. Theme, palette and hidden-column preferences use local storage. Calendar month changes use page navigation. Mutation responses update the selected cell or reload the page for holiday toggles.
 
 **Example.** Hiding an hours column changes the browser's view of the table and leaves assignment records intact.
 
 **Source.** [summary visibility](src/main/resources/static/calendar.js#L519), [employee row highlighting](src/main/resources/static/calendar.js#L562) and [theme.js](src/main/resources/static/theme.js)
 
-**Automated coverage.** [Calendar E2E](e2e/tests/calendar.spec.ts) verifies theme toggling and persistence through reload. Column preferences and highlighting remain uncovered.
+**Automated coverage.** [Calendar E2E](e2e/tests/calendar.spec.ts) verifies theme toggling, palette persistence, shared accents on the management page and selector visibility on a narrow viewport. Column preferences and highlighting remain uncovered.
 
 ### BR-024 — Shift display
 

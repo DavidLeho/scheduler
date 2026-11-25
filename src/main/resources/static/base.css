@@ -172,18 +172,58 @@ textarea::placeholder {
 /* ---------- színes téma közös alap ---------- */
 
 body.theme-colorful {
+    --theme-primary: 0 194 255;
+    --theme-highlight: 89 232 255;
+    --theme-secondary: 125 56 255;
+    --theme-tertiary: 255 47 160;
     --page-background:
-        radial-gradient(circle at top left, rgba(0, 194, 255, 0.16), transparent 34%),
-        radial-gradient(circle at top right, rgba(255, 47, 160, 0.14), transparent 32%),
+        radial-gradient(circle at top left, rgb(var(--theme-primary) / 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgb(var(--theme-tertiary) / 0.14), transparent 32%),
         linear-gradient(135deg, #071326, #0b1022 45%, #14071f);
 
     --page-text: #f5f8ff;
     --scrollbar-track: #071326;
     --scrollbar-track-radius: 999px;
-    --scrollbar-thumb-color: #00c2ff;
-    --scrollbar-thumb: linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
-    --scrollbar-thumb-hover: linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
+    --scrollbar-thumb-color: rgb(var(--theme-primary));
+    --scrollbar-thumb: linear-gradient(180deg, rgb(var(--theme-primary)), rgb(var(--theme-secondary)), rgb(var(--theme-tertiary)));
+    --scrollbar-thumb-hover: linear-gradient(180deg, rgb(var(--theme-highlight)), rgb(var(--theme-secondary)), rgb(var(--theme-tertiary)));
     --scrollbar-thumb-shadow:
-        0 0 8px rgba(0, 194, 255, 0.35),
-        0 0 10px rgba(255, 47, 160, 0.20);
+        0 0 8px rgb(var(--theme-primary) / 0.35),
+        0 0 10px rgb(var(--theme-tertiary) / 0.20);
+}
+
+/* These palettes affect the interface accents. Shift and warning colors are defined separately. */
+body.theme-colorful[data-theme-palette="ocean"] {
+    --theme-primary: 43 178 255;
+    --theme-highlight: 137 224 255;
+    --theme-secondary: 43 120 241;
+    --theme-tertiary: 28 210 200;
+}
+
+body.theme-colorful[data-theme-palette="violet"] {
+    --theme-primary: 161 109 255;
+    --theme-highlight: 222 182 255;
+    --theme-secondary: 110 71 234;
+    --theme-tertiary: 206 115 250;
+}
+
+body.theme-colorful[data-theme-palette="rose"] {
+    --theme-primary: 255 105 156;
+    --theme-highlight: 255 183 210;
+    --theme-secondary: 206 71 135;
+    --theme-tertiary: 255 139 125;
+}
+
+body.theme-colorful[data-theme-palette="forest"] {
+    --theme-primary: 60 202 133;
+    --theme-highlight: 149 240 190;
+    --theme-secondary: 35 158 150;
+    --theme-tertiary: 160 216 112;
+}
+
+body.theme-colorful[data-theme-palette="amber"] {
+    --theme-primary: 247 173 63;
+    --theme-highlight: 255 220 151;
+    --theme-secondary: 219 125 63;
+    --theme-tertiary: 254 192 109;
 }

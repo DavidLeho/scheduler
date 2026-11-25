@@ -12,6 +12,7 @@
     (function () {
         if (localStorage.getItem("scheduler-theme") === "colorful") {
             document.body.classList.add("theme-colorful");
+            document.body.dataset.themePalette = localStorage.getItem("scheduler-theme-palette") || "rainbow";
         }
     })();
 </script>
@@ -36,6 +37,14 @@
                             aria-pressed="false">
                         <span class="theme-toggle-knob"></span>
                     </button>
+                    <select id="themePalette" class="theme-palette-select" aria-label="Színes téma palettája" hidden>
+                        <option value="rainbow">Szivárvány</option>
+                        <option value="ocean">Óceán</option>
+                        <option value="violet">Ibolya</option>
+                        <option value="rose">Rózsaszín</option>
+                        <option value="forest">Erdő</option>
+                        <option value="amber">Borostyán</option>
+                    </select>
                 </div>
             </div>
 

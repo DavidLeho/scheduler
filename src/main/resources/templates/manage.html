@@ -12,6 +12,7 @@
   (function () {
       if (localStorage.getItem("scheduler-theme") === "colorful") {
           document.body.classList.add("theme-colorful");
+          document.body.dataset.themePalette = localStorage.getItem("scheduler-theme-palette") || "rainbow";
       }
   })();
 </script>

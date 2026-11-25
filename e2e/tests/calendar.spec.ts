@@ -34,3 +34,31 @@ test('BR-023 applies and remembers the colorful theme', async ({ calendar, page 
   await expect(calendar.themeToggle).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('body')).not.toHaveClass(/\btheme-colorful\b/);
 });
+
+test('BR-023 selects and remembers the colorful palette across pages', async ({ calendar, page }) => {
+  await calendar.open(2026, 11);
+  const palette = page.getByRole('combobox', { name: 'Színes téma palettája' });
+  await expect(palette).toBeHidden();
+
+  await calendar.themeToggle.click();
+  await expect(palette).toHaveValue('rainbow');
+  await expect(palette.getByRole('option')).toHaveCount(6);
+  await palette.selectOption('forest');
+  await expect(page.locator('.schedule-page')).toHaveCSS('border-top-color', 'rgba(149, 240, 190, 0.35)');
+
+  await page.reload();
+  await expect(palette).toHaveValue('forest');
+  await calendar.themeToggle.click();
+  await expect(palette).toBeHidden();
+  await calendar.themeToggle.click();
+  await expect(palette).toHaveValue('forest');
+
+  await page.getByRole('link', { name: 'Dolgozók kezelése' }).click();
+  await expect(page.locator('.manage-header')).toHaveCSS('border-top-color', 'rgba(149, 240, 190, 0.18)');
+
+  await page.setViewportSize({ width: 320, height: 700 });
+  await calendar.open(2026, 11);
+  await expect(palette).toBeInViewport({ ratio: 1 });
+  await palette.selectOption('amber');
+  await expect(page.locator('.schedule-page')).toHaveCSS('border-top-color', 'rgba(255, 220, 151, 0.35)');
+});

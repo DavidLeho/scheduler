@@ -9,7 +9,7 @@ Scheduler is a Hungarian-language web application for manually maintaining emplo
 - Employee, skill and shift-type management. Shift types carry hours and night, standby and home-office flags.
 - Default holidays for the years displayed, with manual holiday toggling.
 - Monthly hours, shift count, night hours, standby hours, home-office percentage and displayed vacation balance.
-- Dark and colorful themes, hideable calendar columns and responsive layouts.
+- Dark and colorful themes with six selectable palettes, hideable calendar columns and responsive layouts.
 - Downloadable Excel workbook containing employees, assignments, skills and shift types.
 
 ## Technology and requirements
