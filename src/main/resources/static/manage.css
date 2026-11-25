@@ -99,7 +99,7 @@
     width: auto;
 }
 
-.manage-card button {
+.manage-card button:not(.small-delete-button) {
     min-height: 30px;
 
     border: 1px solid #666;
@@ -112,7 +112,7 @@
     cursor: pointer;
 }
 
-.manage-card button:hover {
+.manage-card button:not(.small-delete-button):hover {
     background: #707070;
 }
 
@@ -212,10 +212,8 @@
     margin: 0;
 }
 
-.small-delete-button {
-    width: 20px;
-    height: 20px;
-    min-height: 20px !important;
+.compact-chip .small-delete-button {
+    min-height: 20px;
 
     display: inline-flex;
     align-items: center;
@@ -223,11 +221,7 @@
 
     padding: 0;
 
-    border: none !important;
-    border-radius: 50% !important;
-
-    background: #d64545 !important;
-    color: white !important;
+    background: #d64545;
 
     font-size: 12px;
     line-height: 1;
@@ -406,6 +400,8 @@
 }
 
 .shift-type-edit-form {
+    width: 100%;
+    margin: 0;
     gap: 11px;
 }
 
@@ -419,10 +415,17 @@
 .shift-delete-form {
     display: flex;
     justify-content: flex-end;
+    width: 100%;
 }
 
 .shift-delete-form {
-    margin-top: 10px;
+    margin: 8px 0 0;
+}
+
+/* A keskeny műszakpanelen a két gomb a sor szélességén osztozik. */
+.shift-action-row button {
+    width: 100%;
+    min-width: 0;
 }
 
 /* ---------- Skills card ---------- */
@@ -624,13 +627,15 @@
     margin: 0;
 }
 
-.employee-action-row button,
-.shift-action-row button,
-.shift-delete-form button {
+/* A dolgozói szerkesztőben mindkét műveletgomb azonos szélességű. */
+.employee-action-row button {
     width: 180px;
     min-width: 180px;
     max-width: 180px;
+}
 
+.employee-action-row button,
+.shift-action-row button {
     height: 34px;
     min-height: 34px;
 
@@ -645,13 +650,13 @@
     white-space: nowrap;
 }
 
-.danger-button {
-    background: #7d2340 !important;
-    border-color: #d05b86 !important;
+.manage-card button.danger-button {
+    background: #7d2340;
+    border-color: #d05b86;
 }
 
-.danger-button:hover {
-    background: #a82f56 !important;
+.manage-card button.danger-button:hover {
+    background: #a82f56;
 }
 
 /* ---------- Scrollbars ---------- */
@@ -901,23 +906,23 @@ body.theme-colorful .shift-tag.muted {
     color: #b8cce0;
 }
 
-body.theme-colorful .danger-button,
-body.theme-colorful .small-delete-button {
+body.theme-colorful .manage-card button.danger-button,
+body.theme-colorful .compact-chip button.small-delete-button {
     background:
         linear-gradient(135deg, rgba(255, 47, 100, 0.40), rgba(125, 56, 255, 0.22)),
-        #421331 !important;
+        #421331;
 
-    border-color: rgba(255, 98, 140, 0.55) !important;
-    color: #ffffff !important;
+    border-color: rgba(255, 98, 140, 0.55);
+    color: #ffffff;
 }
 
-body.theme-colorful .danger-button:hover,
-body.theme-colorful .small-delete-button:hover {
+body.theme-colorful .manage-card button.danger-button:hover,
+body.theme-colorful .compact-chip button.small-delete-button:hover {
     background:
         linear-gradient(135deg, rgba(255, 47, 100, 0.62), rgba(255, 47, 160, 0.34)),
-        #5a173f !important;
+        #5a173f;
 
-    border-color: rgba(255, 160, 190, 0.75) !important;
+    border-color: rgba(255, 160, 190, 0.75);
 }
 
 body.theme-colorful * {
@@ -954,32 +959,4 @@ body.theme-colorful *::-webkit-scrollbar-thumb:hover {
 
 body.theme-colorful *::-webkit-scrollbar-corner {
     background: #071326;
-}
-
-/* ---------- Shift edit buttons align fix ---------- */
-
-.shift-edit-panel .shift-type-edit-form,
-.shift-edit-panel .shift-delete-form {
-    width: 100% !important;
-    margin: 0 !important;
-}
-
-.shift-edit-panel .shift-action-row,
-.shift-edit-panel .shift-delete-form {
-    display: flex !important;
-    width: 100% !important;
-}
-
-.shift-edit-panel .shift-action-row button,
-.shift-edit-panel .shift-delete-form button {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
-
-    margin: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.shift-edit-panel .shift-delete-form {
-    margin-top: 8px !important;
 }
