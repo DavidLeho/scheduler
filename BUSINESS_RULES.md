@@ -1,0 +1,254 @@
+# Implemented business rules
+
+These rules describe current application behavior. Dates, employees and shift examples are synthetic. Test references describe dedicated assertions, with the full coverage inventory in [TESTING.md](TESTING.md). See [ARCHITECTURE.md](ARCHITECTURE.md#http-endpoints) for HTTP contracts.
+
+## Rule catalog
+
+### BR-001 — Initial data
+
+At controller construction, empty skill, shift-type and employee repositories are seeded independently. Empty catalogs get skills A–E, shift types A (12 h day), B (8 h night), C (12 h standby/home office) and four sample employees when the employee repository is empty. System shift types are ensured separately.
+
+**Example.** An empty database loads sample employees and can immediately display a grid.
+
+**Source.** [Controller constructor](src/main/java/com/pufi/scheduler/CalendarController.java#L34)
+
+**Automated coverage.** Context load exercises startup. Assignment tests also depend on the seeded `-` record. Seed counts and values have no dedicated assertions.
+
+### BR-002 — Employee identity and vacation input
+
+Create/update trims the name, rejects blank or case-insensitive duplicate names and requires a nonnegative integer vacation allocation. The update excludes the current ID from duplicate checks and rejects an unknown ID.
+
+**Example.** ` Taylor ` becomes `Taylor`. A second employee named `taylor` or an allocation of −1 is rejected.
+
+**Source.** [addEmployee](src/main/java/com/pufi/scheduler/CalendarController.java#L267) and [updateEmployee](src/main/java/com/pufi/scheduler/CalendarController.java#L304)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-003 — Employee skill selections
+
+Employee create/update stores the supplied list of skill names as strings. An omitted selection becomes an empty list. The form reads choices from the skill catalog, while the write handler performs no membership or duplicate check on the submitted list. Skills do not restrict shift eligibility.
+
+**Example.** An employee update submitted with no checkboxes clears previous selections.
+
+**Source.** [updateEmployee](src/main/java/com/pufi/scheduler/CalendarController.java#L304) and [Employee.java](src/main/java/com/pufi/scheduler/Employee.java)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-004 — Employee deletion
+
+Deleting an existing employee first deletes all that employee's assignments across dates and layers, then deletes the employee. Missing IDs produce a flash error. The operation spans separate repository writes.
+
+**Example.** Deleting one employee removes both their normal and standby assignments on the same day.
+
+**Source.** [deleteEmployee](src/main/java/com/pufi/scheduler/CalendarController.java#L353)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-005 — Skill catalog
+
+Skill creation trims name and optional description. Blank and exact duplicate names are rejected. Lookup uses the entered case. Editing changes only the trimmed description of an existing ID.
+
+**Example.** ` Dispatch ` is saved as `Dispatch`. Creating another `Dispatch` is rejected. `dispatch` is a distinct value in the default database.
+
+**Source.** [addSkill](src/main/java/com/pufi/scheduler/CalendarController.java#L539) and [updateSkillDescription](src/main/java/com/pufi/scheduler/CalendarController.java#L572)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-006 — Skill deletion
+
+Deletion looks up an exact name, removes the catalog entry and iterates all employees, removing one occurrence of that skill name from each employee's list. Missing names produce a flash error. There is no skill-catalog foreign key behind the string list.
+
+**Example.** Deleting `Dispatch` removes the usual single selection per employee. If a direct request previously stored the name twice, one duplicate can remain.
+
+**Source.** [deleteSkill](src/main/java/com/pufi/scheduler/CalendarController.java#L595) and [Employee.removeSkill](src/main/java/com/pufi/scheduler/Employee.java)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-007 — Shift type fields and validation
+
+The controller trims and uppercases codes, rejects blank or case-insensitive duplicates, rejects hours below zero and trims descriptions. An absent description becomes empty. Night, standby and home-office flags are set by checkbox parameter presence. An update rejects an unknown ID. The management form limits codes to 10 characters and offers half-hour increments. The controller does not enforce those two browser limits, an upper bound or a finite-number check.
+
+**Example.** ` n8 ` with 8 hours and the night checkbox becomes `N8`. Zero hours pass the nonnegative check.
+
+**Source.** [addShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L379), [updateShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L430) and [shift form](src/main/resources/templates/manage.html#L48)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-008 — System shift types
+
+Startup creates or restores the metadata of `SZ` (8 h vacation) and `-` (0 h unavailable). Both are normal shifts with night, standby and home-office flags cleared. The management list excludes them, and update/delete handlers reject them.
+
+**Example.** An attempt to delete `SZ` from management is rejected.
+
+**Source.** [ensureSpecialShiftTypesExist](src/main/java/com/pufi/scheduler/CalendarController.java#L622), [updateShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L430) and [deleteShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L495)
+
+**Automated coverage.** Assignment tests exercise the `-` marker. Catalog protection and `SZ` metadata have no dedicated assertions.
+
+### BR-009 — Referenced shift types
+
+Deletion is rejected if any assignment references the type. Updates to non-system types are allowed even when referenced. Assignment reads use the linked type's current metadata. An edit can therefore alter historical totals or leave previously accepted assignments inconsistent with current flags or rest checks.
+
+**Example.** Changing an assigned type from 8 h to 24 h changes the earlier cell's displayed hours, without revalidating its next day.
+
+**Source.** [updateShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L430), [deleteShiftType](src/main/java/com/pufi/scheduler/CalendarController.java#L495) and [Assignment.java](src/main/java/com/pufi/scheduler/Assignment.java)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-010 — Normal and standby layers
+
+`STANDBY` is matched case-insensitively. All other inputs, including omitted values, normalize to `NORMAL`. A shift's standby flag must agree with the requested layer. The browser hides mismatched picker choices.
+
+**Example.** A standby shift submitted to the normal layer returns `STANDBY_ONLY_ALLOWED_IN_STANDBY_ROW`.
+
+**Source.** [createOrUpdateAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L142) and [layer-specific picker styles](src/main/resources/static/calendar.css#L673)
+
+**Automated coverage.** [rejectsShiftTypesInTheWrongLayer](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L84) covers both mismatch directions. Fallback inputs are untested.
+
+### BR-011 — Assignment uniqueness
+
+An assignment has a generated ID and a scheduling key of employee, date and layer. The database rejects duplicate keys while allowing one normal and one standby entry on the same day.
+
+**Example.** A normal and a standby record for one employee on 2026-11-30 can coexist. A second direct insert into either layer violates the constraint.
+
+**Source.** [assignment-constraints.sql](src/main/resources/assignment-constraints.sql) and [AssignmentRepository.java](src/main/java/com/pufi/scheduler/AssignmentRepository.java)
+
+**Automated coverage.** [databaseRejectsDuplicateAssignmentsInEitherLayer](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L120)
+
+### BR-012 — Assignment create and update
+
+The save handler validates employee, shift, layer and the rest rule. It inserts a missing key and returns `CREATED`, or updates the linked type of the existing row in place and returns `UPDATED`. Unknown employee or shift IDs return their respective `*_NOT_FOUND` tokens.
+
+**Example.** Replacing an 8 h normal entry with a 12 h type retains the normal assignment ID and the same-day standby entry.
+
+**Source.** [createOrUpdateAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L142)
+
+**Automated coverage.** [updatesNormalAssignmentInPlaceAndKeepsStandbySeparate](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L63) covers creation and replacement. Missing IDs are untested.
+
+### BR-013 — Assignment deletion
+
+DELETE looks up employee, exact date text and normalized layer. It deletes the matching row and returns `OK`, returns `NOT_FOUND` if the row is absent or returns `EMPLOYEE_NOT_FOUND` for an unknown employee. The browser clears the display on `OK` or `NOT_FOUND`.
+
+**Example.** Clearing standby leaves the same-day normal shift intact.
+
+**Source.** [deleteAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L209) and [deleteAssignmentFromCell](src/main/resources/static/calendar.js#L101)
+
+**Automated coverage.** [updatesNormalAssignmentInPlaceAndKeepsStandbySeparate](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L63) covers a successful standby deletion. Missing-record cases are untested.
+
+### BR-014 — Rest day after a 24-hour shift
+
+A non-system normal shift of exactly 24 hours triggers the rule. If the previous day has such a shift, only a normal `-` entry may be saved on the next day. Regular work, vacation and standby are blocked. Empty cells are allowed.
+
+**Example.** After a 24 h shift on 2026-11-30, a standby entry on 2026-12-01 returns `PREVIOUS_DAY_24H_REST_REQUIRED`. A normal `-` entry succeeds.
+
+**Source.** [validateTwentyFourHourRule](src/main/java/com/pufi/scheduler/CalendarController.java#L752)
+
+**Automated coverage.** [protectsTheFirstDayOfTheNextMonthAfterATwentyFourHourShift](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L91) covers normal and standby rejection and the `-` exception. Vacation rejection and exact-hour thresholds are untested.
+
+### BR-015 — Rest rule when saving the earlier day
+
+Before creating or changing a normal assignment to a qualifying 24-hour type, the following day must have no standby entry and no normal assignment except `-`. Calendar arithmetic checks actual adjacent dates across month and year boundaries.
+
+**Example.** An existing standby entry on January 1 prevents saving a qualifying 24-hour normal shift on December 31.
+
+**Source.** [validateTwentyFourHourRule](src/main/java/com/pufi/scheduler/CalendarController.java#L752) and [nextDayHasForbiddenAssignmentAfterTwentyFourHourShift](src/main/java/com/pufi/scheduler/CalendarController.java#L795)
+
+**Automated coverage.** [rejectsUpdatingToTwentyFourHoursWhenTheNextMonthAlreadyHasWork](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L103) covers November–December, both blocking layers and acceptance after removing standby. December–January is inferred from `LocalDate` arithmetic.
+
+### BR-016 — Assignment serialization
+
+Assignment POST and DELETE run in transactions and use a pessimistic lock on the employee. Save checks adjacent dates while holding that lock. Catalog changes use separate paths.
+
+**Example.** Two requests that schedule the earlier 24-hour shift and the next day's standby change for the same employee are checked serially through these endpoints.
+
+**Source.** [createOrUpdateAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L142), [deleteAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L209) and [EmployeeRepository.java](src/main/java/com/pufi/scheduler/EmployeeRepository.java)
+
+**Automated coverage.** Integration tests exercise ordinary transactional writes. There is no parallel-write test or forced rollback test.
+
+### BR-017 — Month selection and calendar cells
+
+Calendar and management default to the server's current month if either query value is absent. The calendar shows the selected month and two preceding days, labels days in Hungarian and marks weekends, today and holidays independently. The browser allows opening shift pickers only on current-month cells. The HTTP assignment API has no selected-month restriction.
+
+**Example.** January displays December 30 and 31 as context. February includes 29 only when the selected year is a leap year.
+
+**Source.** [calendar](src/main/java/com/pufi/scheduler/CalendarController.java#L72), [createScheduleDays](src/main/java/com/pufi/scheduler/CalendarController.java#L658), [ScheduleDay.java](src/main/java/com/pufi/scheduler/ScheduleDay.java) and [cell picker handler](src/main/resources/static/calendar.js#L9)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-018 — Monthly vacation balance
+
+The browser subtracts the selected month's `SZ` hours from the employee's stored vacation allocation. It does not write back the balance or reject assignments that drive the displayed value below zero. Negative balances and balances from 0 through 16 h get separate styles.
+
+**Example.** With a 24 h allocation and two 8 h `SZ` entries, the selected month shows 8 h remaining. The next month calculates from the 24 h base again.
+
+**Source.** [updateEmployeeSummary](src/main/resources/static/calendar.js#L266)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-019 — Monthly hours and home-office percentage
+
+Only current-month cells contribute. Ordinary normal work contributes count and total hours, plus night or home-office hours if flagged. Standby contributes only to standby hours. `SZ` adds to total and vacation use without increasing the shift count. `-` contributes nothing. Home-office percentage is rounded to a whole number, defaults to 0 when total is zero and changes color above 40% and above 50%.
+
+**Example.** An 8 h home-office normal shift, 8 h `SZ` and 6 h standby yield 16 h total, one shift, 6 h standby and 50% home office.
+
+**Source.** [updateEmployeeSummary](src/main/resources/static/calendar.js#L266) and [calculateHomeOfficePercent](src/main/resources/static/calendar.js#L367)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-020 — Holidays and special-day overrides
+
+Calendar loading inserts absent default holiday records for all years represented by its date range. Defaults are January 1, March 15, May 1, August 20, October 23, November 1 and December 25–26, plus Good Friday, Easter Monday and Pentecost Monday. Toggling a holiday sets it to `NORMAL` with an empty name. Turning it on uses the default name if known or `Egyedi piros betűs nap`. Existing overrides survive default initialization. Holidays and weekends affect display and do not block assignment creation. `WORKING_DAY` exists in the model without a management flow or distinct calendar rendering.
+
+**Example.** Turning off a default holiday keeps it off after reopening the month, since the date row still exists.
+
+**Source.** [toggleHoliday](src/main/java/com/pufi/scheduler/CalendarController.java#L241), [ensureFixedSpecialDaysExist](src/main/java/com/pufi/scheduler/CalendarController.java#L696) and [HolidayDefaults.java](src/main/java/com/pufi/scheduler/HolidayDefaults.java)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-021 — Excel export
+
+The download includes all employees, assignments, skills and shift types in `Dolgozók`, `Beosztások`, `Skillek` and `Műszakok`. Assignments include date text, employee and shift references, shift code, hours, flags and description. Flags use `igen`/`nem`. The assignment layer is not a separate column. Employee vacation represents the stored allocation. Special days and monthly summaries are outside the workbook.
+
+**Example.** Downloading from November also includes December assignments and the current shift-type metadata linked to them.
+
+**Source.** [ExcelExportController.java](src/main/java/com/pufi/scheduler/ExcelExportController.java#L38)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-022 — HTTP and form validation
+
+Management requests require year/month redirect context and their declared form fields. Explicit rule failures and successful submissions use flash messages. Binding errors may be handled by Spring MVC. Assignment saves parse an ISO date during rest validation, while DELETE uses the supplied date as text. An invalid date or out-of-range numeric month can reach default error handling.
+
+**Example.** A numeric month of `13` can throw during page rendering. A DELETE containing a nonmatching date string can return `NOT_FOUND`.
+
+**Source.** [calendar](src/main/java/com/pufi/scheduler/CalendarController.java#L72), [deleteAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L209) and [validateTwentyFourHourRule](src/main/java/com/pufi/scheduler/CalendarController.java#L752)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-023 — Browser calendar preferences
+
+Clicking an employee name highlights the paired rows. The default dark and colorful themes and hidden-column preferences use local storage. Calendar month changes use page navigation. Mutation responses update the selected cell or reload the page for holiday toggles.
+
+**Example.** Hiding an hours column changes the browser's view of the table and leaves assignment records intact.
+
+**Source.** [summary visibility](src/main/resources/static/calendar.js#L519), [employee row highlighting](src/main/resources/static/calendar.js#L562) and [theme.js](src/main/resources/static/theme.js)
+
+**Automated coverage.** No dedicated automated assertion in the current suite.
+
+### BR-024 — Shift display
+
+Ordinary cells show hours with a decimal comma when needed and append `HO` for home office. Night and standby flags determine the corresponding display style. Vacation shows `SZ`. Both an empty cell and an unavailable assignment show `-`, but they have different styles and only the unavailable assignment has shift metadata and an explanatory tooltip.
+
+**Example.** A 7.5-hour home-office assignment displays `7,5HO`. Clearing it displays the empty-cell marker and removes its assignment metadata.
+
+**Source.** [clearCell and formatCellText](src/main/resources/static/calendar.js#L152) and [shift classes and tooltips](src/main/resources/static/calendar.js#L200)
+
+**Automated coverage.** No dedicated browser or formatter assertions in the current suite.
+
+## Unresolved product questions
+
+- The stored vacation allocation and selected-month balance do not establish an annual accounting policy. Carryover, cross-month deduction and approval requirements need a product decision.
+- Editing assigned shift types currently affects historical output. Whether historical assignments should keep a snapshot or follow catalog corrections needs a product decision.
+- The holiday defaults are application data. Legal working-day substitutions, enforceable scheduling policies and additional holiday types require approved requirements.
+- The desired handling of unknown assignment layers, duplicate skill selections, invalid dates and direct API writes outside the displayed month is undocumented. The entries above describe the current behavior. Changes to those rules require approval under [AGENTS.md](AGENTS.md).
+
+Potential engineering work is tracked in [TODO.md](TODO.md).
