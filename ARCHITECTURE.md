@@ -35,6 +35,7 @@ flowchart LR
 │   ├── templates/                 calendar.html, manage.html
 │   └── static/                    CSS, calendar.js, theme.js
 ├── src/test/java/com/pufi/scheduler/
+├── e2e/                           Playwright config, fixtures, page objects and specs
 ├── data/                          Local runtime files, ignored
 └── target/                        Build output and test reports, ignored
 ```
@@ -205,4 +206,4 @@ The project has no application-level authentication, authorization or configured
 - Business dates and layers are stored as strings. Validation and data constraints cover different parts of the invariant.
 - The browser contains two left-column preference implementations and two local storage keys. The workbook is built in memory.
 
-See [QA coverage](TESTING.md) and the [technical backlog](TODO.md).
+See [QA coverage and the isolated Playwright server](TESTING.md#playwright-e2e) and the [technical backlog](TODO.md).

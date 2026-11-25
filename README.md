@@ -20,7 +20,7 @@ Scheduler is a Hungarian-language web application for manually maintaining emplo
 | UI | Thymeleaf, HTML, CSS and browser JavaScript |
 | Persistence | Spring Data JPA, Hibernate and embedded H2 |
 | Export | Apache POI OOXML 5.4.1 |
-| Build and tests | Maven Wrapper pinned to Maven 3.9.16, Spring Boot Test, JUnit Jupiter and MockMvc |
+| Build and tests | Maven Wrapper pinned to Maven 3.9.16, Spring Boot Test, JUnit Jupiter, MockMvc, Playwright and TypeScript |
 
 Use a JDK 21 installation available to the wrapper and a modern browser with JavaScript and local storage enabled. The first Maven invocation may need network access to download the distribution and dependencies. The application uses port 8080 with the default Spring Boot configuration.
 
@@ -54,6 +54,19 @@ Open [the calendar](http://localhost:8080/) or [the management page](http://loca
 
 Build artifacts and Surefire reports go under `target/`. Tests use an in-memory H2 database. Add `-o` to Maven commands if the required artifacts are already cached and offline execution is needed. [Testing guide](TESTING.md)
 
+### Browser tests
+
+Install Node.js 24 with npm, then run these PowerShell commands from the repository root. Playwright builds and starts a separate local application on port 18081 with an in-memory H2 database. Keep that port free during the run.
+
+```powershell
+cd e2e
+npm.cmd ci
+npx.cmd playwright install chromium
+npm.cmd test
+```
+
+On macOS or Linux, use `npm` and `npx` in place of `npm.cmd` and `npx.cmd`. See the [E2E workflow](TESTING.md#playwright-e2e) for selecting tests, opening UI Mode and viewing reports.
+
 ## Database
 
 The default connection is `jdbc:h2:file:./data/scheduler-db` with user `sa` and an empty password. The main database file is `data/scheduler-db.mv.db`, relative to the JVM working directory. An IDE run configuration launched from a parent directory can therefore open a different database from a terminal launched inside the repository. An explicit datasource URL can be supplied through Spring Boot configuration, for example with `SPRING_DATASOURCE_URL`.
@@ -71,7 +84,7 @@ Use **Excel export** on the management page or open [the export endpoint](http:/
 - Vacation remaining is a selected-month calculation against a stored base. A cumulative annual vacation ledger is absent.
 - Shift metadata is read from the current shift type, so catalog edits can alter historical display and totals.
 - The workbook is an export of four record sets. There is no import workflow or special-day worksheet.
-- Automation focuses on assignment persistence and the November-to-December rest boundary. Browser workflows and other domain areas have manual or proposed coverage.
+- The initial Chromium suite covers the main calendar and assignment workflows. Holiday changes, skill management and Excel export still lack dedicated browser coverage.
 
 ## Developer documentation
 

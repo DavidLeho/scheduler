@@ -1,6 +1,6 @@
 # Testing and QA
 
-The current suite has six JUnit Jupiter tests across two classes. It focuses on Spring context startup and the assignment write path. See [Business rules](BUSINESS_RULES.md) for rule identifiers and [Architecture](ARCHITECTURE.md) for the HTTP and persistence flow.
+The project has six JUnit Jupiter tests across two classes and ten Playwright Chromium tests. Java tests focus on Spring context startup and the assignment write path. Browser tests cover core workflows from the calendar and management pages. See [Business rules](BUSINESS_RULES.md) for rule identifiers and [Architecture](ARCHITECTURE.md) for the HTTP and persistence flow.
 
 ## Execution
 
@@ -13,7 +13,7 @@ Run from the repository root, alongside `pom.xml`. Use JDK 21. The wrapper downl
 | One rest-rule test | `.\mvnw.cmd "-Dtest=AssignmentIntegrationTests#protectsTheFirstDayOfTheNextMonthAfterATwentyFourHourShift" test` | `./mvnw -Dtest=AssignmentIntegrationTests#protectsTheFirstDayOfTheNextMonthAfterATwentyFourHourShift test` |
 | Clean package with tests | `.\mvnw.cmd clean package` | `./mvnw clean package` |
 
-Surefire writes XML and text reports to `target/surefire-reports/`. During this documentation review, `.\mvnw.cmd -o test` completed successfully on Windows with **6 tests, 0 failures, 0 errors and 0 skipped**. Browser and concurrency checks below are manual or proposed.
+Surefire writes XML and text reports to `target/surefire-reports/`. The Windows verification command `.\mvnw.cmd -o test` completed with **6 tests, 0 failures, 0 errors and 0 skipped**.
 
 ## Frameworks, isolation and fixtures
 
@@ -34,6 +34,72 @@ Surefire writes XML and text reports to `target/surefire-reports/`. During this 
 | `databaseRejectsDuplicateAssignmentsInEitherLayer` | Direct repository inserts raise `DataIntegrityViolationException` for duplicate keys in both layers, and the two original rows remain. | BR-011. |
 
 Sources are [context test](src/test/java/com/pufi/scheduler/SchedulerApplicationTests.java) and [assignment integration tests](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java).
+
+## Playwright E2E
+
+### Setup and commands
+
+Use Node.js 24 with npm, JDK 21 and room to install the Playwright-managed Chromium build. From the repository root on Windows:
+
+```powershell
+cd e2e
+npm.cmd ci
+npx.cmd playwright install chromium
+```
+
+Run the following commands from `e2e/`. On macOS or Linux, use `npm` and `npx` without the `.cmd` suffix.
+
+| Task | Command |
+| --- | --- |
+| Full Chromium suite | `npm.cmd test` |
+| One spec file | `npm.cmd test -- tests/assignments.spec.ts` |
+| One test within a file | `npm.cmd test -- tests/assignments.spec.ts -g "rest after a 24-hour shift"` |
+| List the selected tests | `npm.cmd test -- --list` |
+| Interactive UI Mode | `npm.cmd run test:ui` |
+| Open the latest HTML report | `npm.cmd run report` |
+| TypeScript type check | `npm.cmd run typecheck` |
+
+In UI Mode, select a file or test and use its run control. The HTML report lives under `e2e/playwright-report/`. For a failed test, the report links to its screenshot and retained browser trace, also available under `e2e/test-results/`. Open a trace from the report to inspect steps, DOM snapshots and network responses. To open a trace directly, run `npx.cmd playwright show-trace <path-to-trace.zip>` with the actual path.
+
+### Test server and isolation
+
+[Playwright configuration](e2e/playwright.config.ts) runs Chromium with one worker and zero retries. Each test starts with its own browser context. Keep the worker count at one until server and data isolation for parallel runs has been designed and verified.
+
+Playwright's web server runs [the launcher](e2e/scripts/start-server.mjs). It builds the application with the Maven Wrapper, starts the packaged app on `127.0.0.1:18081` using the external [E2E Spring profile](e2e/config/application-e2e.properties), and waits for the management page. Existing servers are not reused. The launcher removes inherited Spring and JVM overrides and supplies the in-memory H2 URL, `create-drop` mode and loopback listener on the Java command line. This database is separate from both the persistent application database and the Java test database, and disappears when the server process stops.
+
+The [test-data fixture](e2e/fixtures/test.ts) registers synthetic records before attempting to create them. It uses the application's form endpoints and reads IDs from the rendered management cards. Teardown runs in a `finally` block, even if a test assertion fails. It deletes only the registered employees and shifts, with employees removed first so their assignments do not block shift deletion. The fixture verifies removal and reports cleanup errors. Specs select explicit months and dates and may be run individually in any order.
+
+### Page Objects and fixtures
+
+[CalendarPage](e2e/pages/calendar-page.ts) and [ManagementPage](e2e/pages/management-page.ts) centralize selectors and repeated browser operations. Specs express the scenario and its assertions. Use role and label locators when available. For calendar cells, the CalendarPage combines the stable employee ID, ISO date and assignment layer attributes. Wait for an observable application response or UI state.
+
+Add a spec under `e2e/tests/` and import the extended test from `fixtures/test.js`. Playwright supplies `calendar`, `management` and `testData` when requested by the test. The `.js` suffix is the Node ESM import for the TypeScript source.
+
+```typescript
+import { expect, test } from '../fixtures/test.js';
+
+test('BR-012 saves a normal shift', async ({ calendar, testData }) => {
+  const employee = await testData.createEmployee();
+  const shift = await testData.createShift(8);
+  await calendar.open(2026, 11);
+  const cell = calendar.cell(employee.id, '2026-11-04', 'NORMAL');
+
+  const response = await calendar.assign(cell, shift);
+
+  expect(await response.text()).toBe('CREATED');
+  await expect(cell).toHaveAttribute('data-shift-code', shift);
+});
+```
+
+### Existing browser coverage
+
+| Spec | Tests and rules |
+| --- | --- |
+| [calendar.spec.ts](e2e/tests/calendar.spec.ts) | Calendar load and both directions of navigation across December–January (BR-017), plus theme state and persistence (BR-023). |
+| [management.spec.ts](e2e/tests/management.spec.ts) | Employee creation via the form with a vacation allocation (BR-002). |
+| [assignments.spec.ts](e2e/tests/assignments.spec.ts) | Creation, replacement and reload (BR-012), clearing and persistence of deletion (BR-013), independent normal and standby rows (BR-010/BR-011), and next-day rest across November–December including the unavailable exception (BR-014). |
+
+The full Chromium suite passed all ten tests, and `npm.cmd run typecheck` passed during setup verification.
 
 ## Regression strategy and boundary analysis
 
@@ -74,6 +140,6 @@ Run against a disposable H2 datasource with synthetic records. These are instruc
 | --- | --- |
 | Unit | Pure holiday/date calculation and, if extracted during an approved refactor, rest eligibility, layer normalization and summary formulas. |
 | Integration | Management forms and flash feedback, holiday initialization and overrides, file-based migration on a disposable copy, malformed inputs, concurrency, forced rollback and workbook parsing with POI. |
-| Playwright E2E | Navigation, assignment success and rejection, holiday toggle, theme persistence, column visibility, mobile scroll and downloadable workbook. Start the app with an isolated datasource per run, seed synthetic data and use deterministic dates. |
+| Playwright E2E | Extend the current suite with month/year picker interaction, holiday toggles, column visibility, mobile scrolling, management validation, failure feedback and workbook download. |
 
-There are no checked-in Playwright tests or CI workflows. A future CI job can run the Maven Wrapper on JDK 21 for pull requests, cache wrapper and Maven downloads, and publish Surefire results. Add a separate browser job after an E2E harness exists and ensure any screenshots or traces contain only synthetic data. [Testing backlog](TODO.md#improvement-opportunities)
+There are no configured CI workflows. A future CI job can run the Maven Wrapper on JDK 21 for pull requests, cache wrapper and Maven downloads, and publish Surefire results. A separate browser job can install Chromium and publish Playwright results from the isolated server. Ensure any screenshots or traces contain only synthetic data. [Testing backlog](TODO.md#improvement-opportunities)

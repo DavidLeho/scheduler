@@ -22,7 +22,7 @@ Create/update trims the name, rejects blank or case-insensitive duplicate names 
 
 **Source.** [addEmployee](src/main/java/com/pufi/scheduler/CalendarController.java#L267) and [updateEmployee](src/main/java/com/pufi/scheduler/CalendarController.java#L304)
 
-**Automated coverage.** No dedicated automated assertion in the current suite.
+**Automated coverage.** [Management E2E](e2e/tests/management.spec.ts) covers successful creation with a vacation allocation. Invalid forms and duplicate names remain uncovered.
 
 ### BR-003 — Employee skill selections
 
@@ -102,7 +102,7 @@ Deletion is rejected if any assignment references the type. Updates to non-syste
 
 **Source.** [createOrUpdateAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L142) and [layer-specific picker styles](src/main/resources/static/calendar.css#L673)
 
-**Automated coverage.** [rejectsShiftTypesInTheWrongLayer](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L84) covers both mismatch directions. Fallback inputs are untested.
+**Automated coverage.** [rejectsShiftTypesInTheWrongLayer](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L84) covers both mismatch directions. [Assignment E2E](e2e/tests/assignments.spec.ts) covers normal and standby in separate rows. Fallback inputs are untested.
 
 ### BR-011 — Assignment uniqueness
 
@@ -122,7 +122,7 @@ The save handler validates employee, shift, layer and the rest rule. It inserts 
 
 **Source.** [createOrUpdateAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L142)
 
-**Automated coverage.** [updatesNormalAssignmentInPlaceAndKeepsStandbySeparate](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L63) covers creation and replacement. Missing IDs are untested.
+**Automated coverage.** [updatesNormalAssignmentInPlaceAndKeepsStandbySeparate](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L63) covers creation and replacement. [Assignment E2E](e2e/tests/assignments.spec.ts) covers both operations and persistence across reload. Missing IDs are untested.
 
 ### BR-013 — Assignment deletion
 
@@ -132,7 +132,7 @@ DELETE looks up employee, exact date text and normalized layer. It deletes the m
 
 **Source.** [deleteAssignment](src/main/java/com/pufi/scheduler/CalendarController.java#L209) and [deleteAssignmentFromCell](src/main/resources/static/calendar.js#L101)
 
-**Automated coverage.** [updatesNormalAssignmentInPlaceAndKeepsStandbySeparate](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L63) covers a successful standby deletion. Missing-record cases are untested.
+**Automated coverage.** [updatesNormalAssignmentInPlaceAndKeepsStandbySeparate](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L63) covers a successful standby deletion. [Assignment E2E](e2e/tests/assignments.spec.ts) covers clearing normal and standby cells. Missing-record cases are untested.
 
 ### BR-014 — Rest day after a 24-hour shift
 
@@ -142,7 +142,7 @@ A non-system normal shift of exactly 24 hours triggers the rule. If the previous
 
 **Source.** [validateTwentyFourHourRule](src/main/java/com/pufi/scheduler/CalendarController.java#L752)
 
-**Automated coverage.** [protectsTheFirstDayOfTheNextMonthAfterATwentyFourHourShift](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L91) covers normal and standby rejection and the `-` exception. Vacation rejection and exact-hour thresholds are untested.
+**Automated coverage.** [protectsTheFirstDayOfTheNextMonthAfterATwentyFourHourShift](src/test/java/com/pufi/scheduler/AssignmentIntegrationTests.java#L91) and [assignment E2E](e2e/tests/assignments.spec.ts) cover normal and standby rejection and the `-` exception. Vacation rejection and exact-hour thresholds are untested.
 
 ### BR-015 — Rest rule when saving the earlier day
 
@@ -172,7 +172,7 @@ Calendar and management default to the server's current month if either query va
 
 **Source.** [calendar](src/main/java/com/pufi/scheduler/CalendarController.java#L72), [createScheduleDays](src/main/java/com/pufi/scheduler/CalendarController.java#L658), [ScheduleDay.java](src/main/java/com/pufi/scheduler/ScheduleDay.java) and [cell picker handler](src/main/resources/static/calendar.js#L9)
 
-**Automated coverage.** No dedicated automated assertion in the current suite.
+**Automated coverage.** [Calendar E2E](e2e/tests/calendar.spec.ts) verifies the monthly calendar and navigation across a year boundary. The two context days and leap-year layout have no dedicated assertions.
 
 ### BR-018 — Monthly vacation balance
 
@@ -232,7 +232,7 @@ Clicking an employee name highlights the paired rows. The default dark and color
 
 **Source.** [summary visibility](src/main/resources/static/calendar.js#L519), [employee row highlighting](src/main/resources/static/calendar.js#L562) and [theme.js](src/main/resources/static/theme.js)
 
-**Automated coverage.** No dedicated automated assertion in the current suite.
+**Automated coverage.** [Calendar E2E](e2e/tests/calendar.spec.ts) verifies theme toggling and persistence through reload. Column preferences and highlighting remain uncovered.
 
 ### BR-024 — Shift display
 
@@ -242,7 +242,7 @@ Ordinary cells show hours with a decimal comma when needed and append `HO` for h
 
 **Source.** [clearCell and formatCellText](src/main/resources/static/calendar.js#L152) and [shift classes and tooltips](src/main/resources/static/calendar.js#L200)
 
-**Automated coverage.** No dedicated browser or formatter assertions in the current suite.
+**Automated coverage.** [Assignment E2E](e2e/tests/assignments.spec.ts) checks ordinary shift hours and the cleared cell display. Decimal, home-office and tooltip formatting remain uncovered.
 
 ## Unresolved product questions
 

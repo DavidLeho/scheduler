@@ -117,11 +117,11 @@ S is a contained change, M spans several related components or tests, and L requ
 ### TD-010 — Automate QA gaps and add CI
 
 - **Priority and classification.** P2, Improvement opportunity.
-- **Problem.** The suite has six tests. There is no checked-in CI, browser suite or parallel assignment test.
-- **Affected components.** pom.xml, src/test, frontend templates and scripts.
-- **Proposed solution.** Add focused tests from TESTING.md and a JDK 21 Maven Wrapper CI job. Add browser automation after a reproducible app fixture is available.
-- **Acceptance criteria.** CI runs isolated tests and reports failures. The first browser scenarios cover assignment editing, rest-day feedback and theme/column persistence.
-- **Testing requirements.** Clean automation run with synthetic data and repeatable seeded browser cases.
+- **Problem.** Java and Chromium suites cover core rules. CI, parallel assignment tests and several browser regression scenarios remain open.
+- **Affected components.** pom.xml, src/test, e2e and the affected browser workflows.
+- **Proposed solution.** Add focused tests from [TESTING.md](TESTING.md#missing-automation-and-candidates) and CI in a separately approved task.
+- **Acceptance criteria.** CI runs the isolated suites and reports failures. Added browser scenarios cover holiday changes, column preferences and export.
+- **Testing requirements.** Clean CI runs with synthetic data and reproducible browser cases.
 - **Complexity.** M.
 - **Status.** Proposed.
 
