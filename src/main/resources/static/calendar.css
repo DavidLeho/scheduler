@@ -240,6 +240,12 @@
 }
 
 .schedule-table {
+    --employee-name-width: 190px;
+    --employee-skills-width: 120px;
+    --vacation-width: 70px;
+    --visible-name-width: var(--employee-name-width);
+    --visible-skills-width: var(--employee-skills-width);
+
     border-collapse: separate;
     border-spacing: 0;
 
@@ -298,24 +304,26 @@ th.sticky-column {
 
 .employee-name-column {
     left: 0;
-    min-width: 190px;
-    width: 190px;
-    max-width: 190px;
+    --column-width: var(--employee-name-width);
 }
 
 .employee-skills-column {
-    left: 190px;
-    min-width: 120px;
-    width: 120px;
-    max-width: 120px;
+    left: var(--visible-name-width);
+    --column-width: var(--employee-skills-width);
 }
 
 .vacation-column {
-    left: 310px;
-    min-width: 70px;
-    width: 70px;
-    max-width: 70px;
+    left: calc(var(--visible-name-width) + var(--visible-skills-width));
+    --column-width: var(--vacation-width);
     box-shadow: 4px 0 0 #666;
+}
+
+.employee-name-column,
+.employee-skills-column,
+.vacation-column {
+    min-width: var(--column-width);
+    width: var(--column-width);
+    max-width: var(--column-width);
 }
 
 .employee-name-cell,
@@ -354,20 +362,13 @@ th.sticky-column {
     display: none !important;
 }
 
-.schedule-table.left-name-hidden .employee-skills-column {
-    left: 0;
+/* Az elrejtett oszlop szélessége kiesik a következő oszlop eltolásából. */
+.schedule-table.left-name-hidden {
+    --visible-name-width: 0px;
 }
 
-.schedule-table.left-name-hidden .vacation-column {
-    left: 120px;
-}
-
-.schedule-table.left-skills-hidden .vacation-column {
-    left: 190px;
-}
-
-.schedule-table.left-name-hidden.left-skills-hidden .vacation-column {
-    left: 0;
+.schedule-table.left-skills-hidden {
+    --visible-skills-width: 0px;
 }
 
 .schedule-table.left-vacation-hidden .vacation-column {
