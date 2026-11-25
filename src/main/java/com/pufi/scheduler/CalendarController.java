@@ -1,6 +1,7 @@
 package com.pufi.scheduler;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -137,8 +138,10 @@ public class CalendarController {
 
     @PostMapping("/assignments")
     @ResponseBody
+    @Transactional
     public String createOrUpdateAssignment(@RequestBody AssignmentRequest request) {
-        Employee employee = employeeRepository.findById(request.getEmployeeId()).orElse(null);
+        // A pihenőnap ellenőrzése a szomszédos napokat is érinti, ezért dolgozónként sorosítjuk a mentést.
+        Employee employee = employeeRepository.findByIdForAssignmentWrite(request.getEmployeeId()).orElse(null);
 
         if (employee == null) {
             return "EMPLOYEE_NOT_FOUND";
@@ -190,15 +193,7 @@ public class CalendarController {
             return "CREATED";
         }
 
-        assignmentRepository.delete(assignment);
-
-        assignmentRepository.save(new Assignment(
-                employee,
-                request.getDate(),
-                requestedLayer,
-                shiftType
-        ));
-
+        assignment.setShiftType(shiftType);
         return "UPDATED";
     }
 
@@ -210,12 +205,13 @@ public class CalendarController {
 
     @DeleteMapping("/assignments")
     @ResponseBody
+    @Transactional
     public String deleteAssignment(
             @RequestParam Long employeeId,
             @RequestParam String date,
             @RequestParam(required = false) String assignmentLayer
     ) {
-        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        Employee employee = employeeRepository.findByIdForAssignmentWrite(employeeId).orElse(null);
 
         if (employee == null) {
             return "EMPLOYEE_NOT_FOUND";

@@ -79,6 +79,10 @@ public class Assignment {
         return shiftType.getId();
     }
 
+    public void setShiftType(ShiftType shiftType) {
+        this.shiftType = shiftType;
+    }
+
     public String getShiftCode() {
         if (shiftType == null) {
             return "";
