@@ -11,11 +11,23 @@ body {
     height: 100%;
 }
 
+:root {
+    --page-background: #1f1f1f;
+    --page-text: white;
+    --control-background: #333;
+    --panel-border-color: #555;
+    --control-border-color: #777;
+    --scrollbar-track: #111;
+    --scrollbar-thumb-color: #666;
+    --scrollbar-thumb: #555;
+    --scrollbar-thumb-hover: #777;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #1f1f1f;
-    color: white;
+    background: var(--page-background);
+    color: var(--page-text);
     overflow: hidden;
 }
 
@@ -52,7 +64,7 @@ select {
     border: none;
     border-radius: 6px;
 
-    background: #333;
+    background: var(--control-background);
     color: white;
 
     text-decoration: none;
@@ -95,9 +107,9 @@ input[type="text"],
 input[type="number"],
 textarea,
 select {
-    background: #333;
+    background: var(--control-background);
     color: white;
-    border: 1px solid #777;
+    border: 1px solid var(--control-border-color);
     border-radius: 4px;
 }
 
@@ -127,71 +139,51 @@ textarea::placeholder {
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: #666 #111;
+    scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track);
+    --scrollbar-width: 10px;
+    --compact-scrollbar-radius: initial;
 }
 
 *::-webkit-scrollbar {
-    width: 10px;
+    width: var(--scrollbar-width);
     height: 10px;
 }
 
 *::-webkit-scrollbar-track {
-    background: #111;
+    background: var(--scrollbar-track);
+    border-radius: var(--compact-scrollbar-radius, var(--scrollbar-track-radius, 0));
 }
 
 *::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 999px;
-    border: 2px solid #111;
+    background: var(--scrollbar-thumb);
+    border-radius: var(--compact-scrollbar-radius, 999px);
+    border: 2px solid var(--scrollbar-track);
+    box-shadow: var(--scrollbar-thumb-shadow, none);
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background: #777;
+    background: var(--scrollbar-thumb-hover);
 }
 
 *::-webkit-scrollbar-corner {
-    background: #111;
+    background: var(--scrollbar-track);
 }
 
 /* ---------- színes téma közös alap ---------- */
 
 body.theme-colorful {
-    background:
+    --page-background:
         radial-gradient(circle at top left, rgba(0, 194, 255, 0.16), transparent 34%),
         radial-gradient(circle at top right, rgba(255, 47, 160, 0.14), transparent 32%),
         linear-gradient(135deg, #071326, #0b1022 45%, #14071f);
 
-    color: #f5f8ff;
-}
-
-body.theme-colorful * {
-    scrollbar-width: thin;
-    scrollbar-color: #00c2ff #071326;
-}
-
-body.theme-colorful *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-track {
-    background: #071326;
-    border-radius: 999px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
-    border-radius: 999px;
-    border: 2px solid #071326;
-    box-shadow:
+    --page-text: #f5f8ff;
+    --scrollbar-track: #071326;
+    --scrollbar-track-radius: 999px;
+    --scrollbar-thumb-color: #00c2ff;
+    --scrollbar-thumb: linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
+    --scrollbar-thumb-hover: linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
+    --scrollbar-thumb-shadow:
         0 0 8px rgba(0, 194, 255, 0.35),
         0 0 10px rgba(255, 47, 160, 0.20);
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
-}
-
-body.theme-colorful *::-webkit-scrollbar-corner {
-    background: #071326;
 }

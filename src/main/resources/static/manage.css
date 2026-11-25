@@ -4,9 +4,6 @@
     height: 100vh;
     padding: 20px;
     overflow: hidden;
-
-    background: #1f1f1f;
-    color: white;
 }
 
 .manage-header {
@@ -386,7 +383,7 @@
 }
 
 .shift-tag.muted {
-    border-color: #555;
+    border-color: var(--panel-border-color);
     background: #252525;
     color: #cfcfcf;
 }
@@ -659,52 +656,19 @@
     background: #a82f56;
 }
 
-/* ---------- Scrollbars ---------- */
-
-.manage-employee-list::-webkit-scrollbar,
-.manage-new-employee-card::-webkit-scrollbar,
-.shift-compact-list::-webkit-scrollbar,
-.skill-description-list::-webkit-scrollbar,
-.compact-chip-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.manage-employee-list::-webkit-scrollbar-track,
-.manage-new-employee-card::-webkit-scrollbar-track,
-.shift-compact-list::-webkit-scrollbar-track,
-.skill-description-list::-webkit-scrollbar-track,
-.compact-chip-list::-webkit-scrollbar-track {
-    background: #111;
-    border-radius: 8px;
-}
-
-.manage-employee-list::-webkit-scrollbar-thumb,
-.manage-new-employee-card::-webkit-scrollbar-thumb,
-.shift-compact-list::-webkit-scrollbar-thumb,
-.skill-description-list::-webkit-scrollbar-thumb,
-.compact-chip-list::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 8px;
-}
-
-.manage-employee-list::-webkit-scrollbar-thumb:hover,
-.manage-new-employee-card::-webkit-scrollbar-thumb:hover,
-.shift-compact-list::-webkit-scrollbar-thumb:hover,
-.skill-description-list::-webkit-scrollbar-thumb:hover,
-.compact-chip-list::-webkit-scrollbar-thumb:hover {
-    background: #777;
+/* A kezelőoldal listáin a sötét téma keskenyebb görgetősávot használ. */
+.manage-page:not(.theme-colorful) :is(
+    .manage-employee-list,
+    .manage-new-employee-card,
+    .shift-compact-list,
+    .skill-description-list,
+    .compact-chip-list
+) {
+    --scrollbar-width: 8px;
+    --compact-scrollbar-radius: 8px;
 }
 
 /* ---------- Colorful theme for manage page ---------- */
-
-body.theme-colorful.manage-page {
-    background:
-        radial-gradient(circle at top left, rgba(0, 194, 255, 0.16), transparent 34%),
-        radial-gradient(circle at top right, rgba(255, 47, 160, 0.14), transparent 32%),
-        linear-gradient(135deg, #071326, #0b1022 45%, #14071f);
-
-    color: #f5f8ff;
-}
 
 body.theme-colorful .manage-header {
     padding: 8px 12px;
@@ -923,40 +887,4 @@ body.theme-colorful .compact-chip button.small-delete-button:hover {
         #5a173f;
 
     border-color: rgba(255, 160, 190, 0.75);
-}
-
-body.theme-colorful * {
-    scrollbar-width: thin;
-    scrollbar-color: #00c2ff #071326;
-}
-
-body.theme-colorful *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-track {
-    background: #071326;
-    border-radius: 999px;
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb {
-    background:
-        linear-gradient(180deg, #00c2ff, #7d38ff, #ff2fa0);
-
-    border-radius: 999px;
-    border: 2px solid #071326;
-
-    box-shadow:
-        0 0 8px rgba(0, 194, 255, 0.35),
-        0 0 10px rgba(255, 47, 160, 0.20);
-}
-
-body.theme-colorful *::-webkit-scrollbar-thumb:hover {
-    background:
-        linear-gradient(180deg, #5eeaff, #9b62ff, #ff65bd);
-}
-
-body.theme-colorful *::-webkit-scrollbar-corner {
-    background: #071326;
 }
