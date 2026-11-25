@@ -6,6 +6,7 @@
 
 .schedule-page {
     height: 100vh;
+    height: 100dvh;
     padding: 20px;
 
     display: flex;
@@ -1273,4 +1274,68 @@ body.theme-colorful .summary-column-hide-button:hover {
     background: #421331;
     border-color: rgba(255, 98, 194, 0.7);
     color: #ffffff;
+}
+
+@media (width <= 1100px) {
+    .schedule-header-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .schedule-header-left {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .schedule-header-right {
+        display: none;
+    }
+}
+
+@media (width <= 640px) {
+    .schedule-page {
+        padding: 8px;
+    }
+
+    .schedule-header-left {
+        gap: 8px;
+    }
+
+    .theme-switch-wrapper {
+        margin-left: 0;
+    }
+
+    .schedule-header-center {
+        display: grid;
+        grid-template-columns: 1fr minmax(0, 1.2fr) 1fr;
+        gap: 4px;
+    }
+
+    .compact-month-button,
+    .month-title-button {
+        min-width: 0;
+        padding: 6px;
+        font-size: 14px;
+        text-align: center;
+        white-space: normal;
+    }
+
+    .month-picker-dropdown {
+        top: 100%;
+        width: min(360px, calc(100vw - 48px));
+    }
+
+    /* Keskeny nézetben a bal oszlopok a napokkal együtt gördülnek. */
+    .schedule-table .sticky-column {
+        left: auto;
+    }
+}
+
+@media (height < 520px) {
+    .calendar-page {
+        overflow-y: auto;
+    }
+
+    .schedule-page {
+        min-height: 520px;
+    }
 }
